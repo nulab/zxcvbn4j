@@ -1,0 +1,27 @@
+
+!/.gitignore
+
+/.idea/
+
+/bin/
+/build/
+/target/
+/out
+
+/buildSrc/bin/
+/buildSrc/build/
+/buildSrc/target/
+
+*.iml
+*.ipr
+*.iws
+
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+!gradle-wrapper.jar
+.gradle

@@ -1,0 +1,20 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'com.nulab-inc'
+version = '1.0.0'
+archivesBaseName = 'zxcvbn'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.9'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
