@@ -1,0 +1,5 @@
+language: java
+jdk:
+  - oraclejdk7
+after_success:
+  - ./gradlew cobertura coveralls

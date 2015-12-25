@@ -1,5 +1,18 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'net.saliman:gradle-cobertura-plugin:2.0.0' // cobertura plugin
+        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0'
+    }
+}
+
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'signing'
+apply plugin: 'cobertura'
+apply plugin: 'com.github.kt3k.coveralls'
 
 group = 'com.nulab-inc'
 version = '1.0.0'
@@ -17,4 +30,107 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+cobertura.coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
+
+javadoc {
+    options.locale = 'en_US'
+    title = 'zxcvbn4j ' + version + ' API'
+}
+
+// Turning off doclint in JDK 8 Javadoc
+// ref : http://blog.joda.org/2014/02/turning-off-doclint-in-jdk-8-javadoc.html
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': archivesBaseName, 'Implementation-Version': version
+    }
+}
+
+task sourceJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourceJar, javadocJar
+}
+
+configurations {
+    deployerJars
+}
+
+signing {
+    // Skip signing snapshot archives
+    if (System.env.TRAVIS || version.endsWith("-SNAPSHOT")) return
+
+    sign configurations.archives
+}
+
+def ossrhUsername = hasProperty('ossrhUsername') ? ossrhUsername : ''
+def ossrhPassword = hasProperty('ossrhPassword') ? ossrhPassword : ''
+
+uploadArchives {
+    // Skip uploading production archives when travis
+    if (System.env.TRAVIS && !version.endsWith("-SNAPSHOT")) return
+
+    repositories {
+        mavenDeployer {
+            beforeDeployment {
+                MavenDeployment deployment -> if (!version.endsWith("-SNAPSHOT")) { signing.signPom(deployment) }
+            }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'zxcvbn4j'
+                groupId group
+                artifactId archivesBaseName
+                version version
+                packaging 'jar'
+                description 'This is a java port of zxcvbn, which is a JavaScript password strength generator.'
+                url 'https://github.com/nulab/zxcvbn4j'
+
+                scm {
+                    connection 'https://github.com/nulab/zxcvbn4j.git'
+                    developerConnection 'https://github.com/nulab/zxcvbn4j.git'
+                    url 'https://github.com/nulab/zxcvbn4j.git'
+                }
+
+                licenses {
+                    license {
+                        name 'MIT License'
+                        url 'http://www.opensource.org/licenses/mit-license.php'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'vvatanabe'
+                        name 'Yuichi Watanabe'
+                        email 'yuichi.watanabe@nulab-inc.com'
+                    }
+                }
+            }
+        }
+    }
 }
