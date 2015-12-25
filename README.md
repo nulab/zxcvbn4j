@@ -1,5 +1,5 @@
 
-# zxcvbn4j
+# zxcvbn4j [![Build Status](https://travis-ci.org/nulab/zxcvbn4j.svg?branch=master)](https://travis-ci.org/nulab/zxcvbn4j) [![Coverage Status](https://coveralls.io/repos/nulab/zxcvbn4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/nulab/zxcvbn4j?branch=master)
 
 This is a java port of [zxcvbn](https://github.com/dropbox/zxcvbn), which is a JavaScript password strength generator. (英語の下に日本文が記載されています)
 
