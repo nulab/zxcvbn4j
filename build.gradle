@@ -103,9 +103,7 @@ uploadArchives {
 
             pom.project {
                 name 'zxcvbn4j'
-                groupId group
                 artifactId archivesBaseName
-                version version
                 packaging 'jar'
                 description 'This is a java port of zxcvbn, which is a JavaScript password strength generator.'
                 url 'https://github.com/nulab/zxcvbn4j'
