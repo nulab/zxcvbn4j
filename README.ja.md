@@ -1,7 +1,7 @@
 
 # zxcvbn4j [![Build Status](https://travis-ci.org/nulab/zxcvbn4j.svg?branch=master)](https://travis-ci.org/nulab/zxcvbn4j) [![Coverage Status](https://coveralls.io/repos/nulab/zxcvbn4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/nulab/zxcvbn4j?branch=master)
 
-zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxcvbn]（https://github.com/dropbox/zxcvbn）をJavaにポーティングしたものです。
+zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxcvbn](https://github.com/dropbox/zxcvbn)をJavaにポーティングしたものです。
 
 ## 更新
 
