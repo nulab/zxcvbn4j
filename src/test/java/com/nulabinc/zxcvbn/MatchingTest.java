@@ -147,44 +147,44 @@ public class MatchingTest {
         }});
         {
             List<Match> matches = dm("motherboard", testDicts);
-            List<String> patterns = Arrays.asList(new String[]{"mother", "motherboard", "board"});
+            List<String> patterns = Arrays.asList("mother", "motherboard", "board");
             List<Integer[]> ijs = new ArrayList<>();
             ijs.add(new Integer[]{0, 5});
             ijs.add(new Integer[]{0, 10});
             ijs.add(new Integer[]{6, 10});
             String msg = "matches words that contain other words";
             Map<String, List<?>> props = new HashMap<>();
-            props.put("matchedWord", Arrays.asList(new String[]{"mother", "motherboard", "board"}));
-            props.put("dictionaryName", Arrays.asList(new String[]{"d1", "d1", "d1"}));
-            props.put("rank", Arrays.asList(new Integer[]{2, 1, 3}));
+            props.put("matchedWord", Arrays.asList("mother", "motherboard", "board"));
+            props.put("dictionaryName", Arrays.asList("d1", "d1", "d1"));
+            props.put("rank", Arrays.asList(2, 1, 3));
 
             checkMatches(msg, matches, Pattern.Dictionary, patterns, ijs, props);
         }
         {
             List<Match> matches = dm("abcdef", testDicts);
-            List<String> patterns = Arrays.asList(new String[]{"abcd", "cdef"});
+            List<String> patterns = Arrays.asList("abcd", "cdef");
             List<Integer[]> ijs = new ArrayList<>();
             ijs.add(new Integer[]{0, 3});
             ijs.add(new Integer[]{2, 5});
             String msg = "matches multiple words when they overlap";
             Map<String, List<?>> props = new HashMap<>();
-            props.put("matchedWord", Arrays.asList(new String[]{"abcd", "cdef" }));
-            props.put("dictionaryName", Arrays.asList(new String[]{"d1", "d1"}));
-            props.put("rank", Arrays.asList(new Integer[]{4, 5}));
+            props.put("matchedWord", Arrays.asList("abcd", "cdef"));
+            props.put("dictionaryName", Arrays.asList("d1", "d1"));
+            props.put("rank", Arrays.asList(4, 5));
 
             checkMatches(msg, matches, Pattern.Dictionary, patterns, ijs, props);
         }
         {
             List<Match> matches = dm("BoaRdZ", testDicts);
-            List<String> patterns = Arrays.asList(new String[]{"board", "z"});
+            List<String> patterns = Arrays.asList("board", "z");
             List<Integer[]> ijs = new ArrayList<>();
             ijs.add(new Integer[]{0, 4});
             ijs.add(new Integer[]{5, 5});
             String msg = "ignores uppercasing";
             Map<String, List<?>> props = new HashMap<>();
-            props.put("matchedWord", Arrays.asList(new String[]{"board", "z" }));
-            props.put("dictionaryName", Arrays.asList(new String[]{"d1", "d2"}));
-            props.put("rank", Arrays.asList(new Integer[]{3, 1}));
+            props.put("matchedWord", Arrays.asList("board", "z"));
+            props.put("dictionaryName", Arrays.asList("d1", "d2"));
+            props.put("rank", Arrays.asList(3, 1));
 
             checkMatches(msg, matches, Pattern.Dictionary, patterns, ijs, props);
         }
@@ -204,16 +204,16 @@ public class MatchingTest {
         List<Match> matches = new ReverseDictionaryMatcher(testDicts).execute(password);
         String msg = "matches against reversed words";
 
-        List<String> patterns = Arrays.asList(new String[]{ "123", "456" });
+        List<String> patterns = Arrays.asList("123", "456");
         List<Integer[]> ijs = new ArrayList<>();
         ijs.add(new Integer[]{ 1, 3 });
         ijs.add(new Integer[]{ 4, 6 });
 
         Map<String, List<?>> props = new HashMap<>();
-        props.put("matchedWord", Arrays.asList(new String[]{ "321", "654" }));
-        props.put("reversed", Arrays.asList(new Boolean[]{ true, true }));
-        props.put("dictionaryName", Arrays.asList(new String[]{ "d1", "d1" }));
-        props.put("rank", Arrays.asList(new Integer[]{ 2, 4 }));
+        props.put("matchedWord", Arrays.asList("321", "654"));
+        props.put("reversed", Arrays.asList(true, true));
+        props.put("dictionaryName", Arrays.asList("d1", "d1"));
+        props.put("rank", Arrays.asList(2, 4));
 
         checkMatches(msg, matches, Pattern.Dictionary, patterns, ijs, props);
     }
@@ -364,8 +364,8 @@ public class MatchingTest {
             String msg = String.format("doesn't match length-%s repeat patterns", password.length());
             assertEquals(msg, new RepeatMatcher().execute(password).size(), 0);
         }
-        List<String> prefixes = Arrays.asList(new String[]{ "@", "y4@" });
-        List<String> suffixes = Arrays.asList(new String[]{ "u", "u%7" });
+        List<String> prefixes = Arrays.asList("@", "y4@");
+        List<String> suffixes = Arrays.asList("u", "u%7");
         final String pattern = "&&&&&";
         for(String[] pws: genpws(pattern, prefixes, suffixes)) {
             String password = pws[0];
