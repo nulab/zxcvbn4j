@@ -1,9 +1,6 @@
 package com.nulabinc.zxcvbn;
 
 import com.nulabinc.zxcvbn.matchers.*;
-import com.nulabinc.zxcvbn.matchers.Keyboard;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.*;
@@ -12,22 +9,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class MatchingTest {
-
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    }
-
     @Test
     public void testMeasure() throws Exception {
 
 
         Zxcvbn zxcvbn = new Zxcvbn();
 
-        for (String password: new String[] {
+        for (String password : new String[]{
                 "qwER43@!",
                 "Tr0ub4dour&3",
                 "correcthorsebatterystaple",
@@ -68,8 +56,8 @@ public class MatchingTest {
         List<String> pres = prefixes.subList(0, prefixes.size());
         List<String> sufs = suffixes.subList(0, suffixes.size());
         List<String[]> result = new ArrayList<>();
-        for (String pre: pres) {
-            for (String suf: sufs) {
+        for (String pre : pres) {
+            for (String suf : sufs) {
                 int i = pre.length();
                 int j = pre.length() + pattern.length() - 1;
                 result.add(new String[]{pre + pattern + suf, String.valueOf(i), String.valueOf(j)});
@@ -80,9 +68,9 @@ public class MatchingTest {
 
     private static void checkMatches(String prefix, List<Match> matches, Pattern patternName, List<String> patterns, List<Integer[]> ijs, Map<String, List<?>> props) {
         List<Pattern> patternNames = new ArrayList<>();
-        for (int i = 0; i < patterns.size() ; i++) patternNames.add(patternName);
+        for (int i = 0; i < patterns.size(); i++) patternNames.add(patternName);
         boolean is_equal_len_args = patternNames.size() == patterns.size() && patterns.size() == ijs.size();
-        for (Map.Entry<String, List<?>> propRef: props.entrySet()) {
+        for (Map.Entry<String, List<?>> propRef : props.entrySet()) {
             List<?> lst = propRef.getValue();
             is_equal_len_args = is_equal_len_args && (lst.size() == patterns.size());
         }
@@ -104,7 +92,7 @@ public class MatchingTest {
             assertEquals(msg, match.j, j);
             msg = String.format("%s: matches[%s].token == '%s'", prefix, k, pattern);
             assertEquals(msg, match.token, pattern);
-            for (Map.Entry<String, List<?>> propRef: props.entrySet()) {
+            for (Map.Entry<String, List<?>> propRef : props.entrySet()) {
                 String name = propRef.getKey();
                 List<?> lst = propRef.getValue();
                 Object a = field(match, name);
@@ -131,14 +119,14 @@ public class MatchingTest {
     @Test
     public void testDictionaryMatching() throws Exception {
         Map<String, Map<String, Integer>> testDicts = new HashMap<>();
-        testDicts.put("d1", new HashMap<String, Integer>() { {
+        testDicts.put("d1", new HashMap<String, Integer>() {{
             put("motherboard", 1);
             put("mother", 2);
             put("board", 3);
             put("abcd", 4);
             put("cdef", 5);
         }});
-        testDicts.put("d2", new HashMap<String, Integer>() { {
+        testDicts.put("d2", new HashMap<String, Integer>() {{
             put("z", 1);
             put("8", 2);
             put("99", 3);
@@ -193,7 +181,7 @@ public class MatchingTest {
     @Test
     public void testReverseDictionaryMatching() throws Exception {
         Map<String, Map<String, Integer>> testDicts = new HashMap<>();
-        testDicts.put("d1", new HashMap<String, Integer>() { {
+        testDicts.put("d1", new HashMap<String, Integer>() {{
             put("123", 1);
             put("321", 2);
             put("456", 3);
@@ -206,8 +194,8 @@ public class MatchingTest {
 
         List<String> patterns = Arrays.asList("123", "456");
         List<Integer[]> ijs = new ArrayList<>();
-        ijs.add(new Integer[]{ 1, 3 });
-        ijs.add(new Integer[]{ 4, 6 });
+        ijs.add(new Integer[]{1, 3});
+        ijs.add(new Integer[]{4, 6});
 
         Map<String, List<?>> props = new HashMap<>();
         props.put("matchedWord", Arrays.asList("321", "654"));
@@ -225,21 +213,25 @@ public class MatchingTest {
         testTable.put('c', new Character[]{'(', '{', '[', '<'});
         testTable.put('g', new Character[]{'6', '9'});
         testTable.put('o', new Character[]{'0'});
-        for (Object[] param: new Object[][] {
-                { "", new HashMap<Character, Character[]>() },
-                { "abcdefgo123578!#$&*)]}>", new HashMap<Character, Character[]>() },
-                { "a", new HashMap<Character, Character[]>()},
-                { "4", new HashMap<Character, Character[]>() {{put('a', new Character[]{'4'});}}},
-                { "4@", new HashMap<Character, Character[]>() {{put('a', new Character[]{'4','@'});}}},
-                { "4({60", new HashMap<Character, Character[]>() {{
+        for (Object[] param : new Object[][]{
+                {"", new HashMap<Character, Character[]>()},
+                {"abcdefgo123578!#$&*)]}>", new HashMap<Character, Character[]>()},
+                {"a", new HashMap<Character, Character[]>()},
+                {"4", new HashMap<Character, Character[]>() {{
+                    put('a', new Character[]{'4'});
+                }}},
+                {"4@", new HashMap<Character, Character[]>() {{
+                    put('a', new Character[]{'4', '@'});
+                }}},
+                {"4({60", new HashMap<Character, Character[]>() {{
                     put('a', new Character[]{'4'});
                     put('c', new Character[]{'(', '{'});
                     put('g', new Character[]{'6'});
                     put('o', new Character[]{'0'});
                 }}}
-        } ) {
-            String pw = (String)param[0];
-            Map<Character, Character[]> expected = (Map<Character, Character[]>)param[1];
+        }) {
+            String pw = (String) param[0];
+            Map<Character, Character[]> expected = (Map<Character, Character[]>) param[1];
             String msg = "reduces l33t table to only the substitutions that a password might be employing";
             assertEquals(msg, expected.size(), new L33tMatcher().relevantL33tSubTable(pw, testTable).size());
         }
@@ -296,10 +288,10 @@ public class MatchingTest {
                 { "aoEP%yIxkjq:", "dvorak",     4, 5 },
                 { ";qoaOQ:Aoq;a", "dvorak",    11, 4 }
         }) {
-            final String pattern = (String)testParam[0];
-            final String keyboard = (String)testParam[1];
-            final int turns = (int)testParam[2];
-            final int shifts = (int)testParam[3];
+            final String pattern = (String) testParam[0];
+            final String keyboard = (String) testParam[1];
+            final int turns = (int) testParam[2];
+            final int shifts = (int) testParam[3];
 
             Map<String, Map<Character, String[]>> graphs = new HashMap<>();
             graphs.put(keyboard, Keyboard.ADJACENCY_GRAPHS.get(keyboard));
@@ -331,7 +323,7 @@ public class MatchingTest {
 
     @Test
     public void testSequenceMatching() throws Exception {
-        for(String password: new String[]{"", "a", "1"}) {
+        for (String password : new String[]{"", "a", "1"}) {
             String msg = String.format("doesn't match length-%s sequences", password.length());
             assertEquals(msg, new SequenceMatcher().execute(password).size(), 0);
         }
@@ -341,33 +333,35 @@ public class MatchingTest {
                 msg,
                 matches,
                 Pattern.Sequence,
-                new ArrayList<String>(){{
+                new ArrayList<String>() {{
                     add("abc");
                     add("cba");
                     add("abc");
                 }},
-                new ArrayList<Integer[]>(){{
+                new ArrayList<Integer[]>() {{
                     add(new Integer[]{0, 2});
                     add(new Integer[]{2, 4});
                     add(new Integer[]{4, 6});
                 }},
-                new HashMap<String, List<?>>(){{
-                    put("ascending", new ArrayList<Boolean>(){{
-                        add(true);add(false);add(true);
+                new HashMap<String, List<?>>() {{
+                    put("ascending", new ArrayList<Boolean>() {{
+                        add(true);
+                        add(false);
+                        add(true);
                     }});
                 }});
     }
 
     @Test
     public void testRepeatMatching() throws Exception {
-        for(String password: new String[]{ "", "#"}) {
+        for (String password : new String[]{"", "#"}) {
             String msg = String.format("doesn't match length-%s repeat patterns", password.length());
             assertEquals(msg, new RepeatMatcher().execute(password).size(), 0);
         }
         List<String> prefixes = Arrays.asList("@", "y4@");
         List<String> suffixes = Arrays.asList("u", "u%7");
         final String pattern = "&&&&&";
-        for(String[] pws: genpws(pattern, prefixes, suffixes)) {
+        for (String[] pws : genpws(pattern, prefixes, suffixes)) {
             String password = pws[0];
             final int i = Integer.valueOf(pws[1]);
             final int j = Integer.valueOf(pws[2]);
@@ -420,14 +414,14 @@ public class MatchingTest {
                     msg,
                     matches,
                     Pattern.Regex,
-                    new ArrayList<String>(){{
+                    new ArrayList<String>() {{
                         add("2017");
                     }},
-                    new ArrayList<Integer[]>(){{
+                    new ArrayList<Integer[]>() {{
                         add(new Integer[]{0, "2017".length() - 1});
                     }},
-                    new HashMap<String, List<?>>(){{
-                        put("regexName", new ArrayList<String>(){{
+                    new HashMap<String, List<?>>() {{
+                        put("regexName", new ArrayList<String>() {{
                             add("recent_year");
                         }});
                     }}
@@ -437,7 +431,7 @@ public class MatchingTest {
 
     @Test
     public void testDateMatching() throws Exception {
-        for (final String sep: new String[]{"", " ", "-", "/", "\\", "_", "."}) {
+        for (final String sep : new String[]{"", " ", "-", "/", "\\", "_", "."}) {
             final String password = String.format("13%s2%s1921", sep, sep);
             List<Match> matches = new DateMatcher().execute(password);
             String msg = String.format("matches dates that use '%s' as a separator", sep);
@@ -445,26 +439,28 @@ public class MatchingTest {
                     msg,
                     matches,
                     Pattern.Date,
-                    new ArrayList<String>(){{add(password);}},
-                    new ArrayList<Integer[]>(){{
+                    new ArrayList<String>() {{
+                        add(password);
+                    }},
+                    new ArrayList<Integer[]>() {{
                         add(new Integer[]{0, password.length() - 1});
                     }},
-                    new HashMap<String, List<?>>(){{
-                        put("separator", new ArrayList<String>(){{
+                    new HashMap<String, List<?>>() {{
+                        put("separator", new ArrayList<String>() {{
                             add(sep);
                         }});
-                        put("year", new ArrayList<Integer>(){{
+                        put("year", new ArrayList<Integer>() {{
                             add(1921);
                         }});
-                        put("month", new ArrayList<Integer>(){{
+                        put("month", new ArrayList<Integer>() {{
                             add(2);
                         }});
-                        put("day", new ArrayList<Integer>(){{
+                        put("day", new ArrayList<Integer>() {{
                             add(13);
                         }});
                     }});
         }
-        for (final String order: new String[]{ "mdy", "dmy", "ymd", "ydm" }) {
+        for (final String order : new String[]{"mdy", "dmy", "ymd", "ydm"}) {
             final String password = order
                     .replace("y", "88")
                     .replace("m", "8")
@@ -537,12 +533,12 @@ public class MatchingTest {
         testMatches.put(Pattern.Dictionary, new Integer[]{7, 15});
         testMatches.put(Pattern.Date, new Integer[]{16, 23});
         testMatches.put(Pattern.Repeat, new Integer[]{24, 27});
-        for(Map.Entry<Pattern, Integer[]> testMatch: testMatches.entrySet()) {
+        for (Map.Entry<Pattern, Integer[]> testMatch : testMatches.entrySet()) {
             Pattern patternName = testMatch.getKey();
             int i = testMatch.getValue()[0];
             int j = testMatch.getValue()[1];
             boolean included = false;
-            for(Match match: matches) {
+            for (Match match : matches) {
                 if (match.i == i && match.j == j && match.pattern == patternName) included = true;
             }
             String msg = String.format("for %s, matches a %s pattern at [%s, %s]", password, patternName.value(), i, j);
