@@ -27,7 +27,8 @@ public class DictionaryMatcher extends BaseMatcher {
                     String word = passwordLower.substring(i, j + 1);
                     if (rankedDict.containsKey(word)) {
                         int rank = rankedDict.get(word);
-                        matches.add(MatchFactory.createDictionaryMatch(i, j, word, word, rank, dictionaryName));
+                        String token = password.substring(i, j + 1);
+                        matches.add(MatchFactory.createDictionaryMatch(i, j, token, word, rank, dictionaryName));
                     }
                 }
             }

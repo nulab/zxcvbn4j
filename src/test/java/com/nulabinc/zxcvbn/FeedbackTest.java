@@ -89,17 +89,18 @@ public class FeedbackTest {
                         Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD
                 }},
                 {"Mitchell1", Feedback.DICTIONARY_WARNING_ETC_NAMES_COMMON, new Feedback.Message[]{
-                        Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD
+                        Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
+                        Feedback.DICTIONARY_SUGGESTIONS_CAPITALIZATION,
                 }},
-//                {"Password", Feedback.DICTIONARY_WARNING_PASSWORDS_TOP10, new Feedback.Message[]{
-//                        Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
-//                        Feedback.DICTIONARY_SUGGESTIONS_CAPITALIZATION
-//                }},
-//                {"PASSWORD", Feedback.DICTIONARY_WARNING_PASSWORDS_TOP10, new Feedback.Message[]{
-//                        Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
-//                        Feedback.DICTIONARY_SUGGESTIONS_ALL_UPPERCASE
-//                }},
-                {"drowssap", Feedback.DICTIONARY_WARNING_PASSWORDS_SIMILAR, new Feedback.Message[]{
+                {"Password", Feedback.DICTIONARY_WARNING_PASSWORDS_TOP10, new Feedback.Message[]{
+                        Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
+                        Feedback.DICTIONARY_SUGGESTIONS_CAPITALIZATION
+                }},
+                {"PASSWORD", Feedback.DICTIONARY_WARNING_PASSWORDS_TOP10, new Feedback.Message[]{
+                        Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
+                        Feedback.DICTIONARY_SUGGESTIONS_ALL_UPPERCASE
+                }},
+                {"remmurd", Feedback.DICTIONARY_WARNING_PASSWORDS_SIMILAR, new Feedback.Message[]{
                         Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
                         Feedback.DICTIONARY_SUGGESTIONS_REVERSED
                 }},
