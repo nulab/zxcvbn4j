@@ -17,7 +17,7 @@ This is a java port of [zxcvbn](https://github.com/dropbox/zxcvbn), which is a J
 ### gradle
 
 ```
-'com.nulab-inc:zxcvbn:1.0.0'
+'com.nulab-inc:zxcvbn:1.0.1'
 ```
 
 ### maven
@@ -26,7 +26,7 @@ This is a java port of [zxcvbn](https://github.com/dropbox/zxcvbn), which is a J
 <dependency>
   <groupId>com.nulab-inc</groupId>
   <artifactId>zxcvbn</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
 </dependency>
 ```
 
