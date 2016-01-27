@@ -1,10 +1,11 @@
 
-# zxcvbn4j [![Build Status](https://travis-ci.org/nulab/zxcvbn4j.svg?branch=master)](https://travis-ci.org/nulab/zxcvbn4j) [![Coverage Status](https://coveralls.io/repos/nulab/zxcvbn4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/nulab/zxcvbn4j?branch=master)
+# zxcvbn4j [![Build Status](https://travis-ci.org/nulab/zxcvbn4j.svg?branch=master)](https://travis-ci.org/nulab/zxcvbn4j) [![Coverage Status](https://coveralls.io/repos/nulab/zxcvbn4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/nulab/zxcvbn4j?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.nulab-inc/zxcvbn/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.nulab-inc/zxcvbn)
 
 This is a java port of [zxcvbn](https://github.com/dropbox/zxcvbn), which is a JavaScript password strength generator.
 
 ## Update
 
+* 2016/01/27 1.0.1 released. Port of [zxcvbn 4.2.0](https://github.com/dropbox/zxcvbn/releases/tag/4.2.0)
 * 2015/12/24 1.0.0 released. Port of [zxcvbn 4.2.0](https://github.com/dropbox/zxcvbn/releases/tag/4.2.0)
 
 ## Special Feature
@@ -16,7 +17,7 @@ This is a java port of [zxcvbn](https://github.com/dropbox/zxcvbn), which is a J
 ### gradle
 
 ```
-'com.nulab-inc:zxcvbn:1.0.0'
+'com.nulab-inc:zxcvbn:1.0.1'
 ```
 
 ### maven
@@ -25,7 +26,7 @@ This is a java port of [zxcvbn](https://github.com/dropbox/zxcvbn), which is a J
 <dependency>
   <groupId>com.nulab-inc</groupId>
   <artifactId>zxcvbn</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
 </dependency>
 ```
 
@@ -139,3 +140,8 @@ MIT License
 ## Requires Java
 
 * Java 1.7+
+
+## Application using this library
+
+- [Cacoo](https://cacoo.com/)
+- [Typetalk](https://typetalk.in/)
