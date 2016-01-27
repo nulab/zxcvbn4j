@@ -139,3 +139,8 @@ MIT License
 ## Requires Java
 
 * Java 1.7+
+
+## Application using this library
+
+- [Cacoo](https://cacoo.com/)
+- [Typetalk](https://typetalk.in/)

@@ -125,3 +125,8 @@ MIT License
 ## 要件
 
 * Java 1.7以上
+
+## このライブラリを使用しているアプリケーション
+
+- [Cacoo](https://cacoo.com/)
+- [Typetalk](https://typetalk.in/)
