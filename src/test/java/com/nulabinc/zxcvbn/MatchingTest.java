@@ -1,553 +1,546 @@
 package com.nulabinc.zxcvbn;
 
 import com.nulabinc.zxcvbn.matchers.*;
-import com.nulabinc.zxcvbn.matchers.Keyboard;
-import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(Enclosed.class)
 public class MatchingTest {
 
-    @Before
-    public void setUp() throws Exception {
-    }
+    private static void assertMatches(String prefix, Pattern expectedPattern, ExpectedMatch[] expectedMatches, List<Match> actualMatches) {
+        String msg = String.format("%s: matches.length == %s", prefix, expectedMatches.length);
+        assertEquals(msg, expectedMatches.length, actualMatches.size());
+        for (int k = 0; k < expectedMatches.length; k++) {
+            ExpectedMatch expectedMatch = expectedMatches[k];
+            Match actualMatch = actualMatches.get(k);
 
-    @After
-    public void tearDown() throws Exception {
-    }
+            msg = String.format("%s: matches[%s].pattern == '%s'", prefix, k, expectedPattern);
+            assertEquals(msg, expectedPattern, actualMatch.pattern);
 
-    @Test
-    public void testMeasure() throws Exception {
+            msg = String.format("%s: matches[%s] should start at %s", prefix, k, expectedMatch.start);
+            assertEquals(msg, expectedMatch.start, actualMatch.i);
 
+            msg = String.format("%s: matches[%s] should end at %s", prefix, k, expectedMatch.end);
+            assertEquals(msg, expectedMatch.end, actualMatch.j);
 
-        Zxcvbn zxcvbn = new Zxcvbn();
+            msg = String.format("%s: matches[%s].token == '%s'", prefix, k, expectedMatch.token);
+            assertEquals(msg, expectedMatch.token, actualMatch.token);
 
-        for (String password: new String[] {
-                "qwER43@!",
-                "Tr0ub4dour&3",
-                "correcthorsebatterystaple",
-                "password",
-                "drowssap",
-                "passwordp",
-                "passwordadmin",
-                "p@$$word@dmin",
-                "19700101",
-                "20300101",
-                "aaaaaaaaa",
-                "123456789",
-                "abcdefghijklmnopqrstuvwxyz",
-                "qwertyuiop@[",
-                "zxcvbnm,./_",
-                "asdfghjkl;:]",
-                "pandapandapandapandapandapandapandapandapandaa",
-                "appleappleappleappleappleappleappleappleapplea",
-                "dncrbliehbvkehr734yf;ewhihwfph@houaegfueqpg30^r0urfvhej¥]e;l,ckvniwbgoidnci@oewhfoobojabouhqwou12482386fhoiwehe@o",
-                "apple orenge aabb ",
-                "eTq($%u-44c_j9NJB45a#2#JP7sH",
-                "IB7~EOw!51gug+7s#+%A9P1O/w8f",
-                "1v_f%7JvS8w!_t398+ON-CObI#v0",
-                "8lFmfc0!w)&iU9DM6~4_w)D)Y44J",
-                "&BZ09gjG!iKG&#M09s_1Gr41&o%i",
-                "T9Y-!ciS%XW9U5l/~aw9+4!5u8Ti",
-                "QMji&0uze5O#%+%2e_Y08E(R6L8p",
-                "6EG4y1nJASd!1~!//#6+Yhb1vW3d",
-                "8$q_5f2U3s6~W(S7iv)_8N%lJkOE",
-                "%nbd~$)2y/6hV6)2R9vYPpA49A~C",
-        }) {
-            Strength strength = zxcvbn.measure(password);
-            assertEquals("Unexpected error. Password is " + password, password, strength.getPassword());
-        }
-    }
-
-    private static List<String[]> genpws(String pattern, List<String> prefixes, List<String> suffixes) {
-        List<String> pres = prefixes.subList(0, prefixes.size());
-        List<String> sufs = suffixes.subList(0, suffixes.size());
-        List<String[]> result = new ArrayList<>();
-        for (String pre: pres) {
-            for (String suf: sufs) {
-                int i = pre.length();
-                int j = pre.length() + pattern.length() - 1;
-                result.add(new String[]{pre + pattern + suf, String.valueOf(i), String.valueOf(j)});
-            }
-        }
-        return result;
-    }
-
-    private static void checkMatches(String prefix, List<Match> matches, Pattern patternName, List<String> patterns, List<Integer[]> ijs, Map<String, List<?>> props) {
-        List<Pattern> patternNames = new ArrayList<>();
-        for (int i = 0; i < patterns.size() ; i++) patternNames.add(patternName);
-        boolean is_equal_len_args = patternNames.size() == patterns.size() && patterns.size() == ijs.size();
-        for (Map.Entry<String, List<?>> propRef: props.entrySet()) {
-            List<?> lst = propRef.getValue();
-            is_equal_len_args = is_equal_len_args && (lst.size() == patterns.size());
-        }
-        if (!is_equal_len_args) throw new IllegalArgumentException("unequal argument lists to check_matches");
-        String msg = String.format("%s: matches.length == %s", prefix, patterns.size());
-        assertEquals(msg, matches.size(), patterns.size());
-        for (int k = 0; k < patterns.size(); k++) {
-            Match match = matches.get(k);
-            Pattern pattern_name = patternNames.get(k);
-            String pattern = patterns.get(k);
-            Integer[] ij = ijs.get(k);
-            int i = ij[0];
-            int j = ij[1];
-            msg = String.format("%s: matches[%s].pattern == '%s'", prefix, k, pattern_name);
-            assertEquals(msg, match.pattern, pattern_name);
-            msg = String.format("%s: matches[%s] should have i of %s", prefix, k, i);
-            assertEquals(msg, match.i, i);
-            msg = String.format("%s: matches[%s] should have j of %s", prefix, k, j);
-            assertEquals(msg, match.j, j);
-            msg = String.format("%s: matches[%s].token == '%s'", prefix, k, pattern);
-            assertEquals(msg, match.token, pattern);
-            for (Map.Entry<String, List<?>> propRef: props.entrySet()) {
-                String name = propRef.getKey();
-                List<?> lst = propRef.getValue();
-                Object a = field(match, name);
-                msg = String.format("%s: matches[%s].token == '%s'", prefix, k, pattern);
-                assertEquals(msg, lst.get(k), a);
+            for (String fieldName : expectedMatch.fields.keySet()) {
+                Object expectedValue = expectedMatch.fields.get(fieldName);
+                Object actualValue;
+                try {
+                    actualValue = Match.class.getField(fieldName).get(actualMatch);
+                } catch (IllegalAccessException | NoSuchFieldException e) {
+                    throw new RuntimeException(e);
+                }
+                msg = String.format("%s: matches[%s].%s == '%s'", prefix, k, fieldName, expectedValue);
+                assertEquals(msg, expectedValue, actualValue);
             }
         }
     }
 
-    private static Object field(Match target, String name) {
-        try {
-            return Match.class.getField(name).get(target);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
+    private static Map<String, Integer> dictionary(String... words) {
+        Map<String, Integer> dictionary = new HashMap<>();
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            dictionary.put(word, i + 1);
+        }
+        return dictionary;
+    }
+
+    @RunWith(Parameterized.class)
+    public static class DictionaryMatching {
+        private Map<String, Map<String, Integer>> dictionaries = new HashMap<>();
+        private String password;
+        private String message;
+        private ExpectedMatch[] expectedMatches;
+
+        public DictionaryMatching(String password, String message, ExpectedMatch[] expectedMatches) {
+            this.password = password;
+            this.message = message;
+            this.expectedMatches = expectedMatches;
+        }
+
+        @Before
+        public void setUp() throws Exception {
+            dictionaries.put("d1", dictionary(
+                    "motherboard",
+                    "mother",
+                    "board",
+                    "abcd",
+                    "cdef"
+            ));
+            dictionaries.put("d2", dictionary(
+                    "z",
+                    "8",
+                    "99",
+                    "$",
+                    "asdf1234&*"
+            ));
+        }
+
+        @Test
+        public void testDictionaryMatching() throws Exception {
+            List<Match> actualMatches = new DictionaryMatcher(dictionaries).execute(password);
+            assertMatches(message, Pattern.Dictionary, expectedMatches, actualMatches);
+        }
+
+        @Parameterized.Parameters(name = "\"{0}\": {1}")
+        public static Collection<Object[]> data() {
+            return Arrays.asList(new Object[][]{
+                    {"motherboard", "matches words that contain other words", new ExpectedMatch[]{
+                            new ExpectedMatch("mother", 0, 5).matchedWord("mother").dictionaryName("d1").rank(2),
+                            new ExpectedMatch("motherboard", 0, 10).matchedWord("motherboard").dictionaryName("d1").rank(1),
+                            new ExpectedMatch("board", 6, 10).matchedWord("board").dictionaryName("d1").rank(3)
+                    }},
+                    {"abcdef", "matches multiple words when they overlap", new ExpectedMatch[]{
+                            new ExpectedMatch("abcd", 0, 3).matchedWord("abcd").dictionaryName("d1").rank(4),
+                            new ExpectedMatch("cdef", 2, 5).matchedWord("cdef").dictionaryName("d1").rank(5)
+                    }},
+                    {"BoaRdZ", "ignores uppercasing", new ExpectedMatch[]{
+                            new ExpectedMatch("BoaRd", 0, 4).matchedWord("board").dictionaryName("d1").rank(3),
+                            new ExpectedMatch("Z", 5, 5).matchedWord("z").dictionaryName("d2").rank(1)
+                    }}
+            });
         }
     }
 
-    private List<Match> dm(String password, Map<String, Map<String, Integer>> testDicts) {
-        return new DictionaryMatcher(testDicts).execute(password);
-    }
+    @RunWith(Parameterized.class)
+    public static class L33tMatching {
+        private Map<Character, Character[]> testTable = new HashMap<Character, Character[]>() {{
+            put('a', new Character[]{'4', '@'});
+            put('c', new Character[]{'(', '{', '[', '<'});
+            put('g', new Character[]{'6', '9'});
+            put('o', new Character[]{'0'});
+        }};
 
-    @Test
-    public void testDictionaryMatching() throws Exception {
-        Map<String, Map<String, Integer>> testDicts = new HashMap<>();
-        testDicts.put("d1", new HashMap<String, Integer>() { {
-            put("motherboard", 1);
-            put("mother", 2);
-            put("board", 3);
-            put("abcd", 4);
-            put("cdef", 5);
-        }});
-        testDicts.put("d2", new HashMap<String, Integer>() { {
-            put("z", 1);
-            put("8", 2);
-            put("99", 3);
-            put("$", 4);
-            put("asdf1234&*", 5);
-        }});
-        {
-            List<Match> matches = dm("motherboard", testDicts);
-            List<String> patterns = Arrays.asList(new String[]{"mother", "motherboard", "board"});
-            List<Integer[]> ijs = new ArrayList<>();
-            ijs.add(new Integer[]{0, 5});
-            ijs.add(new Integer[]{0, 10});
-            ijs.add(new Integer[]{6, 10});
-            String msg = "matches words that contain other words";
-            Map<String, List<?>> props = new HashMap<>();
-            props.put("matchedWord", Arrays.asList(new String[]{"mother", "motherboard", "board"}));
-            props.put("dictionaryName", Arrays.asList(new String[]{"d1", "d1", "d1"}));
-            props.put("rank", Arrays.asList(new Integer[]{2, 1, 3}));
+        private String password;
+        private Map<Character, Character[]> expected;
 
-            checkMatches(msg, matches, Pattern.Dictionary, patterns, ijs, props);
+        public L33tMatching(String password, Map<Character, Character[]> expected) {
+            this.password = password;
+            this.expected = expected;
         }
-        {
-            List<Match> matches = dm("abcdef", testDicts);
-            List<String> patterns = Arrays.asList(new String[]{"abcd", "cdef"});
-            List<Integer[]> ijs = new ArrayList<>();
-            ijs.add(new Integer[]{0, 3});
-            ijs.add(new Integer[]{2, 5});
-            String msg = "matches multiple words when they overlap";
-            Map<String, List<?>> props = new HashMap<>();
-            props.put("matchedWord", Arrays.asList(new String[]{"abcd", "cdef" }));
-            props.put("dictionaryName", Arrays.asList(new String[]{"d1", "d1"}));
-            props.put("rank", Arrays.asList(new Integer[]{4, 5}));
 
-            checkMatches(msg, matches, Pattern.Dictionary, patterns, ijs, props);
-        }
-        {
-            List<Match> matches = dm("BoaRdZ", testDicts);
-            List<String> patterns = Arrays.asList(new String[]{"board", "z"});
-            List<Integer[]> ijs = new ArrayList<>();
-            ijs.add(new Integer[]{0, 4});
-            ijs.add(new Integer[]{5, 5});
-            String msg = "ignores uppercasing";
-            Map<String, List<?>> props = new HashMap<>();
-            props.put("matchedWord", Arrays.asList(new String[]{"board", "z" }));
-            props.put("dictionaryName", Arrays.asList(new String[]{"d1", "d2"}));
-            props.put("rank", Arrays.asList(new Integer[]{3, 1}));
-
-            checkMatches(msg, matches, Pattern.Dictionary, patterns, ijs, props);
-        }
-    }
-
-    @Test
-    public void testReverseDictionaryMatching() throws Exception {
-        Map<String, Map<String, Integer>> testDicts = new HashMap<>();
-        testDicts.put("d1", new HashMap<String, Integer>() { {
-            put("123", 1);
-            put("321", 2);
-            put("456", 3);
-            put("654", 4);
-        }});
-
-        String password = "0123456789";
-        List<Match> matches = new ReverseDictionaryMatcher(testDicts).execute(password);
-        String msg = "matches against reversed words";
-
-        List<String> patterns = Arrays.asList(new String[]{ "123", "456" });
-        List<Integer[]> ijs = new ArrayList<>();
-        ijs.add(new Integer[]{ 1, 3 });
-        ijs.add(new Integer[]{ 4, 6 });
-
-        Map<String, List<?>> props = new HashMap<>();
-        props.put("matchedWord", Arrays.asList(new String[]{ "321", "654" }));
-        props.put("reversed", Arrays.asList(new Boolean[]{ true, true }));
-        props.put("dictionaryName", Arrays.asList(new String[]{ "d1", "d1" }));
-        props.put("rank", Arrays.asList(new Integer[]{ 2, 4 }));
-
-        checkMatches(msg, matches, Pattern.Dictionary, patterns, ijs, props);
-    }
-
-    @Test
-    public void testL33tMatching() throws Exception {
-        Map<Character, Character[]> testTable = new HashMap<>();
-        testTable.put('a', new Character[]{'4', '@'});
-        testTable.put('c', new Character[]{'(', '{', '[', '<'});
-        testTable.put('g', new Character[]{'6', '9'});
-        testTable.put('o', new Character[]{'0'});
-        for (Object[] param: new Object[][] {
-                { "", new HashMap<Character, Character[]>() },
-                { "abcdefgo123578!#$&*)]}>", new HashMap<Character, Character[]>() },
-                { "a", new HashMap<Character, Character[]>()},
-                { "4", new HashMap<Character, Character[]>() {{put('a', new Character[]{'4'});}}},
-                { "4@", new HashMap<Character, Character[]>() {{put('a', new Character[]{'4','@'});}}},
-                { "4({60", new HashMap<Character, Character[]>() {{
-                    put('a', new Character[]{'4'});
-                    put('c', new Character[]{'(', '{'});
-                    put('g', new Character[]{'6'});
-                    put('o', new Character[]{'0'});
-                }}}
-        } ) {
-            String pw = (String)param[0];
-            Map<Character, Character[]> expected = (Map<Character, Character[]>)param[1];
+        @Test
+        public void testL33tMatching() throws Exception {
             String msg = "reduces l33t table to only the substitutions that a password might be employing";
-            assertEquals(msg, expected.size(), new L33tMatcher().relevantL33tSubTable(pw, testTable).size());
+            assertEquals(msg, expected.size(), new L33tMatcher().relevantL33tSubTable(password, testTable).size());
         }
 
+        @Parameterized.Parameters(name = "{0}")
+        public static Collection<Object[]> data() {
+            return Arrays.asList(new Object[][]{
+                    {"", new HashMap<Character, Character[]>()},
+                    {"abcdefgo123578!#$&*)]}>", new HashMap<Character, Character[]>()},
+                    {"a", new HashMap<Character, Character[]>()},
+                    {"4", new HashMap<Character, Character[]>() {{
+                        put('a', new Character[]{'4'});
+                    }}},
+                    {"4@", new HashMap<Character, Character[]>() {{
+                        put('a', new Character[]{'4', '@'});
+                    }}},
+                    {"4({60", new HashMap<Character, Character[]>() {{
+                        put('a', new Character[]{'4'});
+                        put('c', new Character[]{'(', '{'});
+                        put('g', new Character[]{'6'});
+                        put('o', new Character[]{'0'});
+                    }}}
+            });
+        }
     }
 
-    @Test
-    public void testSpatialMatching() throws Exception {
-        {
-            for (String password : new String[]{"", "/", "qw", "*/"}) {
-                String msg = "doesn't match 1- and 2-character spatial patterns";
-                assertEquals(msg, new SpatialMatcher().execute(password).size(), 0);
-            }
-            Map<String, Map<Character, String[]>> graphs = new HashMap<>();
-            graphs.put("qwerty", Keyboard.ADJACENCY_GRAPHS.get("qwerty"));
-            final String pattern = "6tfGHJ";
-            List<Match> matches = new SpatialMatcher(graphs).execute("rz!" + pattern + "%z");
-            String msg = "matches against spatial patterns surrounded by non-spatial patterns";
-            checkMatches(
-                    msg,
-                    matches,
-                    Pattern.Spatial,
-                    new ArrayList<String>() {{
-                        add(pattern);
-                    }},
-                    new ArrayList<Integer[]>() {{
-                        add(new Integer[]{3, 3 + pattern.length() - 1});
-                    }},
-                    new HashMap<String, List<?>>() {{
-                        put("graph", new ArrayList<String>() {{
-                            add("qwerty");
-                        }});
-                        put("turns", new ArrayList<Integer>() {{
-                            add(2);
-                        }});
-                        put("shiftedCount", new ArrayList<Integer>() {{
-                            add(3);
-                        }});
-                    }});
-        }
-        for (Object[] testParam: new Object[][] {
-                { "12345",        "qwerty",     1, 0 },
-                { "@WSX",         "qwerty",     1, 4 },
-                { "6tfGHJ",       "qwerty",     2, 3 },
-                { "hGFd",         "qwerty",     0, 2 },
-                { "/;p09876yhn",  "qwerty",     3, 0},
-                { "Xdr%",         "qwerty",     1, 2 },
-                { "159-",         "keypad",     1, 0 },
-                { "*84",          "keypad",     1, 0 },
-                { "/8520",        "keypad",     1, 0 },
-                { "369",          "keypad",     1, 0 },
-                { "/963.",        "mac_keypad", 1, 0 },
-                { "*-632.0214",   "mac_keypad", 9, 0 },
-                { "aoEP%yIxkjq:", "dvorak",     4, 5 },
-                { ";qoaOQ:Aoq;a", "dvorak",    11, 4 }
-        }) {
-            final String pattern = (String)testParam[0];
-            final String keyboard = (String)testParam[1];
-            final int turns = (int)testParam[2];
-            final int shifts = (int)testParam[3];
+    @RunWith(Parameterized.class)
+    public static class SpatialMatchingSimple {
+        final String password;
 
+        public SpatialMatchingSimple(String password) {
+            this.password = password;
+        }
+
+        @Test
+        public void testSpatialMatching() throws Exception {
+            String msg = "doesn't match 1- and 2-character spatial patterns";
+            assertEquals(msg, 0, new SpatialMatcher().execute(password).size());
+        }
+
+        @Parameterized.Parameters(name = "{0}")
+        public static Collection<Object[]> data() {
+            return Arrays.asList(new Object[][]{
+                    {""},
+                    {"/"},
+                    {"qw"},
+                    {"*/"}
+            });
+        }
+    }
+
+    @RunWith(Parameterized.class)
+    public static class SpatialMatching {
+        final String token;
+        final String keyboard;
+        final int turns;
+        final int shifts;
+
+        public SpatialMatching(String token, String keyboard, int turns, int shifts) {
+            this.token = token;
+            this.keyboard = keyboard;
+            this.turns = turns;
+            this.shifts = shifts;
+        }
+
+        @Test
+        public void testSpatialMatching() throws Exception {
             Map<String, Map<Character, String[]>> graphs = new HashMap<>();
             graphs.put(keyboard, Keyboard.ADJACENCY_GRAPHS.get(keyboard));
-            List<Match> matches = new SpatialMatcher(graphs).execute(pattern);
-            String msg = String.format("matches %s as a %s pattern", pattern, keyboard);
-            checkMatches(
-                    msg,
-                    matches,
-                    Pattern.Spatial,
-                    new ArrayList<String>() {{
-                        add(pattern);
-                    }},
-                    new ArrayList<Integer[]>() {{
-                        add(new Integer[]{0, pattern.length() - 1});
-                    }},
-                    new HashMap<String, List<?>>() {{
-                        put("graph", new ArrayList<String>() {{
-                            add(keyboard);
-                        }});
-                        put("turns", new ArrayList<Integer>() {{
-                            add(turns);
-                        }});
-                        put("shiftedCount", new ArrayList<Integer>() {{
-                            add(shifts);
-                        }});
-                    }});
+            List<Match> actualMatches = new SpatialMatcher(graphs).execute(token);
+            String msg = String.format("matches %s as a %s token", token, keyboard);
+            assertMatches(msg, Pattern.Spatial, new ExpectedMatch[]{
+                            new ExpectedMatch(token).graph(keyboard).turns(turns).shiftedCount(shifts)},
+                    actualMatches);
+        }
+
+        @Parameterized.Parameters(name = "{0}")
+        public static Collection<Object[]> data() {
+            return Arrays.asList(new Object[][]{
+                    {"12345", "qwerty", 1, 0},
+                    {"@WSX", "qwerty", 1, 4},
+                    {"6tfGHJ", "qwerty", 2, 3},
+                    {"hGFd", "qwerty", 0, 2},
+                    {"/;p09876yhn", "qwerty", 3, 0},
+                    {"Xdr%", "qwerty", 1, 2},
+                    {"159-", "keypad", 1, 0},
+                    {"*84", "keypad", 1, 0},
+                    {"/8520", "keypad", 1, 0},
+                    {"369", "keypad", 1, 0},
+                    {"/963.", "mac_keypad", 1, 0},
+                    {"*-632.0214", "mac_keypad", 9, 0},
+                    {"aoEP%yIxkjq:", "dvorak", 4, 5},
+                    {";qoaOQ:Aoq;a", "dvorak", 11, 4}
+            });
         }
     }
 
-    @Test
-    public void testSequenceMatching() throws Exception {
-        for(String password: new String[]{"", "a", "1"}) {
+    @RunWith(Parameterized.class)
+    public static class SequenceMatchingSimple {
+        private String password;
+
+        public SequenceMatchingSimple(String password) {
+            this.password = password;
+        }
+
+        @Test
+        public void testSequenceMatching() throws Exception {
             String msg = String.format("doesn't match length-%s sequences", password.length());
             assertEquals(msg, new SequenceMatcher().execute(password).size(), 0);
         }
-        List<Match> matches = new SequenceMatcher().execute("abcbabc");
-        String msg = "matches overlapping patterns";
-        checkMatches(
-                msg,
-                matches,
-                Pattern.Sequence,
-                new ArrayList<String>(){{
-                    add("abc");
-                    add("cba");
-                    add("abc");
-                }},
-                new ArrayList<Integer[]>(){{
-                    add(new Integer[]{0, 2});
-                    add(new Integer[]{2, 4});
-                    add(new Integer[]{4, 6});
-                }},
-                new HashMap<String, List<?>>(){{
-                    put("ascending", new ArrayList<Boolean>(){{
-                        add(true);add(false);add(true);
-                    }});
-                }});
+
+        @Parameterized.Parameters(name = "{0}")
+        public static Collection<Object[]> data() {
+            return Arrays.asList(new Object[][]{
+                    {""},
+                    {"a"},
+                    {"1"}
+            });
+        }
     }
 
-    @Test
-    public void testRepeatMatching() throws Exception {
-        for(String password: new String[]{ "", "#"}) {
+    @RunWith(Parameterized.class)
+    public static class RepeatMatchingSimple {
+        private String password;
+
+        public RepeatMatchingSimple(String password) {
+            this.password = password;
+        }
+
+        @Test
+        public void testSequenceMatching() throws Exception {
             String msg = String.format("doesn't match length-%s repeat patterns", password.length());
             assertEquals(msg, new RepeatMatcher().execute(password).size(), 0);
         }
-        List<String> prefixes = Arrays.asList(new String[]{ "@", "y4@" });
-        List<String> suffixes = Arrays.asList(new String[]{ "u", "u%7" });
-        final String pattern = "&&&&&";
-        for(String[] pws: genpws(pattern, prefixes, suffixes)) {
-            String password = pws[0];
-            final int i = Integer.valueOf(pws[1]);
-            final int j = Integer.valueOf(pws[2]);
-            List<Match> matches = new RepeatMatcher().execute(password);
-            String msg = "matches embedded repeat patterns";
-            checkMatches(
-                    msg,
-                    matches,
-                    Pattern.Repeat,
-                    new ArrayList<String>() {{
-                        add(pattern);
-                    }},
-                    new ArrayList<Integer[]>() {{
-                        add(new Integer[]{i, j});
-                    }},
-                    new HashMap<String, List<?>>() {{
-                        put("baseToken", new ArrayList<String>() {{
-                            add("&");
-                        }});
-                    }});
+
+        @Parameterized.Parameters(name = "{0}")
+        public static Collection<Object[]> data() {
+            return Arrays.asList(new Object[][]{
+                    {""},
+                    {"#"}
+            });
         }
     }
 
-    @Test
-    public void testRegexMatching() throws Exception {
-        {
-            List<Match> matches = new RegexMatcher().execute("1922");
-            String msg = "matches 1922 as a recent_year pattern";
-            checkMatches(
-                    msg,
-                    matches,
-                    Pattern.Regex,
-                    new ArrayList<String>() {{
-                        add("1922");
-                    }},
-                    new ArrayList<Integer[]>() {{
-                        add(new Integer[]{0, "1922".length() - 1});
-                    }},
-                    new HashMap<String, List<?>>() {{
-                        put("regexName", new ArrayList<String>() {{
-                            add("recent_year");
-                        }});
-                    }}
-            );
-        }
-        {
-            List<Match> matches = new RegexMatcher().execute("2017");
-            String msg = "matches 2017 as a recent_year pattern";
-            checkMatches(
-                    msg,
-                    matches,
-                    Pattern.Regex,
-                    new ArrayList<String>(){{
-                        add("2017");
-                    }},
-                    new ArrayList<Integer[]>(){{
-                        add(new Integer[]{0, "2017".length() - 1});
-                    }},
-                    new HashMap<String, List<?>>(){{
-                        put("regexName", new ArrayList<String>(){{
-                            add("recent_year");
-                        }});
-                    }}
-            );
-        }
-    }
+    @RunWith(Parameterized.class)
+    public static class RepeatMatching {
+        private String password;
+        private ExpectedMatch expectedMatch;
 
-    @Test
-    public void testDateMatching() throws Exception {
-        for (final String sep: new String[]{"", " ", "-", "/", "\\", "_", "."}) {
-            final String password = String.format("13%s2%s1921", sep, sep);
-            List<Match> matches = new DateMatcher().execute(password);
-            String msg = String.format("matches dates that use '%s' as a separator", sep);
-            checkMatches(
-                    msg,
-                    matches,
-                    Pattern.Date,
-                    new ArrayList<String>(){{add(password);}},
-                    new ArrayList<Integer[]>(){{
-                        add(new Integer[]{0, password.length() - 1});
-                    }},
-                    new HashMap<String, List<?>>(){{
-                        put("separator", new ArrayList<String>(){{
-                            add(sep);
-                        }});
-                        put("year", new ArrayList<Integer>(){{
-                            add(1921);
-                        }});
-                        put("month", new ArrayList<Integer>(){{
-                            add(2);
-                        }});
-                        put("day", new ArrayList<Integer>(){{
-                            add(13);
-                        }});
-                    }});
+        public RepeatMatching(String password, ExpectedMatch expectedMatch) {
+            this.password = password;
+            this.expectedMatch = expectedMatch;
         }
-        for (final String order: new String[]{ "mdy", "dmy", "ymd", "ydm" }) {
-            final String password = order
-                    .replace("y", "88")
-                    .replace("m", "8")
-                    .replace("d", "8");
-            List<Match> matches = new DateMatcher().execute(password);
-            String msg = String.format("matches dates with '%s' format", order);
-            checkMatches(
-                    msg,
-                    matches,
-                    Pattern.Date,
-                    new ArrayList<String>() {{
-                        add(password);
-                    }},
-                    new ArrayList<Integer[]>() {{
-                        add(new Integer[]{0, password.length() - 1});
-                    }},
-                    new HashMap<String, List<?>>() {{
-                        put("separator", new ArrayList<String>() {{
-                            add("");
-                        }});
-                        put("year", new ArrayList<Integer>() {{
-                            add(1988);
-                        }});
-                        put("month", new ArrayList<Integer>() {{
-                            add(8);
-                        }});
-                        put("day", new ArrayList<Integer>() {{
-                            add(8);
-                        }});
-                    }});
-        }
-        {
-            final String password = "111504";
-            List<Match> matches = new DateMatcher().execute(password);
-            String msg = "matches the date with year closest to REFERENCE_YEAR when ambiguous";
-            checkMatches(
-                    msg,
-                    matches,
-                    Pattern.Date,
-                    new ArrayList<String>() {{
-                        add(password);
-                    }},
-                    new ArrayList<Integer[]>() {{
-                        add(new Integer[]{0, password.length() - 1});
-                    }},
-                    new HashMap<String, List<?>>() {{
-                        put("separator", new ArrayList<String>() {{
-                            add("");
-                        }});
-                        put("year", new ArrayList<Integer>() {{
-                            add(2004);
-                        }});
-                        put("month", new ArrayList<Integer>() {{
-                            add(11);
-                        }});
-                        put("day", new ArrayList<Integer>() {{
-                            add(15);
-                        }});
-                    }});
-        }
-    }
 
-    @Test
-    public void testOmnimatch() throws Exception {
-        assertEquals(0, new Matching(new ArrayList<String>()).omnimatch("").size());
-        String password = "r0sebudmaelstrom11/20/91aaaa";
-        List<Match> matches = new Matching(new ArrayList<String>()).omnimatch(password);
-        Map<Pattern, Integer[]> testMatches = new HashMap<>();
-        testMatches.put(Pattern.Dictionary, new Integer[]{0, 6});
-        testMatches.put(Pattern.Dictionary, new Integer[]{7, 15});
-        testMatches.put(Pattern.Date, new Integer[]{16, 23});
-        testMatches.put(Pattern.Repeat, new Integer[]{24, 27});
-        for(Map.Entry<Pattern, Integer[]> testMatch: testMatches.entrySet()) {
-            Pattern patternName = testMatch.getKey();
-            int i = testMatch.getValue()[0];
-            int j = testMatch.getValue()[1];
-            boolean included = false;
-            for(Match match: matches) {
-                if (match.i == i && match.j == j && match.pattern == patternName) included = true;
+        @Test
+        public void testRepeatMatching() throws Exception {
+            List<Match> actualMatches = new RepeatMatcher().execute(password);
+            assertMatches("matches embedded repeat patterns", Pattern.Repeat, new ExpectedMatch[]{expectedMatch}, actualMatches);
+        }
+
+        @Parameterized.Parameters(name = "{0}")
+        public static Collection<Object[]> data() {
+            final String pattern = "&&&&&";
+
+            List<String> prefixes = Arrays.asList("@", "y4@");
+            List<String> suffices = Arrays.asList("u", "u%7");
+            List<Object[]> result = new ArrayList<>();
+            for (String prefix : prefixes) {
+                for (String suffix : suffices) {
+                    int i = prefix.length();
+                    int j = prefix.length() + pattern.length() - 1;
+                    String password = prefix + pattern + suffix;
+                    result.add(new Object[]{password, new ExpectedMatch(pattern, i, j).baseToken("&")});
+                }
             }
-            String msg = String.format("for %s, matches a %s pattern at [%s, %s]", password, patternName.value(), i, j);
-            assertTrue(msg, included);
+            return result;
         }
     }
 
+    @RunWith(Parameterized.class)
+    public static class DateMatching {
+        private String password;
+        private String message;
+        private ExpectedMatch expectedMatch;
+
+        public DateMatching(String password, String message, ExpectedMatch expectedMatch) {
+            this.password = password;
+            this.message = message;
+            this.expectedMatch = expectedMatch;
+        }
+
+        @Test
+        public void testDateMatching() throws Exception {
+            List<Match> actualMatches = new DateMatcher().execute(password);
+            assertMatches(message, Pattern.Date, new ExpectedMatch[]{expectedMatch}, actualMatches);
+        }
+
+        @Parameterized.Parameters(name = "{1}")
+        public static Collection<Object[]> data() {
+            List<Object[]> data = new ArrayList<>();
+
+            for (final String separator : new String[]{"", " ", "-", "/", "\\", "_", "."}) {
+                final String password = String.format("13%s2%s1921", separator, separator);
+                data.add(new Object[]{
+                        password,
+                        String.format("matches dates that use '%s' as a separator", separator),
+                        new ExpectedMatch(password).separator(separator).year(1921).month(2).day(13)
+                });
+            }
+
+            for (final String order : new String[]{"mdy", "dmy", "ymd", "ydm"}) {
+                final String password = order
+                        .replace("y", "88")
+                        .replace("m", "8")
+                        .replace("d", "8");
+                data.add(new Object[]{
+                        password,
+                        String.format("matches dates with '%s' format", order),
+                        new ExpectedMatch(password).separator("").year(1988).month(8).day(8)
+                });
+            }
+
+            data.add(new Object[]{
+                    "111504",
+                    "matches the date with year closest to REFERENCE_YEAR when ambiguous",
+                    new ExpectedMatch("111504").separator("").year(2004).month(11).day(15)
+            });
+
+            return data;
+        }
+    }
+
+    public static class RestMatching {
+
+        @Test
+        public void testReverseDictionaryMatching() throws Exception {
+            ReverseDictionaryMatcher reverseDictionaryMatcher = new ReverseDictionaryMatcher(new HashMap<String, Map<String, Integer>>() {{
+                put("d1", dictionary(
+                        "123",
+                        "321",
+                        "456",
+                        "654"
+                ));
+            }});
+
+            String password = "0123456789";
+            List<Match> actualMatches = reverseDictionaryMatcher.execute(password);
+
+            ExpectedMatch[] expectedMatches = new ExpectedMatch[]{
+                    new ExpectedMatch("123", 1, 3).matchedWord("321").reversed(true).dictionaryName("d1").rank(2),
+                    new ExpectedMatch("456", 4, 6).matchedWord("654").reversed(true).dictionaryName("d1").rank(4)
+            };
+            assertMatches("matches against reversed words", Pattern.Dictionary, expectedMatches, actualMatches);
+        }
+
+        @Test
+        public void testSpatialMatching() throws Exception {
+            Map<String, Map<Character, String[]>> graphs = new HashMap<>();
+            graphs.put("qwerty", Keyboard.ADJACENCY_GRAPHS.get("qwerty"));
+            final String token = "6tfGHJ";
+            List<Match> actualMatches = new SpatialMatcher(graphs).execute("rz!" + token + "%z");
+            String msg = "matches against spatial patterns surrounded by non-spatial patterns";
+            ExpectedMatch[] expectedMatches = new ExpectedMatch[]{
+                    new ExpectedMatch(token, 3, 3 + token.length() - 1).graph("qwerty").turns(2).shiftedCount(3)
+            };
+            assertMatches(msg, Pattern.Spatial, expectedMatches, actualMatches);
+        }
+
+        @Test
+        public void testSequenceMatching() throws Exception {
+            List<Match> actualMatches = new SequenceMatcher().execute("abcbabc");
+            ExpectedMatch[] expectedMatches = new ExpectedMatch[]{
+                    new ExpectedMatch("abc", 0, 2).ascending(true),
+                    new ExpectedMatch("cba", 2, 4).ascending(false),
+                    new ExpectedMatch("abc", 4, 6).ascending(true)
+            };
+            assertMatches("matches overlapping patterns", Pattern.Sequence, expectedMatches, actualMatches);
+        }
+
+        @Test
+        public void testRegexMatchingPastYear() throws Exception {
+            testRegexMatching("1922");
+        }
+
+        @Test
+        public void testRegexMatchingFutureYear() throws Exception {
+            testRegexMatching("2017");
+        }
+
+        private void testRegexMatching(String year) throws Exception {
+            List<Match> actualMatches = new RegexMatcher().execute(year);
+            assertMatches(
+                    "matches " + year + " as a recent_year token",
+                    Pattern.Regex,
+                    new ExpectedMatch[]{new ExpectedMatch(year).regexName("recent_year")},
+                    actualMatches);
+        }
+
+        @Test
+        public void testOmnimatch() throws Exception {
+            assertEquals(0, new Matching(new ArrayList<String>()).omnimatch("").size());
+            String password = "r0sebudmaelstrom11/20/91aaaa";
+            List<Match> matches = new Matching(new ArrayList<String>()).omnimatch(password);
+            Map<Pattern, Integer[]> testMatches = new HashMap<>();
+            testMatches.put(Pattern.Dictionary, new Integer[]{0, 6});
+            testMatches.put(Pattern.Dictionary, new Integer[]{7, 15});
+            testMatches.put(Pattern.Date, new Integer[]{16, 23});
+            testMatches.put(Pattern.Repeat, new Integer[]{24, 27});
+            for (Map.Entry<Pattern, Integer[]> testMatch : testMatches.entrySet()) {
+                Pattern patternName = testMatch.getKey();
+                int i = testMatch.getValue()[0];
+                int j = testMatch.getValue()[1];
+                boolean included = false;
+                for (Match match : matches) {
+                    if (match.i == i && match.j == j && match.pattern == patternName) included = true;
+                }
+                String msg = String.format("for %s, matches a %s token at [%s, %s]", password, patternName.value(), i, j);
+                assertTrue(msg, included);
+            }
+        }
+    }
+
+    @Ignore
+    public static class ExpectedMatch {
+        String token;
+        int start;
+        int end;
+        Map<String, Object> fields = new HashMap<>();
+
+        public ExpectedMatch(String token) {
+            this(token, 0, token.length() - 1);
+        }
+
+        public ExpectedMatch(String token, int start, int end) {
+            this.token = token;
+            this.start = start;
+            this.end = end;
+        }
+
+        public ExpectedMatch matchedWord(String matchedWord) {
+            fields.put("matchedWord", matchedWord);
+            return this;
+        }
+
+        public ExpectedMatch dictionaryName(String dictionaryName) {
+            fields.put("dictionaryName", dictionaryName);
+            return this;
+        }
+
+        public ExpectedMatch rank(int rank) {
+            fields.put("rank", rank);
+            return this;
+        }
+
+        public ExpectedMatch reversed(boolean reversed) {
+            fields.put("reversed", reversed);
+            return this;
+        }
+
+        public ExpectedMatch graph(String graph) {
+            fields.put("graph", graph);
+            return this;
+        }
+
+        public ExpectedMatch turns(int turns) {
+            fields.put("turns", turns);
+            return this;
+        }
+
+        public ExpectedMatch shiftedCount(int shiftedCount) {
+            fields.put("shiftedCount", shiftedCount);
+            return this;
+        }
+
+        public ExpectedMatch ascending(boolean ascending) {
+            fields.put("ascending", ascending);
+            return this;
+        }
+
+        public ExpectedMatch baseToken(String baseToken) {
+            fields.put("baseToken", baseToken);
+            return this;
+        }
+
+        public ExpectedMatch regexName(String regexName) {
+            fields.put("regexName", regexName);
+            return this;
+        }
+
+        public ExpectedMatch separator(String separator) {
+            fields.put("separator", separator);
+            return this;
+        }
+
+        public ExpectedMatch year(int year) {
+            fields.put("year", year);
+            return this;
+        }
+
+        public ExpectedMatch month(int month) {
+            fields.put("month", month);
+            return this;
+        }
+
+        public ExpectedMatch day(int day) {
+            fields.put("day", day);
+            return this;
+        }
+    }
 }
