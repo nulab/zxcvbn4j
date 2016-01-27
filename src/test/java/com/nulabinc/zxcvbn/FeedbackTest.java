@@ -9,6 +9,7 @@ import org.junit.runners.Parameterized;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.ResourceBundle;
 
 @RunWith(Parameterized.class)
 public class FeedbackTest {
@@ -23,13 +24,47 @@ public class FeedbackTest {
     }
 
     @Test
-    public void testWarningAndSuggestions() {
+    public void testWarning() {
         Zxcvbn zxcvbn = new Zxcvbn();
         Strength strength = zxcvbn.measure(password);
         Feedback feedback = strength.getFeedback().withResourceBundle(null);
 
         Assert.assertEquals("Unexpected warning", expectedWarning, feedback.getWarning());
+    }
+
+    @Test
+    public void testSuggestions() {
+        Zxcvbn zxcvbn = new Zxcvbn();
+        Strength strength = zxcvbn.measure(password);
+        Feedback feedback = strength.getFeedback().withResourceBundle(null);
+
         Assert.assertArrayEquals("Unexpected suggestions", expectedSuggestions, feedback.getSuggestions().toArray());
+    }
+
+    @Test
+    public void testLocalizedWarning() {
+        Zxcvbn zxcvbn = new Zxcvbn();
+        Strength strength = zxcvbn.measure(password);
+        Feedback feedback = strength.getFeedback();
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages");
+
+        String expectedWarningL10n = expectedWarning.length() > 0 ? resourceBundle.getString(expectedWarning) : "";
+        Assert.assertEquals("Unexpected warning", expectedWarningL10n, feedback.getWarning());
+    }
+
+    @Test
+    public void testLocalizedSuggestions() {
+        Zxcvbn zxcvbn = new Zxcvbn();
+        Strength strength = zxcvbn.measure(password);
+        Feedback feedback = strength.getFeedback();
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages");
+
+        String[] expectedSuggestionsL10n = new String[expectedSuggestions.length];
+        for (int i = 0; i < expectedSuggestions.length; i++) {
+            String expectedSuggestion = expectedSuggestions[i];
+            expectedSuggestionsL10n[i] = resourceBundle.getString(expectedSuggestion);
+        }
+        Assert.assertArrayEquals("Unexpected suggestions", expectedSuggestionsL10n, feedback.getSuggestions().toArray());
     }
 
     @Parameterized.Parameters(name = "{0}")
