@@ -5,7 +5,7 @@ zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxc
 
 ## 更新
 
-* 2015/1/27  1.0.1 リリース. [zxcvbn 4.2.0](https://github.com/dropbox/zxcvbn/releases/tag/4.2.0)をポーティング
+* 2016/01/27  1.0.1 リリース. [zxcvbn 4.2.0](https://github.com/dropbox/zxcvbn/releases/tag/4.2.0)をポーティング
 * 2015/12/24 1.0.0 リリース. [zxcvbn 4.2.0](https://github.com/dropbox/zxcvbn/releases/tag/4.2.0)をポーティング
 
 ## 特別な機能
