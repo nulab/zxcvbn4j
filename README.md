@@ -20,7 +20,7 @@ The following version is a port of [zxcvbn 4.2.0](https://github.com/dropbox/zxc
 ### gradle
 
 ```
-'com.nulab-inc:zxcvbn:1.0.1'
+'com.nulab-inc:zxcvbn:1.0.2'
 ```
 
 ### maven
@@ -29,7 +29,7 @@ The following version is a port of [zxcvbn 4.2.0](https://github.com/dropbox/zxc
 <dependency>
   <groupId>com.nulab-inc</groupId>
   <artifactId>zxcvbn</artifactId>
-  <version>1.0.1</version>
+  <version>1.0.2</version>
 </dependency>
 ```
 
