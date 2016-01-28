@@ -9,82 +9,65 @@ public class Feedback {
 
     private static final ResourceBundle MESSAGES = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages");
 
-    public static final Message DEFAULT_SUGGESTIONS_USE_FEW_WORDS = new Message("feedback.default.suggestions.useFewWords");
-    public static final Message DEFAULT_SUGGESTIONS_NO_NEED_SYMBOLS = new Message("feedback.default.suggestions.noNeedSymbols");
-    public static final Message EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD = new Message("feedback.extra.suggestions.addAnotherWord");
-    public static final Message SPATIAL_WARNING_STRAIGHT_ROWS_OF_KEYS = new Message("feedback.spatial.warning.straightRowsOfKeys");
-    public static final Message SPATIAL_WARNING_SHORT_KEYBOARD_PATTERNS = new Message("feedback.spatial.warning.shortKeyboardPatterns");
-    public static final Message SPATIAL_SUGGESTIONS_USE_LONGER_KEYBOARD_PATTERN = new Message("feedback.spatial.suggestions.UseLongerKeyboardPattern");
-    public static final Message REPEAT_WARNING_LIKE_AAA = new Message("feedback.repeat.warning.likeAAA");
-    public static final Message REPEAT_WARNING_LIKE_ABCABCABC = new Message("feedback.repeat.warning.likeABCABCABC");
-    public static final Message REPEAT_SUGGESTIONS_AVOID_REPEATED_WORDS = new Message("feedback.repeat.suggestions.avoidRepeatedWords");
-    public static final Message SEQUENCE_WARNING_LIKE_ABCOR6543 = new Message("feedback.sequence.warning.likeABCor6543");
-    public static final Message SEQUENCE_SUGGESTIONS_AVOID_SEQUENCES = new Message("feedback.sequence.suggestions.avoidSequences");
-    public static final Message REGEX_WARNING_RECENT_YEARS = new Message("feedback.regex.warning.recentYears");
-    public static final Message REGEX_SUGGESTIONS_AVOID_RECENT_YEARS = new Message("feedback.regex.suggestions.avoidRecentYears");
-    public static final Message DATE_WARNING_DATES = new Message("feedback.date.warning.dates");
-    public static final Message DATE_SUGGESTIONS_AVOID_DATES = new Message("feedback.date.suggestions.avoidDates");
-    public static final Message DICTIONARY_WARNING_PASSWORDS_TOP10 = new Message("feedback.dictionary.warning.passwords.top10");
-    public static final Message DICTIONARY_WARNING_PASSWORDS_TOP100 = new Message("feedback.dictionary.warning.passwords.top100");
-    public static final Message DICTIONARY_WARNING_PASSWORDS_VERY_COMMON = new Message("feedback.dictionary.warning.passwords.veryCommon");
-    public static final Message DICTIONARY_WARNING_PASSWORDS_SIMILAR = new Message("feedback.dictionary.warning.passwords.similar");
-    public static final Message DICTIONARY_WARNING_ENGLISH_WIKIPEDIA_ITSELF = new Message("feedback.dictionary.warning.englishWikipedia.itself");
-    public static final Message DICTIONARY_WARNING_ETC_NAMES_THEMSELVES = new Message("feedback.dictionary.warning.etc.namesThemselves");
-    public static final Message DICTIONARY_WARNING_ETC_NAMES_COMMON = new Message("feedback.dictionary.warning.etc.namesCommon");
-    public static final Message DICTIONARY_SUGGESTIONS_CAPITALIZATION = new Message("feedback.dictionary.suggestions.capitalization");
-    public static final Message DICTIONARY_SUGGESTIONS_ALL_UPPERCASE = new Message("feedback.dictionary.suggestions.allUppercase");
-    public static final Message DICTIONARY_SUGGESTIONS_REVERSED = new Message("feedback.dictionary.suggestions.reversed");
-    public static final Message DICTIONARY_SUGGESTIONS_L33T = new Message("feedback.dictionary.suggestions.l33t");
+    public static final String DEFAULT_SUGGESTIONS_USE_FEW_WORDS = "feedback.default.suggestions.useFewWords";
+    public static final String DEFAULT_SUGGESTIONS_NO_NEED_SYMBOLS = "feedback.default.suggestions.noNeedSymbols";
+    public static final String EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD = "feedback.extra.suggestions.addAnotherWord";
+    public static final String SPATIAL_WARNING_STRAIGHT_ROWS_OF_KEYS = "feedback.spatial.warning.straightRowsOfKeys";
+    public static final String SPATIAL_WARNING_SHORT_KEYBOARD_PATTERNS = "feedback.spatial.warning.shortKeyboardPatterns";
+    public static final String SPATIAL_SUGGESTIONS_USE_LONGER_KEYBOARD_PATTERN = "feedback.spatial.suggestions.UseLongerKeyboardPattern";
+    public static final String REPEAT_WARNING_LIKE_AAA = "feedback.repeat.warning.likeAAA";
+    public static final String REPEAT_WARNING_LIKE_ABCABCABC = "feedback.repeat.warning.likeABCABCABC";
+    public static final String REPEAT_SUGGESTIONS_AVOID_REPEATED_WORDS = "feedback.repeat.suggestions.avoidRepeatedWords";
+    public static final String SEQUENCE_WARNING_LIKE_ABCOR6543 = "feedback.sequence.warning.likeABCor6543";
+    public static final String SEQUENCE_SUGGESTIONS_AVOID_SEQUENCES = "feedback.sequence.suggestions.avoidSequences";
+    public static final String REGEX_WARNING_RECENT_YEARS = "feedback.regex.warning.recentYears";
+    public static final String REGEX_SUGGESTIONS_AVOID_RECENT_YEARS = "feedback.regex.suggestions.avoidRecentYears";
+    public static final String DATE_WARNING_DATES = "feedback.date.warning.dates";
+    public static final String DATE_SUGGESTIONS_AVOID_DATES = "feedback.date.suggestions.avoidDates";
+    public static final String DICTIONARY_WARNING_PASSWORDS_TOP10 = "feedback.dictionary.warning.passwords.top10";
+    public static final String DICTIONARY_WARNING_PASSWORDS_TOP100 = "feedback.dictionary.warning.passwords.top100";
+    public static final String DICTIONARY_WARNING_PASSWORDS_VERY_COMMON = "feedback.dictionary.warning.passwords.veryCommon";
+    public static final String DICTIONARY_WARNING_PASSWORDS_SIMILAR = "feedback.dictionary.warning.passwords.similar";
+    public static final String DICTIONARY_WARNING_ENGLISH_WIKIPEDIA_ITSELF = "feedback.dictionary.warning.englishWikipedia.itself";
+    public static final String DICTIONARY_WARNING_ETC_NAMES_THEMSELVES = "feedback.dictionary.warning.etc.namesThemselves";
+    public static final String DICTIONARY_WARNING_ETC_NAMES_COMMON = "feedback.dictionary.warning.etc.namesCommon";
+    public static final String DICTIONARY_SUGGESTIONS_CAPITALIZATION = "feedback.dictionary.suggestions.capitalization";
+    public static final String DICTIONARY_SUGGESTIONS_ALL_UPPERCASE = "feedback.dictionary.suggestions.allUppercase";
+    public static final String DICTIONARY_SUGGESTIONS_REVERSED = "feedback.dictionary.suggestions.reversed";
+    public static final String DICTIONARY_SUGGESTIONS_L33T = "feedback.dictionary.suggestions.l33t";
 
-    private ResourceBundle messages;
-    private Message warning;
-    private Message[] suggestions;
+    final private ResourceBundle messages;
+    final private String warning;
+    final private String[] suggestions;
 
-    private Feedback(Message warning, Message... suggestions) {
-        this.messages = MESSAGES;
+    private Feedback(String warning, String... suggestions) {
+        this(MESSAGES, warning, suggestions);
+    }
+
+    private Feedback(ResourceBundle messages, String warning, String... suggestions) {
+        this.messages = messages;
         this.warning = warning;
         this.suggestions = suggestions;
     }
 
     public String getWarning() {
-        return warning != null ? warning.getLocalized(messages) : "";
-    }
-
-    public Message getWarningMessage() {
-        return warning;
-    }
-
-    public void setWarning(String warning) {
-        this.warning = new Message(warning);
+        return warning != null ? l10n(warning) : "";
     }
 
     public List<String> getSuggestions() {
-        List<String> suggestions;
-        if (this.suggestions != null) {
-            suggestions = new ArrayList<>(this.suggestions.length);
-            for (Message suggestion : this.suggestions) {
-                suggestions.add(suggestion.getLocalized(messages));
-            }
-        } else {
-            suggestions = Collections.emptyList();
+        List<String> suggestions = new ArrayList<>(this.suggestions.length);
+        for (String suggestion : this.suggestions) {
+            suggestions.add(l10n(suggestion));
         }
         return suggestions;
     }
 
-    public Message[] getSuggestionMessages() {
-        return suggestions;
+    public Feedback withResourceBundle(ResourceBundle messages) {
+        return new Feedback(messages, warning, suggestions);
     }
 
-    public void setSuggestions(List<String> suggestions) {
-        if (suggestions != null) {
-            this.suggestions = new Message[suggestions.size()];
-            for (int i = 0; i < suggestions.size(); i++) {
-                String suggestion = suggestions.get(i);
-                this.suggestions[i] = new Message(suggestion);
-            }
-        } else {
-            this.suggestions = null;
-        }
+    private String l10n(String messageId) {
+        return messages != null ? messages.getString(messageId) : messageId;
     }
 
     static Feedback getFeedback(int score, List<Match> sequence) {
@@ -106,7 +89,7 @@ public class Feedback {
         return getMatchFeedback(longestMatch, sequence.size() == 1);
     }
 
-    private static Feedback getFeedbackWithoutWarnings(Message... suggestions) {
+    private static Feedback getFeedbackWithoutWarnings(String... suggestions) {
         return new Feedback(null, suggestions);
     }
 
@@ -156,7 +139,7 @@ public class Feedback {
     }
 
     private static Feedback getDictionaryMatchFeedback(Match match, boolean isSoleMatch) {
-        Message warning = null;
+        String warning = null;
         if ("passwords".equals(match.dictionaryName)) {
             if (isSoleMatch && !match.l33t && !match.reversed) {
                 if (match.rank <= 10) {
@@ -181,7 +164,7 @@ public class Feedback {
             }
         }
 
-        List<Message> suggestions = new ArrayList<>();
+        List<String> suggestions = new ArrayList<>();
         suggestions.add(EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD);
 
         String word = match.token;
@@ -196,27 +179,6 @@ public class Feedback {
         if (match.l33t) {
             suggestions.add(DICTIONARY_SUGGESTIONS_L33T);
         }
-        return new Feedback(warning, suggestions.toArray(new Message[suggestions.size()]));
-    }
-
-    public static class Message {
-        final private String id;
-
-        private Message(String id) {
-            this.id = id;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public String getLocalized(ResourceBundle messages) {
-            return messages.getString(id);
-        }
-
-        @Override
-        public String toString() {
-            return getClass().getSimpleName() + ": " + id;
-        }
+        return new Feedback(warning, suggestions.toArray(new String[suggestions.size()]));
     }
 }
