@@ -5,8 +5,11 @@ This is a java port of [zxcvbn](https://github.com/dropbox/zxcvbn), which is a J
 
 ## Update
 
-* 2016/01/27 1.0.1 released. Port of [zxcvbn 4.2.0](https://github.com/dropbox/zxcvbn/releases/tag/4.2.0)
-* 2015/12/24 1.0.0 released. Port of [zxcvbn 4.2.0](https://github.com/dropbox/zxcvbn/releases/tag/4.2.0)
+The following version is a port of [zxcvbn 4.2.0](https://github.com/dropbox/zxcvbn/releases/tag/4.2.0)
+
+* 2016/01/28 1.0.2 released.
+* 2016/01/27 1.0.1 released.
+* 2015/12/24 1.0.0 released.
 
 ## Special Feature
 
