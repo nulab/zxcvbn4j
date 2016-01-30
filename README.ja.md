@@ -134,3 +134,4 @@ MIT License
 
 - [Cacoo](https://cacoo.com/)
 - [Typetalk](https://typetalk.in/)
+- [JetBrains Hub](https://www.jetbrains.com/hub/)
