@@ -170,7 +170,7 @@ public class Feedback {
         String word = match.token;
         if (DictionaryGuess.START_UPPER.matcher(word).find()) {
             suggestions.add(DICTIONARY_SUGGESTIONS_CAPITALIZATION);
-        } else if (DictionaryGuess.ALL_UPPER.matcher(word).find()) {
+        } else if (DictionaryGuess.ALL_UPPER.matcher(word).find() && word.toLowerCase() != word) {
             suggestions.add(DICTIONARY_SUGGESTIONS_ALL_UPPERCASE);
         }
         if (match.reversed && match.token.length() >= 4) {
