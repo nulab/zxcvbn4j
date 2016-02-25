@@ -7,7 +7,7 @@ public class TimeEstimates {
     public static AttackTimes estimateAttackTimes(double guesses) {
         AttackTimes.CrackTimeSeconds crackTimeSeconds = new AttackTimes.CrackTimeSeconds(
                 divide(guesses, 100.0 / 3600.0),
-                guesses / 1e2,
+                guesses / 10,
                 guesses / 1e4,
                 guesses / 1e10
         );
