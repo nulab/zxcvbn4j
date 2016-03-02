@@ -203,7 +203,7 @@ public class ScoringTest {
             Method method = BaseGuess.class.getDeclaredMethod("nCk", int.class, int.class);
             method.setAccessible(true);
             return Arrays.asList(new Object[][]{
-                    {"", 0},
+                    {"", 1},
                     {"a", 1},
                     {"A", 2},
                     {"abcdef", 1},

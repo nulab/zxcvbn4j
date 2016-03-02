@@ -22,7 +22,7 @@ public class DictionaryGuess extends BaseGuess {
 
     public int uppercaseVariations(Match match) {
         String word = match.token;
-        if (ALL_LOWER.matcher(word).find(0)) return 1;
+        if (ALL_LOWER.matcher(word).find(0) || word.toLowerCase().equals(word)) return 1;
         for(Pattern pattern: new Pattern[] { START_UPPER, END_UPPER, ALL_UPPER })
             if (pattern.matcher(word).find()) return 2;
         Pattern upper = Pattern.compile("[A-Z]");
