@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Scoring {
 
-    public static final int REFERENCE_YEAR = 2000;
+    public static final int REFERENCE_YEAR = 2016;
 
     public static final int MIN_GUESSES_BEFORE_GROWING_SEQUENCE = 10000;
 

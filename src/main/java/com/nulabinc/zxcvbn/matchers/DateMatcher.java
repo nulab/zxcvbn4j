@@ -159,10 +159,10 @@ public class DateMatcher extends BaseMatcher {
             return year;
         } else if (year > 50) {
             // 87 -> 1987
-            return year + Scoring.REFERENCE_YEAR - 100;
+            return year + 1900;
         } else {
             // 15 -> 2015
-            return year + Scoring.REFERENCE_YEAR;
+            return year + 2000;
         }
     }
 
