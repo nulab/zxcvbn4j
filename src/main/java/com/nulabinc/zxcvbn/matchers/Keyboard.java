@@ -1,332 +1,327 @@
 package com.nulabinc.zxcvbn.matchers;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Keyboard {
-    public static final Map<String, Map<Character, String[]>> ADJACENCY_GRAPHS = new HashMap<>();
-    static {
-        Map<Character, String[]> qwerty = new HashMap<>();
-        qwerty.put('$', new String[]{ "3#", null, null, "5%", "rR", "eE" });
-        qwerty.put('(', new String[]{ "8*", null, null, "0)", "oO", "iI" });
-        qwerty.put(',', new String[]{ "mM", "kK", "lL", ".>", null, null });
-        qwerty.put('0', new String[]{ "9(", null, null, "-_", "pP", "oO" });
-        qwerty.put('4', new String[]{ "3#", null, null, "5%", "rR", "eE" });
-        qwerty.put('8', new String[]{ "7&", null, null, "9(", "iI", "uU" });
-        qwerty.put('<', new String[]{ "mM", "kK", "lL", ".>", null, null });
-        qwerty.put('@', new String[]{ "1!", null, null, "3#", "wW", "qQ" });
-        qwerty.put('D', new String[]{ "sS", "eE", "rR", "fF", "cC", "xX" });
-        qwerty.put('H', new String[]{ "gG", "yY", "uU", "jJ", "nN", "bB" });
-        qwerty.put('L', new String[]{ "kK", "oO", "pP", ";:", ".>", ",<" });
-        qwerty.put('P', new String[]{ "oO", "0)", "-_", "[{", ";:", "lL" });
-        qwerty.put('T', new String[]{ "rR", "5%", "6^", "yY", "gG", "fF" });
-        qwerty.put('X', new String[]{ "zZ", "sS", "dD", "cC", null, null });
-        qwerty.put('\\', new String[]{ "]}", null, null, null, null, null });
-        qwerty.put('`', new String[]{ null, null, null, "1!", null, null });
-        qwerty.put('d', new String[]{ "sS", "eE", "rR", "fF", "cC", "xX" });
-        qwerty.put('h', new String[]{ "gG", "yY", "uU", "jJ", "nN", "bB" });
-        qwerty.put('l', new String[]{ "kK", "oO", "pP", ";:", ".>", ",<" });
-        qwerty.put('p', new String[]{ "oO", "0)", "-_", "[{", ";:", "lL" });
-        qwerty.put('t', new String[]{ "rR", "5%", "6^", "yY", "gG", "fF" });
-        qwerty.put('x', new String[]{ "zZ", "sS", "dD", "cC", null, null });
-        qwerty.put('|', new String[]{ "]}", null, null, null, null, null });
-        qwerty.put('#', new String[]{ "2@", null, null, "4$", "eE", "wW" });
-        qwerty.put('\'', new String[]{ ";:", "[{", "]}", null, null, "/?" });
-        qwerty.put('+', new String[]{ "-_", null, null, null, "]}", "[{" });
-        qwerty.put('/', new String[]{ ".>", ";:", "'\"", null, null, null });
-        qwerty.put('3', new String[]{ "2@", null, null, "4$", "eE", "wW" });
-        qwerty.put('7', new String[]{ "6^", null, null, "8*", "uU", "yY" });
-        qwerty.put(';', new String[]{ "lL", "pP", "[{", "'\"", "/?", ".>" });
-        qwerty.put('?', new String[]{ ".>", ";:", "'\"", null, null, null });
-        qwerty.put('C', new String[]{ "xX", "dD", "fF", "vV", null, null });
-        qwerty.put('G', new String[]{ "fF", "tT", "yY", "hH", "bB", "vV" });
-        qwerty.put('K', new String[]{ "jJ", "iI", "oO", "lL", ",<", "mM" });
-        qwerty.put('O', new String[]{ "iI", "9(", "0)", "pP", "lL", "kK" });
-        qwerty.put('S', new String[]{ "aA", "wW", "eE", "dD", "xX", "zZ" });
-        qwerty.put('W', new String[]{ "qQ", "2@", "3#", "eE", "sS", "aA" });
-        qwerty.put('[', new String[]{ "pP", "-_", "=+", "]}", "'\"", ";:" });
-        qwerty.put('_', new String[]{ "0)", null, null, "=+", "[{", "pP" });
-        qwerty.put('c', new String[]{ "xX", "dD", "fF", "vV", null, null });
-        qwerty.put('g', new String[]{ "fF", "tT", "yY", "hH", "bB", "vV" });
-        qwerty.put('k', new String[]{ "jJ", "iI", "oO", "lL", ",<", "mM" });
-        qwerty.put('o', new String[]{ "iI", "9(", "0)", "pP", "lL", "kK" });
-        qwerty.put('s', new String[]{ "aA", "wW", "eE", "dD", "xX", "zZ" });
-        qwerty.put('w', new String[]{ "qQ", "2@", "3#", "eE", "sS", "aA" });
-        qwerty.put('{', new String[]{ "pP", "-_", "=+", "]}", "'\"", ";:" });
-        qwerty.put('\"', new String[]{ ";:", "[{", "]}", null, null, "/?" });
-        qwerty.put('&', new String[]{ "6^", null, null, "8*", "uU", "yY" });
-        qwerty.put('*', new String[]{ "7&", null, null, "9(", "iI", "uU" });
-        qwerty.put('.', new String[]{ ",<", "lL", ";:", "/?", null, null });
-        qwerty.put('2', new String[]{ "1!", null, null, "3#", "wW", "qQ" });
-        qwerty.put('6', new String[]{ "5%", null, null, "7&", "yY", "tT" });
-        qwerty.put(':', new String[]{ "lL", "pP", "[{", "'\"", "/?", ".>" });
-        qwerty.put('>', new String[]{ ",<", "lL", ";:", "/?", null, null });
-        qwerty.put('B', new String[]{ "vV", "gG", "hH", "nN", null, null });
-        qwerty.put('F', new String[]{ "dD", "rR", "tT", "gG", "vV", "cC" });
-        qwerty.put('J', new String[]{ "hH", "uU", "iI", "kK", "mM", "nN" });
-        qwerty.put('N', new String[]{ "bB", "hH", "jJ", "mM", null, null });
-        qwerty.put('R', new String[]{ "eE", "4$", "5%", "tT", "fF", "dD" });
-        qwerty.put('V', new String[]{ "cC", "fF", "gG", "bB", null, null });
-        qwerty.put('Z', new String[]{ null, "aA", "sS", "xX", null, null });
-        qwerty.put('^', new String[]{ "5%", null, null, "7&", "yY", "tT" });
-        qwerty.put('b', new String[]{ "vV", "gG", "hH", "nN", null, null });
-        qwerty.put('f', new String[]{ "dD", "rR", "tT", "gG", "vV", "cC" });
-        qwerty.put('j', new String[]{ "hH", "uU", "iI", "kK", "mM", "nN" });
-        qwerty.put('n', new String[]{ "bB", "hH", "jJ", "mM", null, null });
-        qwerty.put('r', new String[]{ "eE", "4$", "5%", "tT", "fF", "dD" });
-        qwerty.put('v', new String[]{ "cC", "fF", "gG", "bB", null, null });
-        qwerty.put('z', new String[]{ null, "aA", "sS", "xX", null, null });
-        qwerty.put('~', new String[]{ null, null, null, "1!", null, null });
-        qwerty.put('!', new String[]{ "`~", null, null, "2@", "qQ", null });
-        qwerty.put('%', new String[]{ "4$", null, null, "6^", "tT", "rR" });
-        qwerty.put(')', new String[]{ "9(", null, null, "-_", "pP", "oO" });
-        qwerty.put('-', new String[]{ "0)", null, null, "=+", "[{", "pP" });
-        qwerty.put('1', new String[]{ "`~", null, null, "2@", "qQ", null });
-        qwerty.put('5', new String[]{ "4$", null, null, "6^", "tT", "rR" });
-        qwerty.put('9', new String[]{ "8*", null, null, "0)", "oO", "iI" });
-        qwerty.put('=', new String[]{ "-_", null, null, null, "]}", "[{" });
-        qwerty.put('A', new String[]{ null, "qQ", "wW", "sS", "zZ", null });
-        qwerty.put('E', new String[]{ "wW", "3#", "4$", "rR", "dD", "sS" });
-        qwerty.put('I', new String[]{ "uU", "8*", "9(", "oO", "kK", "jJ" });
-        qwerty.put('M', new String[]{ "nN", "jJ", "kK", ",<", null, null });
-        qwerty.put('Q', new String[]{ null, "1!", "2@", "wW", "aA", null });
-        qwerty.put('U', new String[]{ "yY", "7&", "8*", "iI", "jJ", "hH" });
-        qwerty.put('Y', new String[]{ "tT", "6^", "7&", "uU", "hH", "gG" });
-        qwerty.put(']', new String[]{ "[{", "=+", null, "\\|", null, "'\"" });
-        qwerty.put('a', new String[]{ null, "qQ", "wW", "sS", "zZ", null });
-        qwerty.put('e', new String[]{ "wW", "3#", "4$", "rR", "dD", "sS" });
-        qwerty.put('i', new String[]{ "uU", "8*", "9(", "oO", "kK", "jJ" });
-        qwerty.put('m', new String[]{ "nN", "jJ", "kK", ",<", null, null });
-        qwerty.put('q', new String[]{ null, "1!", "2@", "wW", "aA", null });
-        qwerty.put('u', new String[]{ "yY", "7&", "8*", "iI", "jJ", "hH" });
-        qwerty.put('y', new String[]{ "tT", "6^", "7&", "uU", "hH", "gG" });
-        qwerty.put('}', new String[]{ "[{", "=+", null, "\\|", null, "'\"" });
-        ADJACENCY_GRAPHS.put("qwerty", qwerty);
-        Map<Character, String[]> dvorak = new HashMap<>();
-        dvorak.put('$', new String[]{ "3#", null, null, "5%", "pP", ".>" });
-        dvorak.put('(', new String[]{ "8*", null, null, "0)", "rR", "cC" });
-        dvorak.put(',', new String[]{ "'\"", "2@", "3#", ".>", "oO", "aA" });
-        dvorak.put('0', new String[]{ "9(", null, null, "[{", "lL", "rR" });
-        dvorak.put('4', new String[]{ "3#", null, null, "5%", "pP", ".>" });
-        dvorak.put('8', new String[]{ "7&", null, null, "9(", "cC", "gG" });
-        dvorak.put('<', new String[]{ "'\"", "2@", "3#", ".>", "oO", "aA" });
-        dvorak.put('@', new String[]{ "1!", null, null, "3#", ",<", "'\"" });
-        dvorak.put('D', new String[]{ "iI", "fF", "gG", "hH", "bB", "xX" });
-        dvorak.put('H', new String[]{ "dD", "gG", "cC", "tT", "mM", "bB" });
-        dvorak.put('L', new String[]{ "rR", "0)", "[{", "/?", "sS", "nN" });
-        dvorak.put('P', new String[]{ ".>", "4$", "5%", "yY", "uU", "eE" });
-        dvorak.put('T', new String[]{ "hH", "cC", "rR", "nN", "wW", "mM" });
-        dvorak.put('X', new String[]{ "kK", "iI", "dD", "bB", null, null });
-        dvorak.put('\\', new String[]{ "=+", null, null, null, null, null });
-        dvorak.put('`', new String[]{ null, null, null, "1!", null, null });
-        dvorak.put('d', new String[]{ "iI", "fF", "gG", "hH", "bB", "xX" });
-        dvorak.put('h', new String[]{ "dD", "gG", "cC", "tT", "mM", "bB" });
-        dvorak.put('l', new String[]{ "rR", "0)", "[{", "/?", "sS", "nN" });
-        dvorak.put('p', new String[]{ ".>", "4$", "5%", "yY", "uU", "eE" });
-        dvorak.put('t', new String[]{ "hH", "cC", "rR", "nN", "wW", "mM" });
-        dvorak.put('x', new String[]{ "kK", "iI", "dD", "bB", null, null });
-        dvorak.put('|', new String[]{ "=+", null, null, null, null, null });
-        dvorak.put('#', new String[]{ "2@", null, null, "4$", ".>", ",<" });
-        dvorak.put('\'', new String[]{ null, "1!", "2@", ",<", "aA", null });
-        dvorak.put('+', new String[]{ "/?", "]}", null, "\\|", null, "-_" });
-        dvorak.put('/', new String[]{ "lL", "[{", "]}", "=+", "-_", "sS" });
-        dvorak.put('3', new String[]{ "2@", null, null, "4$", ".>", ",<" });
-        dvorak.put('7', new String[]{ "6^", null, null, "8*", "gG", "fF" });
-        dvorak.put(';', new String[]{ null, "aA", "oO", "qQ", null, null });
-        dvorak.put('?', new String[]{ "lL", "[{", "]}", "=+", "-_", "sS" });
-        dvorak.put('C', new String[]{ "gG", "8*", "9(", "rR", "tT", "hH" });
-        dvorak.put('G', new String[]{ "fF", "7&", "8*", "cC", "hH", "dD" });
-        dvorak.put('K', new String[]{ "jJ", "uU", "iI", "xX", null, null });
-        dvorak.put('O', new String[]{ "aA", ",<", ".>", "eE", "qQ", ";:" });
-        dvorak.put('S', new String[]{ "nN", "lL", "/?", "-_", "zZ", "vV" });
-        dvorak.put('W', new String[]{ "mM", "tT", "nN", "vV", null, null });
-        dvorak.put('[', new String[]{ "0)", null, null, "]}", "/?", "lL" });
-        dvorak.put('_', new String[]{ "sS", "/?", "=+", null, null, "zZ" });
-        dvorak.put('c', new String[]{ "gG", "8*", "9(", "rR", "tT", "hH" });
-        dvorak.put('g', new String[]{ "fF", "7&", "8*", "cC", "hH", "dD" });
-        dvorak.put('k', new String[]{ "jJ", "uU", "iI", "xX", null, null });
-        dvorak.put('o', new String[]{ "aA", ",<", ".>", "eE", "qQ", ";:" });
-        dvorak.put('s', new String[]{ "nN", "lL", "/?", "-_", "zZ", "vV" });
-        dvorak.put('w', new String[]{ "mM", "tT", "nN", "vV", null, null });
-        dvorak.put('{', new String[]{ "0)", null, null, "]}", "/?", "lL" });
-        dvorak.put('\"', new String[]{ null, "1!", "2@", ",<", "aA", null });
-        dvorak.put('&', new String[]{ "6^", null, null, "8*", "gG", "fF" });
-        dvorak.put('*', new String[]{ "7&", null, null, "9(", "cC", "gG" });
-        dvorak.put('.', new String[]{ ",<", "3#", "4$", "pP", "eE", "oO" });
-        dvorak.put('2', new String[]{ "1!", null, null, "3#", ",<", "'\"" });
-        dvorak.put('6', new String[]{ "5%", null, null, "7&", "fF", "yY" });
-        dvorak.put(':', new String[]{ null, "aA", "oO", "qQ", null, null });
-        dvorak.put('>', new String[]{ ",<", "3#", "4$", "pP", "eE", "oO" });
-        dvorak.put('B', new String[]{ "xX", "dD", "hH", "mM", null, null });
-        dvorak.put('F', new String[]{ "yY", "6^", "7&", "gG", "dD", "iI" });
-        dvorak.put('J', new String[]{ "qQ", "eE", "uU", "kK", null, null });
-        dvorak.put('N', new String[]{ "tT", "rR", "lL", "sS", "vV", "wW" });
-        dvorak.put('R', new String[]{ "cC", "9(", "0)", "lL", "nN", "tT" });
-        dvorak.put('V', new String[]{ "wW", "nN", "sS", "zZ", null, null });
-        dvorak.put('Z', new String[]{ "vV", "sS", "-_", null, null, null });
-        dvorak.put('^', new String[]{ "5%", null, null, "7&", "fF", "yY" });
-        dvorak.put('b', new String[]{ "xX", "dD", "hH", "mM", null, null });
-        dvorak.put('f', new String[]{ "yY", "6^", "7&", "gG", "dD", "iI" });
-        dvorak.put('j', new String[]{ "qQ", "eE", "uU", "kK", null, null });
-        dvorak.put('n', new String[]{ "tT", "rR", "lL", "sS", "vV", "wW" });
-        dvorak.put('r', new String[]{ "cC", "9(", "0)", "lL", "nN", "tT" });
-        dvorak.put('v', new String[]{ "wW", "nN", "sS", "zZ", null, null });
-        dvorak.put('z', new String[]{ "vV", "sS", "-_", null, null, null });
-        dvorak.put('~', new String[]{ null, null, null, "1!", null, null });
-        dvorak.put('!', new String[]{ "`~", null, null, "2@", "'\"", null });
-        dvorak.put('%', new String[]{ "4$", null, null, "6^", "yY", "pP" });
-        dvorak.put(')', new String[]{ "9(", null, null, "[{", "lL", "rR" });
-        dvorak.put('-', new String[]{ "sS", "/?", "=+", null, null, "zZ" });
-        dvorak.put('1', new String[]{ "`~", null, null, "2@", "'\"", null });
-        dvorak.put('5', new String[]{ "4$", null, null, "6^", "yY", "pP" });
-        dvorak.put('9', new String[]{ "8*", null, null, "0)", "rR", "cC" });
-        dvorak.put('=', new String[]{ "/?", "]}", null, "\\|", null, "-_" });
-        dvorak.put('A', new String[]{ null, "'\"", ",<", "oO", ";:", null });
-        dvorak.put('E', new String[]{ "oO", ".>", "pP", "uU", "jJ", "qQ" });
-        dvorak.put('I', new String[]{ "uU", "yY", "fF", "dD", "xX", "kK" });
-        dvorak.put('M', new String[]{ "bB", "hH", "tT", "wW", null, null });
-        dvorak.put('Q', new String[]{ ";:", "oO", "eE", "jJ", null, null });
-        dvorak.put('U', new String[]{ "eE", "pP", "yY", "iI", "kK", "jJ" });
-        dvorak.put('Y', new String[]{ "pP", "5%", "6^", "fF", "iI", "uU" });
-        dvorak.put(']', new String[]{ "[{", null, null, null, "=+", "/?" });
-        dvorak.put('a', new String[]{ null, "'\"", ",<", "oO", ";:", null });
-        dvorak.put('e', new String[]{ "oO", ".>", "pP", "uU", "jJ", "qQ" });
-        dvorak.put('i', new String[]{ "uU", "yY", "fF", "dD", "xX", "kK" });
-        dvorak.put('m', new String[]{ "bB", "hH", "tT", "wW", null, null });
-        dvorak.put('q', new String[]{ ";:", "oO", "eE", "jJ", null, null });
-        dvorak.put('u', new String[]{ "eE", "pP", "yY", "iI", "kK", "jJ" });
-        dvorak.put('y', new String[]{ "pP", "5%", "6^", "fF", "iI", "uU" });
-        dvorak.put('}', new String[]{ "[{", null, null, null, "=+", "/?" });
-        ADJACENCY_GRAPHS.put("dvorak", dvorak);
-        Map<Character, String[]> jis = new HashMap<>();
-        jis.put('$', new String[]{ "3#", null, null, "5%", "rR", "eE" });
-        jis.put('(', new String[]{ "7'", null, null, "9)", "iI", "uU" });
-        jis.put(',', new String[]{ "mM", "kK", "lL", ".>", null, null });
-        jis.put('0', new String[]{ "9)", null, null, "-=", "pP", "oO" });
-        jis.put('4', new String[]{ "3#", null, null, "5%", "rR", "eE" });
-        jis.put('8', new String[]{ "7'", null, null, "9)", "iI", "uU" });
-        jis.put('<', new String[]{ "mM", "kK", "lL", ".>", null, null });
-        jis.put('@', new String[]{ "pP", "-=", null, "[{", ":*", ";+" });
-        jis.put('D', new String[]{ "sS", "eE", "rR", "fF", "cC", "xX" });
-        jis.put('H', new String[]{ "gG", "yY", "uU", "jJ", "nN", "bB" });
-        jis.put('L', new String[]{ "kK", "oO", "pP", ";+", ".>", ",<" });
-        jis.put('P', new String[]{ "oO", "00", "-=", "@`", ";+", "lL" });
-        jis.put('T', new String[]{ "rR", "5%", "6&", "yY", "gG", "fF" });
-        jis.put('X', new String[]{ "zZ", "sS", "dD", "cC", null, null });
-        jis.put('\\', new String[]{ "^~", null, null, null, null, null });
-        jis.put('`', new String[]{ null, null, null, "1!", null, null });
-        jis.put('d', new String[]{ "sS", "eE", "rR", "fF", "cC", "xX" });
-        jis.put('h', new String[]{ "gG", "yY", "uU", "jJ", "nN", "bB" });
-        jis.put('l', new String[]{ "kK", "oO", "pP", ";+", ".>", ",<" });
-        jis.put('p', new String[]{ "oO", "00", "-=", "@`", ";+", "lL" });
-        jis.put('t', new String[]{ "rR", "5%", "6&", "yY", "gG", "fF" });
-        jis.put('x', new String[]{ "zZ", "sS", "dD", "cC", null, null });
-        jis.put('|', new String[]{ "^~", null, null, null, null, null });
-        jis.put('#', new String[]{ "2\"", null, null, "4$", "eE", "wW" });
-        jis.put('\'', new String[]{ "6&", null, null, "8(", "uU", "yY" });
-        jis.put('+', new String[]{ "lL", "pP", "@`", ":*", "/?", ".>" });
-        jis.put('/', new String[]{ ".>", ";+", ":*", null, null, null });
-        jis.put('3', new String[]{ "2\"", null, null, "4$", "eE", "wW" });
-        jis.put('7', new String[]{ "6&", null, null, "8(", "uU", "yY" });
-        jis.put(';', new String[]{ "lL", "pP", "@`", ":*", "/?", ".>" });
-        jis.put('?', new String[]{ ".>", ";+", ":*", null, null, null });
-        jis.put('C', new String[]{ "xX", "dD", "fF", "vV", null, null });
-        jis.put('G', new String[]{ "fF", "tT", "yY", "hH", "bB", "vV" });
-        jis.put('K', new String[]{ "jJ", "iI", "oO", "lL", ",<", "mM" });
-        jis.put('O', new String[]{ "iI", "9)", "00", "pP", "lL", "kK" });
-        jis.put('S', new String[]{ "aA", "wW", "eE", "dD", "xX", "zZ" });
-        jis.put('W', new String[]{ "qQ", "2\"", "3#", "eE", "sS", "aA" });
-        jis.put('[', new String[]{ "@`", null, "^~", null, "]}", ":*" });
-        jis.put('c', new String[]{ "xX", "dD", "fF", "vV", null, null });
-        jis.put('g', new String[]{ "fF", "tT", "yY", "hH", "bB", "vV" });
-        jis.put('k', new String[]{ "jJ", "iI", "oO", "lL", ",<", "mM" });
-        jis.put('o', new String[]{ "iI", "9)", "00", "pP", "lL", "kK" });
-        jis.put('s', new String[]{ "aA", "wW", "eE", "dD", "xX", "zZ" });
-        jis.put('w', new String[]{ "qQ", "2\"", "3#", "eE", "sS", "aA" });
-        jis.put('{', new String[]{ "@`", null, "^~", null, "]}", ":*" });
-        jis.put('\"', new String[]{ "1!", null, null, "3#", "wW", "qQ" });
-        jis.put('&', new String[]{ "5%", null, null, "7'", "yY", "tT" });
-        jis.put('*', new String[]{ ";+", "@`", "[{", "]}", null, "/?" });
-        jis.put('.', new String[]{ ",<", "lL", ";+", "/?", null, null });
-        jis.put('2', new String[]{ "1!", null, null, "3#", "wW", "qQ" });
-        jis.put('6', new String[]{ "5%", null, null, "7'", "yY", "tT" });
-        jis.put(':', new String[]{ ";+", "@`", "[{", "]}", null, "/?" });
-        jis.put('>', new String[]{ ",<", "lL", ";+", "/?", null, null });
-        jis.put('B', new String[]{ "vV", "gG", "hH", "nN", null, null });
-        jis.put('F', new String[]{ "dD", "rR", "tT", "gG", "vV", "cC" });
-        jis.put('J', new String[]{ "hH", "uU", "iI", "kK", "mM", "nN" });
-        jis.put('N', new String[]{ "bB", "hH", "jJ", "mM", null, null });
-        jis.put('R', new String[]{ "eE", "4$", "5%", "tT", "fF", "dD" });
-        jis.put('V', new String[]{ "cC", "fF", "gG", "bB", null, null });
-        jis.put('Z', new String[]{ null, "aA", "sS", "xX", null, null });
-        jis.put('^', new String[]{ null, null, null, "\\|", null, "[{" });
-        jis.put('b', new String[]{ "vV", "gG", "hH", "nN", null, null });
-        jis.put('f', new String[]{ "dD", "rR", "tT", "gG", "vV", "cC" });
-        jis.put('j', new String[]{ "hH", "uU", "iI", "kK", "mM", "nN" });
-        jis.put('n', new String[]{ "bB", "hH", "jJ", "mM", null, null });
-        jis.put('r', new String[]{ "eE", "4$", "5%", "tT", "fF", "dD" });
-        jis.put('v', new String[]{ "cC", "fF", "gG", "bB", null, null });
-        jis.put('z', new String[]{ null, "aA", "sS", "xX", null, null });
-        jis.put('~', new String[]{ null, null, null, "\\|", null, "[{" });
-        jis.put('!', new String[]{ "`~", null, null, "2\"", "qQ", null });
-        jis.put('%', new String[]{ "4$", null, null, "6&", "tT", "rR" });
-        jis.put(')', new String[]{ "8(", null, null, "00", "oO", "iI" });
-        jis.put('-', new String[]{ "00", null, null, null, "@`", "pP" });
-        jis.put('1', new String[]{ "`~", null, null, "2\"", "qQ", null });
-        jis.put('5', new String[]{ "4$", null, null, "6&", "tT", "rR" });
-        jis.put('9', new String[]{ "8(", null, null, "00", "oO", "iI" });
-        jis.put('=', new String[]{ "00", null, null, null, "@`", "pP" });
-        jis.put('A', new String[]{ null, "qQ", "wW", "sS", "zZ", null });
-        jis.put('E', new String[]{ "wW", "3#", "4$", "rR", "dD", "sS" });
-        jis.put('I', new String[]{ "uU", "8(", "9)", "oO", "kK", "jJ" });
-        jis.put('M', new String[]{ "nN", "jJ", "kK", ",<", null, null });
-        jis.put('Q', new String[]{ null, "1!", "2\"", "wW", "aA", null });
-        jis.put('U', new String[]{ "yY", "7'", "8(", "iI", "jJ", "hH" });
-        jis.put('Y', new String[]{ "tT", "6&", "7'", "uU", "hH", "gG" });
-        jis.put(']', new String[]{ ":*", "[{", null, null, null, null });
-        jis.put('a', new String[]{ null, "qQ", "wW", "sS", "zZ", null });
-        jis.put('e', new String[]{ "wW", "3#", "4$", "rR", "dD", "sS" });
-        jis.put('i', new String[]{ "uU", "8(", "9)", "oO", "kK", "jJ" });
-        jis.put('m', new String[]{ "nN", "jJ", "kK", ",<", null, null });
-        jis.put('q', new String[]{ null, "1!", "2\"", "wW", "aA", null });
-        jis.put('u', new String[]{ "yY", "7'", "8(", "iI", "jJ", "hH" });
-        jis.put('y', new String[]{ "tT", "6&", "7'", "uU", "hH", "gG" });
-        jis.put('}', new String[]{ ":*", "[{", null, null, null, null });
-        ADJACENCY_GRAPHS.put("jis", jis);
-        Map<Character, String[]> keypad = new HashMap<>();
-        keypad.put('+', new String[]{ "9", "*", "-", null, null, null, null, "6" });
-        keypad.put('*', new String[]{ "/", null, null, null, "-", "+", "9", "8" });
-        keypad.put('-', new String[]{ "*", null, null, null, null, null, "+", "9" });
-        keypad.put('/', new String[]{ null, null, null, null, "*", "9", "8", "7" });
-        keypad.put('.', new String[]{ "0", "2", "3", null, null, null, null, null });
-        keypad.put('1', new String[]{ null, null, "4", "5", "2", "0", null, null });
-        keypad.put('0', new String[]{ null, "1", "2", "3", ".", null, null, null });
-        keypad.put('3', new String[]{ "2", "5", "6", null, null, null, ".", "0" });
-        keypad.put('2', new String[]{ "1", "4", "5", "6", "3", ".", "0", null });
-        keypad.put('5', new String[]{ "4", "7", "8", "9", "6", "3", "2", "1" });
-        keypad.put('4', new String[]{ null, null, "7", "8", "5", "2", "1", null });
-        keypad.put('7', new String[]{ null, null, null, "/", "8", "5", "4", null });
-        keypad.put('6', new String[]{ "5", "8", "9", "+", null, null, "3", "2" });
-        keypad.put('9', new String[]{ "8", "/", "*", "-", "+", null, "6", "5" });
-        keypad.put('8', new String[]{ "7", null, "/", "*", "9", "6", "5", "4" });
-        ADJACENCY_GRAPHS.put("keypad", keypad);
-        Map<Character, String[]> mac_keypad = new HashMap<>();
-        mac_keypad.put('+', new String[]{ "6", "9", "-", null, null, null, null, "3" });
-        mac_keypad.put('*', new String[]{ "/", null, null, null, null, null, "-", "9" });
-        mac_keypad.put('-', new String[]{ "9", "/", "*", null, null, null, "+", "6" });
-        mac_keypad.put('/', new String[]{ "=", null, null, null, "*", "-", "9", "8" });
-        mac_keypad.put('.', new String[]{ "0", "2", "3", null, null, null, null, null });
-        mac_keypad.put('1', new String[]{ null, null, "4", "5", "2", "0", null, null });
-        mac_keypad.put('0', new String[]{ null, "1", "2", "3", ".", null, null, null });
-        mac_keypad.put('3', new String[]{ "2", "5", "6", "+", null, null, ".", "0" });
-        mac_keypad.put('2', new String[]{ "1", "4", "5", "6", "3", ".", "0", null });
-        mac_keypad.put('5', new String[]{ "4", "7", "8", "9", "6", "3", "2", "1" });
-        mac_keypad.put('4', new String[]{ null, null, "7", "8", "5", "2", "1", null });
-        mac_keypad.put('7', new String[]{ null, null, null, "=", "8", "5", "4", null });
-        mac_keypad.put('6', new String[]{ "5", "8", "9", "-", "+", null, "3", "2" });
-        mac_keypad.put('9', new String[]{ "8", "=", "/", "*", "-", "+", "6", "5" });
-        mac_keypad.put('8', new String[]{ "7", null, "=", "/", "9", "6", "5", "4" });
-        mac_keypad.put('=', new String[]{ null, null, null, null, "/", "9", "8", "7" });
-        ADJACENCY_GRAPHS.put("mac_keypad", mac_keypad);
+
+    public static final Keyboard QWERTY =
+            new Keyboard("qwerty", new SlantedAdjacentGraphBuilder(loadAsString("keyboards/qwerty.txt")));
+
+    public static final Keyboard DVORAK =
+            new Keyboard("dvorak", new SlantedAdjacentGraphBuilder(loadAsString("keyboards/dvorak.txt")));
+
+    public static final Keyboard JIS =
+            new Keyboard("jis", new SlantedAdjacentGraphBuilder(loadAsString("keyboards/jis.txt")));
+
+    public static final Keyboard KEYPAD =
+            new Keyboard("keypad", new AlignedAdjacentAdjacentGraphBuilder(loadAsString("keyboards/keypad.txt")));
+
+    public static final Keyboard MAC_KEYPAD =
+            new Keyboard("mac_keypad", new AlignedAdjacentAdjacentGraphBuilder(loadAsString("keyboards/mac_keypad.txt")));
+
+    public static final List<Keyboard> ALL_KEYBOARDS = Arrays.asList(QWERTY, DVORAK, JIS, KEYPAD, MAC_KEYPAD);
+
+    private final String name;
+
+    private final Map<Character, List<String>> adjacencyGraph;
+
+    private final boolean slanted;
+
+    private final int startingPositions;
+
+    private final int averageDegree;
+
+    private Keyboard(final String name, final AdjacentGraphBuilder adjacentGraphBuilder) {
+        this.name = name;
+        this.adjacencyGraph = adjacentGraphBuilder.build();
+        this.slanted = adjacentGraphBuilder.isSlanted();
+        this.startingPositions = adjacencyGraph.size();
+        this.averageDegree = calcAverageDegree(adjacencyGraph);
+    }
+
+    private static int calcAverageDegree(final Map<Character, List<String>> adjacencyGraph) {
+        int average = 0;
+        for (Map.Entry<Character, List<String>> graphRef : adjacencyGraph.entrySet()) {
+            List<String> neighbors = graphRef.getValue();
+            for (String neighbor : neighbors) if (neighbor != null) average += 1;
+            average /= adjacencyGraph.size();
+        }
+        return average;
+    }
+
+    private static String loadAsString(final String name) {
+        try (final InputStream input = Keyboard.class.getResourceAsStream(name);
+             final BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
+            final StringBuilder sb = new StringBuilder(1024 * 4);
+            String str;
+            while ((str = reader.readLine()) != null) {
+                sb.append(str);
+                sb.append('\n');
+            }
+            return sb.toString();
+        } catch (final IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    public static Keyboard of(final String graph) {
+        for (Keyboard keyboard : ALL_KEYBOARDS) {
+            if (keyboard.getName().equals(graph)) {
+                return keyboard;
+            }
+        }
+        throw new IllegalArgumentException("Illegal graph " + graph);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Map<Character, List<String>> getAdjacencyGraph() {
+        return adjacencyGraph;
+    }
+
+    public boolean isSlanted() {
+        return slanted;
+    }
+
+    public int getStartingPositions() {
+        return startingPositions;
+    }
+
+    public int getAverageDegree() {
+        return averageDegree;
+    }
+
+    static abstract class AdjacentGraphBuilder {
+
+        private static final SplitMatcher WHITESPACE_SPLIT_MATCHER = new SplitMatcher() {
+            @Override
+            public boolean match(final char c) {
+                return Character.isWhitespace(c);
+            }
+        };
+
+        private static final SplitMatcher NEW_LINE_SPLIT_MATCHER = new SplitMatcher() {
+            @Override
+            public boolean match(final char c) {
+                return c == '\n';
+            }
+        };
+
+        private final String layout;
+
+        public AdjacentGraphBuilder(final String layout) {
+            this.layout = layout;
+        }
+
+        /**
+         * builds an adjacency graph as a dictionary: {character: [adjacent_characters]}.
+         * adjacent characters occur in a clockwise order.
+         * for example:
+         * on qwerty layout, 'g' maps to ['fF', 'tT', 'yY', 'hH', 'bB', 'vV']
+         * on keypad layout, '7' maps to [None, None, None, '=', '8', '5', '4', None]         *
+         */
+        public Map<Character, List<String>> build() {
+            final Map<Position, String> positionTable = buildPositionTable(layout);
+
+            final Map<Character, List<String>> adjacencyGraph = new HashMap<>();
+            for (Map.Entry<Position, String> entry : positionTable.entrySet()) {
+                for (final char key : entry.getValue().toCharArray()) {
+                    final List<String> adjacencies = new ArrayList<>();
+                    final Position position = entry.getKey();
+                    for (final Position coord : getAdjacentCoords(position)) {
+                        adjacencies.add(positionTable.get(coord));
+                    }
+                    adjacencyGraph.put(key, adjacencies);
+                }
+            }
+
+            return adjacencyGraph;
+        }
+
+        private Map<Position, String> buildPositionTable(final String layout) {
+            final Map<Position, String> positionTable = new HashMap<>();
+
+            final List<String> tokens = split(layout, WHITESPACE_SPLIT_MATCHER);
+            final int tokenSize = tokens.get(0).length();
+            final int xUnit = tokenSize + 1;
+
+            for (String token : tokens) {
+                assert token.length() == tokenSize : String.format("token [%s] length mismatch:\n%s", token, layout);
+            }
+
+            int y = 1;
+            for (final String line : split(layout, NEW_LINE_SPLIT_MATCHER)) {
+                // the way I illustrated keys above, each qwerty row is indented one space in from the last
+                int slant = calcSlant(y);
+                for (final String token : split(line, WHITESPACE_SPLIT_MATCHER)) {
+                    int index = line.indexOf(token) - slant;
+                    int x = index / xUnit;
+                    final int remainder = index % xUnit;
+                    assert remainder == 0 : String.format("unexpected x offset [%d] for %s in:\n%s", x, token, layout);
+                    positionTable.put(Position.of(x, y), token);
+                }
+
+                y++;
+            }
+            return positionTable;
+        }
+
+        protected abstract List<Position> getAdjacentCoords(final Position position);
+
+        private static List<String> split(final String str, final SplitMatcher splitMatcher) {
+            final int len = str.length();
+            final List<String> list = new ArrayList<>();
+            int i = 0, start = 0;
+            boolean match = false;
+            while (i < len) {
+                if (splitMatcher.match(str.charAt(i))) {
+                    if (match) {
+                        list.add(str.substring(start, i));
+                        match = false;
+                    }
+                    start = ++i;
+                    continue;
+                }
+                match = true;
+                i++;
+            }
+            if (match) {
+                list.add(str.substring(start, i));
+            }
+            return list;
+        }
+
+        protected abstract int calcSlant(int y);
+
+        public abstract boolean isSlanted();
+
+        private interface SplitMatcher {
+            boolean match(char c);
+        }
+    }
+
+    static class SlantedAdjacentGraphBuilder extends AdjacentGraphBuilder {
+
+        public SlantedAdjacentGraphBuilder(final String layout) {
+            super(layout);
+        }
+
+        /**
+         * returns the six adjacent coordinates on a standard keyboard, where each row is slanted to the
+         * right from the last. adjacencies are clockwise, starting with key to the left, then two keys
+         * above, then right key, then two keys below. (that is, only near-diagonal keys are adjacent,
+         * so g's coordinate is adjacent to those of t,y,b,v, but not those of r,u,n,c.)
+         */
+        @Override
+        protected List<Position> getAdjacentCoords(final Position position) {
+            return Arrays.asList(
+                    Position.of(position.getX() - 1, position.getY()),
+                    Position.of(position.getX(), position.getY() - 1),
+                    Position.of(position.getX() + 1, position.getY() - 1),
+                    Position.of(position.getX() + 1, position.getY()),
+                    Position.of(position.getX(), position.getY() + 1),
+                    Position.of(position.getX() - 1, position.getY() + 1));
+        }
+
+        @Override
+
+        public boolean isSlanted() {
+            return true;
+        }
+
+        @Override
+        protected int calcSlant(int y) {
+            return y - 1;
+        }
+    }
+
+    static class AlignedAdjacentAdjacentGraphBuilder extends AdjacentGraphBuilder {
+
+        public AlignedAdjacentAdjacentGraphBuilder(final String layout) {
+            super(layout);
+        }
+
+        @Override
+        public boolean isSlanted() {
+            return false;
+        }
+
+        @Override
+        protected int calcSlant(int y) {
+            return 0;
+        }
+
+        /**
+         * returns the nine clockwise adjacent coordinates on a keypad, where each row is vert aligned.
+         */
+        @Override
+        protected List<Position> getAdjacentCoords(final Position position) {
+            return Arrays.asList(
+                    Position.of(position.getX() - 1, position.getY()),
+                    Position.of(position.getX() - 1, position.getY() - 1),
+                    Position.of(position.getX(), position.getY() - 1),
+                    Position.of(position.getX() + 1, position.getY() - 1),
+                    Position.of(position.getX() + 1, position.getY()),
+                    Position.of(position.getX() + 1, position.getY() + 1),
+                    Position.of(position.getX(), position.getY() + 1),
+                    Position.of(position.getX() - 1, position.getY() + 1));
+        }
+    }
+
+    static class Position {
+
+        private final int x;
+
+        private final int y;
+
+        private Position(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public static Position of(int x, int y) {
+            return new Position(x, y);
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = x;
+            result = 31 * result + y;
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Position)) return false;
+
+            final Position position = (Position) o;
+
+            return x == position.x && y == position.y;
+        }
+
+        @Override
+        public String toString() {
+            return "[" + x + "," + y + ']';
+        }
     }
 }
