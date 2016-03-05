@@ -4,9 +4,7 @@ import com.nulabinc.zxcvbn.guesses.*;
 import com.nulabinc.zxcvbn.matchers.Match;
 import com.nulabinc.zxcvbn.matchers.MatchFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Scoring {
 
@@ -19,117 +17,96 @@ public class Scoring {
     }
 
     public static Strength mostGuessableMatchSequence(String password, List<Match> matches) {
-        List<List<Double>> optimalProduct = new ArrayList<>();
-        List<List<Match>> backPointers = new ArrayList<>();
-        int maxL = 0;
-        int optimalL = 0;
-        double optimalScore = 0;
-        for (int k = 0; k < password.length(); k++) {
-            backPointers.add(new ArrayList<Match>());
-            optimalProduct.add(new ArrayList<Double>());
-            optimalScore = Double.POSITIVE_INFINITY;
-            for (int prevL = 0; prevL <= maxL ; prevL++) {
-                boolean considerBruteforce = true;
-                int bfJ = k;
-                int bfI = 0;
-                int newL = 0;
-                if (prevL == 0) {
-                    bfI = 0;
-                    newL = 1;
-                } else if (indexExists(backPointers, k - 1)
-                        && indexExists(backPointers.get(k - 1), prevL)) {
-                    if (Pattern.Bruteforce == backPointers.get(k - 1).get(prevL).pattern) {
-                        bfI = backPointers.get(k - 1).get(prevL).i;
-                        newL = prevL;
-                    } else {
-                        bfI = k;
-                        newL = prevL + 1;
+        return mostGuessableMatchSequence(password, matches, false);
+    }
+
+    public static Strength mostGuessableMatchSequence(String password, List<Match> matches, boolean excludeAdditive) {
+        final int n = password.length();
+        final List<List<Match>> matchesByJ = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            matchesByJ.add(new ArrayList<Match>());
+        }
+        for (Match m : matches) {
+            matchesByJ.get(m.j).add(m);
+        }
+        final Optimal optimal = new Optimal(n);
+        for (int k = 0; k < n; k++) {
+            for(Match m :matchesByJ.get(k)) {
+                if (m.i > 0) {
+                    for(Map.Entry<Integer, Match> entry : optimal.m.get(m.i - 1).entrySet()) {
+                        int l = entry.getKey();
+                        update(password, m, l + 1, optimal, excludeAdditive);
                     }
                 } else {
-                    considerBruteforce = false;
-                }
-                if (considerBruteforce) {
-                    Match bfMatch = makeBruteforceMatch(password, bfI, bfJ);
-                    int prevJ = k - bfMatch.token.length(); // end of preceeding match
-                    double candidateProduct = new EstimateGuess(password).exec(bfMatch);
-                    if (newL > 1) candidateProduct *= optimalProduct.get(prevJ).get(newL - 1);
-                    double candidateScore = score(candidateProduct, newL, false);
-                    if (candidateScore < optimalScore) {
-                        optimalScore = candidateScore;
-                        addOrSet(optimalProduct.get(k), newL, candidateProduct);
-                        optimalL = newL;
-                        maxL = Math.max(maxL, newL);
-                        addOrSet(backPointers.get(k), newL, bfMatch);
-                    }
-                }
-                for (Match match: matches) {
-                    if (match.j != k) continue;
-                    int i = match.i;
-                    int j = match.j;
-                    if (prevL == 0) {
-                        if (i != 0) continue;
-                    } else {
-                        if (!indexExists(optimalProduct, i - 1)
-                                || !indexExists(optimalProduct.get(i - 1), prevL)) {
-                            continue;
-                        }
-                    }
-                    double candidateProduct = new EstimateGuess(password).exec(match);
-                    if (prevL > 0) {
-                        candidateProduct *= optimalProduct.get(i-1).get(prevL);
-                    }
-                    double candidateScore = score(candidateProduct, prevL + 1, false);
-                    if (candidateScore < optimalScore) {
-                        optimalScore = candidateScore;
-                        addOrSet(optimalProduct.get(k), prevL + 1, candidateScore);
-                        optimalL = prevL + 1;
-                        maxL = Math.max(maxL, prevL + 1);
-                        addOrSet(backPointers.get(k), prevL + 1, match);
-                    }
+                    update(password, m, 1, optimal, excludeAdditive);
                 }
             }
+            bruteforceUpdate(password, k, optimal, excludeAdditive);
         }
-        List<Match> matchSequence = new ArrayList<>();
-        int l = optimalL;
-        int k = password.length() - 1;
-        while(k >= 0) {
-            Match match = backPointers.get(k).get(l);
-            matchSequence.add(match);
-            k = match.i - 1;
-            l -= 1;
-        }
-        Collections.reverse(matchSequence);
-        double guesses = password.length() == 0 ? 1 : optimalScore;
+        List<Match> optimalMatchSequence = unwind(n, optimal);
+        double guesses = password.length() == 0 ? 1 : optimal.g.get(n - 1);
         Strength strength = new Strength();
         strength.setPassword(password);
         strength.setGuesses(guesses);
         strength.setGuessesLog10(log10(guesses));
-        strength.setSequence(matchSequence);
+        strength.setSequence(optimalMatchSequence);
         return strength;
     }
 
-    private static boolean indexExists(final List list, final int index) {
-        return index >= 0 && index < list.size() && list.get(index) != null;
+    private static void update(String password, Match m, int l, Optimal optimal, boolean excludeAdditive) {
+        int k = m.j;
+        double pi = new EstimateGuess(password).exec(m);
+        if (l > 1) {
+            pi *= optimal.pi.get(m.i - 1).get(l - 1);
+        }
+        double g = factorial(l) * pi;
+        if (!excludeAdditive) {
+            g += Math.pow(MIN_GUESSES_BEFORE_GROWING_SEQUENCE, l - 1);
+        }
+        if (g < optimal.g.get(k)) {
+            optimal.g.set(k, g);
+            optimal.l.set(k, l);
+            optimal.m.get(k).put(l, m);
+            optimal.pi.get(k).put(l, pi);
+        }
     }
 
-    private static<T> void addOrSet(final List<T> list, final int index, T element) {
-        if (!indexExists(list, index)) {
-            int diff =  index - (list.size() - 1);
-            for (int i = 0; i < diff; i++) {
-                list.add(null);
+    private static void bruteforceUpdate(String password, int k, Optimal optimal, boolean excludeAdditive) {
+        Match m = makeBruteforceMatch(password, 0, k);
+        update(password, m, 1, optimal, excludeAdditive);
+        if (k == 0) {
+            return;
+        }
+        for (Map.Entry<Integer, Match> entry : optimal.m.get(k - 1).entrySet()) {
+            int l = entry.getKey();
+            Match last_m = entry.getValue();
+            if (last_m.pattern == Pattern.Bruteforce) {
+                m = makeBruteforceMatch(password, last_m.i, k);
+                update(password, m, l, optimal, excludeAdditive);
+            } else {
+                m = makeBruteforceMatch(password, k, k);
+                update(password, m, l + 1, optimal, excludeAdditive);
             }
         }
-        list.set(index, element);
+    }
+
+    private static List<Match> unwind(int n, Optimal optimal) {
+        List<Match> optimalMatchSequence = new ArrayList<>();
+        int k = n - 1;
+        if (0 <= k) {
+            int l = optimal.l.get(k);
+            while (k >= 0) {
+                Match m = optimal.m.get(k).get(l);
+                optimalMatchSequence.add(0, m);
+                k = m.i - 1;
+                l--;
+            }
+        }
+        return optimalMatchSequence;
     }
 
     private static Match makeBruteforceMatch(String password, int i, int j) {
         return MatchFactory.createBruteforceMatch(i, j, password.substring(i, j + 1));
-    }
-
-    private static double score(double guessProduct, int sequenceLength, boolean excludeAdditive) {
-        double result = factorial(sequenceLength) * guessProduct;
-        if (!excludeAdditive) result += Math.pow(MIN_GUESSES_BEFORE_GROWING_SEQUENCE, sequenceLength - 1);
-        return result;
     }
 
     private static int factorial(int n) {
@@ -138,4 +115,25 @@ public class Scoring {
         for (int i = 2; i <= n; i++) f *= i;
         return f;
     }
+
+    private static class Optimal {
+
+        public final List<Map<Integer, Match>> m = new ArrayList<>();
+
+        public final List<Map<Integer, Double>> pi = new ArrayList<>();
+
+        public final List<Double> g = new ArrayList<>();
+
+        public final List<Integer> l = new ArrayList<>();
+
+        public Optimal(int n) {
+            for (int i = 0; i < n; i++) {
+                m.add(new HashMap<Integer, Match>());
+                pi.add(new HashMap<Integer, Double>());
+                g.add(Double.POSITIVE_INFINITY);
+                l.add(0);
+            }
+        }
+    }
+
 }
