@@ -7,7 +7,7 @@ public class DateGuess extends BaseGuess {
     @Override
     public double exec(Match match) {
         double yearSpace = Math.max(Math.abs(match.year - REFERENCE_YEAR), MIN_YEAR_SPACE);
-        double guesses = yearSpace * 31 * 12;
+        double guesses = yearSpace * 365;
         // TEST
         // if (match.hasFullYear) {
         //     guesses *= 2;
