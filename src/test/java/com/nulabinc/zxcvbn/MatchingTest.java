@@ -188,11 +188,11 @@ public class MatchingTest {
     @RunWith(Parameterized.class)
     public static class SpatialMatching {
         final String token;
-        final String keyboard;
+        final Keyboard keyboard;
         final int turns;
         final int shifts;
 
-        public SpatialMatching(String token, String keyboard, int turns, int shifts) {
+        public SpatialMatching(String token, Keyboard keyboard, int turns, int shifts) {
             this.token = token;
             this.keyboard = keyboard;
             this.turns = turns;
@@ -201,32 +201,30 @@ public class MatchingTest {
 
         @Test
         public void testSpatialMatching() throws Exception {
-            Map<String, Map<Character, String[]>> graphs = new HashMap<>();
-            graphs.put(keyboard, Keyboard.ADJACENCY_GRAPHS.get(keyboard));
-            List<Match> actualMatches = new SpatialMatcher(graphs).execute(token);
+            List<Match> actualMatches = new SpatialMatcher(Collections.singletonList(keyboard)).execute(token);
             String msg = String.format("matches %s as a %s token", token, keyboard);
             assertMatches(msg, Pattern.Spatial, new ExpectedMatch[]{
-                            new ExpectedMatch(token).graph(keyboard).turns(turns).shiftedCount(shifts)},
+                            new ExpectedMatch(token).graph(keyboard.getName()).turns(turns).shiftedCount(shifts)},
                     actualMatches);
         }
 
         @Parameterized.Parameters(name = "{0}")
         public static Collection<Object[]> data() {
             return Arrays.asList(new Object[][]{
-                    {"12345", "qwerty", 1, 0},
-                    {"@WSX", "qwerty", 1, 4},
-                    {"6tfGHJ", "qwerty", 2, 3},
-                    {"hGFd", "qwerty", 0, 2},
-                    {"/;p09876yhn", "qwerty", 3, 0},
-                    {"Xdr%", "qwerty", 1, 2},
-                    {"159-", "keypad", 1, 0},
-                    {"*84", "keypad", 1, 0},
-                    {"/8520", "keypad", 1, 0},
-                    {"369", "keypad", 1, 0},
-                    {"/963.", "mac_keypad", 1, 0},
-                    {"*-632.0214", "mac_keypad", 9, 0},
-                    {"aoEP%yIxkjq:", "dvorak", 4, 5},
-                    {";qoaOQ:Aoq;a", "dvorak", 11, 4}
+                    {"12345", Keyboard.QWERTY, 1, 0},
+                    {"@WSX", Keyboard.QWERTY, 1, 4},
+                    {"6tfGHJ", Keyboard.QWERTY, 2, 3},
+                    {"hGFd", Keyboard.QWERTY, 0, 2},
+                    {"/;p09876yhn", Keyboard.QWERTY, 3, 0},
+                    {"Xdr%", Keyboard.QWERTY, 1, 2},
+                    {"159-", Keyboard.KEYPAD, 1, 0},
+                    {"*84", Keyboard.KEYPAD, 1, 0},
+                    {"/8520", Keyboard.KEYPAD, 1, 0},
+                    {"369", Keyboard.KEYPAD, 1, 0},
+                    {"/963.", Keyboard.MAC_KEYPAD, 1, 0},
+                    {"*-632.0214", Keyboard.MAC_KEYPAD, 9, 0},
+                    {"aoEP%yIxkjq:", Keyboard.DVORAK, 4, 5},
+                    {";qoaOQ:Aoq;a", Keyboard.DVORAK, 11, 4}
             });
         }
     }
@@ -391,13 +389,13 @@ public class MatchingTest {
 
         @Test
         public void testSpatialMatching() throws Exception {
-            Map<String, Map<Character, String[]>> graphs = new HashMap<>();
-            graphs.put("qwerty", Keyboard.ADJACENCY_GRAPHS.get("qwerty"));
+            final Keyboard keyboard = Keyboard.QWERTY;
             final String token = "6tfGHJ";
-            List<Match> actualMatches = new SpatialMatcher(graphs).execute("rz!" + token + "%z");
+            List<Match> actualMatches = new SpatialMatcher(Collections.singletonList(keyboard))
+                    .execute("rz!" + token + "%z");
             String msg = "matches against spatial patterns surrounded by non-spatial patterns";
             ExpectedMatch[] expectedMatches = new ExpectedMatch[]{
-                    new ExpectedMatch(token, 3, 3 + token.length() - 1).graph("qwerty").turns(2).shiftedCount(3)
+                    new ExpectedMatch(token, 3, 3 + token.length() - 1).graph(keyboard.getName()).turns(2).shiftedCount(3)
             };
             assertMatches(msg, Pattern.Spatial, expectedMatches, actualMatches);
         }

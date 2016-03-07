@@ -1,41 +1,36 @@
 package com.nulabinc.zxcvbn.matchers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 public class SpatialMatcher extends BaseMatcher {
 
-
-    private final static List<String> KEY_LAYOUTS = Arrays.asList(new String[]{"qwerty","dvorak","jis"});
-
     private final Pattern shiftedRx = Pattern.compile("[~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>?]");
 
-    private final Map<String, Map<Character, String[]>> graphs;
+    private final List<Keyboard> keyboards;
 
-    public SpatialMatcher(Map<String, Map<Character, String[]>> graphs) {
-        this.graphs = graphs;
+    public SpatialMatcher(List<Keyboard> keyboards) {
+        this.keyboards = new ArrayList<>(keyboards);
     }
 
     public SpatialMatcher() {
-        this(Keyboard.ADJACENCY_GRAPHS);
+        this(Keyboard.ALL_KEYBOARDS);
     }
 
     @Override
     public List<Match> execute(String password) {
         List<Match> matches = new ArrayList<>();
-        for(Map.Entry<String, Map<Character, String[]>> graphEntry: graphs.entrySet()) {
-            String graphName = graphEntry.getKey();
-            Map<Character, String[]> graph = graphEntry.getValue();
-            extend(matches, spatialMatchHelper(password, graph, graphName));
+        for (Keyboard keyboard : keyboards) {
+            extend(matches, spatialMatchHelper(password, keyboard));
         }
         return this.sorted(matches);
     }
 
 
-    private List<Match> spatialMatchHelper(String password, Map<Character, String[]> graph, String graphName) {
+    private List<Match> spatialMatchHelper(String password, Keyboard keyboard) {
         List<Match> matches = new ArrayList<>();
         int i = 0;
         while (i < password.length() - 1) {
@@ -43,22 +38,23 @@ public class SpatialMatcher extends BaseMatcher {
             int lastDirection = 0;
             int turns = 0;
             int shiftedCount;
-            if ( KEY_LAYOUTS.contains(graphName) && shiftedRx.matcher(String.valueOf(password.charAt(i))).find()) {
+            if (keyboard.isSlanted() && shiftedRx.matcher(String.valueOf(password.charAt(i))).find()) {
                 shiftedCount = 1;
             } else {
                 shiftedCount = 0;
             }
+            final Map<Character, List<String>> graph = keyboard.getAdjacencyGraph();
             while(true) {
                 Character prevChar = password.charAt(j-1);
                 boolean found = false;
-                int foundDirection = -1;
+                int foundDirection;
                 int curDirection = -1;
-                String[] adjacents = graph.containsKey(prevChar) ? graph.get(prevChar) : new String[]{};
+                List<String> adjacents = graph.containsKey(prevChar) ? graph.get(prevChar) : Collections.<String>emptyList();
                 if (j < password.length()) {
                     Character curChar = password.charAt(j);
                     for(String adj: adjacents) {
                         curDirection += 1;
-                        if (adj != null && adj.indexOf(String.valueOf(curChar)) != -1) {
+                        if (adj != null && adj.contains(String.valueOf(curChar))) {
                             found = true;
                             foundDirection = curDirection;
                             if (adj.indexOf(String.valueOf(curChar)) == 1) {
@@ -80,7 +76,7 @@ public class SpatialMatcher extends BaseMatcher {
                                 i,
                                 j - 1,
                                 password.substring(i, j),
-                                graphName,
+                                keyboard.getName(),
                                 turns,
                                 shiftedCount));
                     }

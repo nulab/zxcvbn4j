@@ -1,7 +1,9 @@
 package com.nulabinc.zxcvbn.guesses;
 
 import com.nulabinc.zxcvbn.Guess;
+import com.nulabinc.zxcvbn.matchers.Keyboard;
 
+import java.util.List;
 import java.util.Map;
 
 public abstract class BaseGuess implements Guess {
@@ -18,14 +20,4 @@ public abstract class BaseGuess implements Guess {
         return r;
     }
 
-    protected static int calcAverageDegree(Map<Character, String[]> graph) {
-        int average = 0;
-        for (Map.Entry<Character, String[]> graphRef: graph.entrySet()) {
-            Character key = graphRef.getKey();
-            String[] neighbors = graphRef.getValue();
-            for (String neighbor: neighbors) if (neighbor != null) average += 1;
-            average /= graph.size();
-        }
-        return average;
-    }
 }
