@@ -19,6 +19,7 @@ The following version is a port of [zxcvbn 4.2.0](https://github.com/dropbox/zxc
 ## Special Feature
 
 * It includes JIS keyboard layout in spatial matching.
+* Localization feedback messages.
 
 ## Install
 
@@ -52,14 +53,14 @@ $ ./gradlew build
 
 Basic Usage. This is also available Android.
 
-```
+``` java
 Zxcvbn zxcvbn = new Zxcvbn();
 Strength strength = zxcvbn.measure("This is password");
 ```
 
 If you want to add your own dictionary, put the keyword list of List <String> type to the second argument.
 
-```
+``` java
 List<String> sanitizedInputs = new ArrayList();
 sanitizedInputs.add("nulab");
 sanitizedInputs.add("backlog");
@@ -134,6 +135,29 @@ strength.sequence
 # how long it took zxcvbn to calculate an answer, in milliseconds.
 strength.calc_time
 ```
+
+## Localization feedback messages
+
+The zxcvbn4j can be localized localize the english feedback message to other languages.
+
+``` java
+// Get the Strength instance.
+Zxcvbn zxcvbn = new Zxcvbn();
+Strength strength = zxcvbn.measure("This is password");
+
+// Get the ResourceBundle based on the name and locale of the property file(※).
+ResourceBundle resourceBundle = ResourceBundle.getBundle("This is bundle name", Locale.JAPAN);
+
+// Feedback to pass the ResourceBundle. And to generate a localized Feedback.
+Feedback feedback = strength.getFeedback();
+Feedback localizedFeedback = feedback.withResourceBundle(resourceBundle);
+
+// getSuggestions() and getWarning() returns localized feedback message.
+List<String> localizedSuggestions = localizedFeedback.getSuggestions();
+String localizedWarning = localizedFeedback.getWarning();
+```
+
+Defined Key and the message in the properties file. Reference the [messages.properties](https://github.com/nulab/zxcvbn4j/blob/master/src/main/resources/com/nulabinc/zxcvbn/messages.properties).
 
 ## Bugs and Feedback
 

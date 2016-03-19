@@ -19,6 +19,7 @@ zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxc
 ## 特別な機能
 
 * 隣接したキー配列の照合処理にJISキーボードを対応。
+* フィードバックメッセージのローカライズに対応。
 
 ## インストール
 
@@ -52,14 +53,14 @@ $ ./gradlew build
 
 基本的な使い方です。Androidも同じようにご利用できます。
 
-```
+``` java
 Zxcvbn zxcvbn = new Zxcvbn();
 Strength strength = zxcvbn.measure("This is password");
 ```
 
 独自の辞書を追加したい場合は、第二引数にリスト<文字列>のタイプのキーワード一覧を渡します。
 
-```
+``` java
 List<String> sanitizedInputs = new ArrayList();
 sanitizedInputs.add("nulab");
 sanitizedInputs.add("backlog");
@@ -120,6 +121,29 @@ strength.sequence
 # 測定にかかった時間
 strength.calc_time
 ```
+
+## フィードバックメッセージのローカライズ
+
+zxcvbn4jは英語で返却されるフィードバックメッセージを他の言語に変更可能です。
+
+``` java
+// パスワード強度を測定して Strength を取得します。
+Zxcvbn zxcvbn = new Zxcvbn();
+Strength strength = zxcvbn.measure("This is password");
+
+// 事前に用意したプロパティファイル(※)の名前とロケールを指定して、ResourceBundle を取得します。
+ResourceBundle resourceBundle = ResourceBundle.getBundle("This is bundle name", Locale.JAPAN);
+
+// FeedbackにResourceBundleを渡して、ローカライズされたFeedbackを生成します。
+Feedback feedback = strength.getFeedback();
+Feedback localizedFeedback = feedback.withResourceBundle(resourceBundle);
+
+// getSuggestions()、getWarning()で取得するフィードバックメッセージはローカライズ済みです。
+List<String> localizedSuggestions = localizedFeedback.getSuggestions();
+String localizedWarning = localizedFeedback.getWarning();
+```
+
+プロパティファイルに定義するキーとメッセージは、[messages.properties](https://github.com/nulab/zxcvbn4j/blob/master/src/main/resources/com/nulabinc/zxcvbn/messages.properties) を参考に作成してください。
 
 ## バグ報告やご意見
 
