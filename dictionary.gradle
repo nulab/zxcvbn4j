@@ -1,0 +1,142 @@
+
+
+task createDictionary(type: DictionaryTask)
+
+class DictionaryTask extends DefaultTask {
+
+    String src = "./data/"
+
+    String dest = "./src/main/resources/com/nulabinc/zxcvbn/matchers/dictionarys/"
+
+    String ext = ".txt"
+
+    Map params = [ "us_tv_and_film": 30000,
+                   "english_wikipedia": 30000,
+                   "passwords": 30000,
+                   "surnames": 10000,
+                   "male_names": null,
+                   "female_names": null ]
+    @TaskAction
+    def generate() {
+        Map<String, Map<String, Long>> unfilteredFreqLists = parseFrequencyLists();
+        def frequencyLists = filterFrequencyLists(unfilteredFreqLists);
+        for (Map.Entry<String, String[]> ref: frequencyLists.entrySet()) {
+            FileWriter fw = new FileWriter(dest + ref.key + ext, false);
+            PrintWriter pw = new PrintWriter(new BufferedWriter(fw));
+            for (String word: ref.value) {
+                pw.println(word);
+            }
+            pw.close();
+        }
+    }
+
+    def buildResourcePath(filename) {
+        src + filename + ext;
+    }
+
+    def Map<String, Map<String, Long>> parseFrequencyLists() {
+        Map<String, Map<String, Long>> freqLists = new HashMap<>();
+        for (String filename:  params.keySet()) {
+            String freqListName = filename;
+            if (!params.containsKey(freqListName)) {
+                String msg = "Warning: %s appears in directory but not in DICTIONARY settings. Excluding.";
+                System.out.println(String.format(msg, freqListName));
+                continue;
+            }
+            Map<String, Long> tokenToRank = new HashMap<>();
+            File file = new File(buildResourcePath(filename));
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            long rank = 0;
+            while ((line = br.readLine()) != null) {
+                rank++;
+                String token = line.split(" ")[0];
+                tokenToRank.put(token, rank);
+            }
+            freqLists.put(freqListName, tokenToRank);
+        }
+        return freqLists;
+    }
+
+    def boolean isRareAndShort(String token, long rank) {
+        return rank >= Math.pow(10, token.length());
+    }
+
+    def boolean hasCommaOrDoubleQuote(String token) {
+        if (token.indexOf(",") != -1 || token.indexOf("\"") != -1) {
+            return true;
+        }
+        return false;
+    }
+
+    def Map<String, String[]> filterFrequencyLists(Map<String, Map<String, Long>> freqLists) {
+        Map<String, Map<String, Long>> filteredTokenAndRank = new HashMap<>();
+        Map<String, Long> tokenCount = new HashMap<>();
+        for(String name: freqLists.keySet()) {
+            filteredTokenAndRank.put(name, new HashMap<String, Long>());
+            tokenCount.put(name, Long.valueOf(0));
+        }
+        Map<String, Long> minimumRank = new HashMap<>();
+        Map<String, String> minimumName = new HashMap<>();
+        for (Map.Entry<String, Map<String, Long>> freqRef: freqLists.entrySet()) {
+            String name = freqRef.getKey();
+            Map<String, Long> tokenToRank = freqRef.getValue();
+            for (Map.Entry<String, Long> tokenToRankRef: tokenToRank.entrySet()) {
+                String token = tokenToRankRef.getKey();
+                long rank = tokenToRankRef.getValue();
+
+                if (!minimumRank.containsKey(token)) {
+                    minimumRank.put(token, rank);
+                    minimumName.put(token, name);
+                } else {
+                    long minRank = minimumRank.get(token);
+                    if (rank < minRank) {
+                        minimumRank.put(token, rank);
+                        minimumName.put(token, name);
+                    }
+                }
+            }
+        }
+        for (Map.Entry<String, Map<String, Long>> freqRef: freqLists.entrySet()) {
+            String name = freqRef.getKey();
+            Map<String, Long> tokenToRank = freqRef.getValue();
+            for (Map.Entry<String, Long> tokenToRankRef : tokenToRank.entrySet()) {
+                String token = tokenToRankRef.getKey();
+                long rank = tokenToRankRef.getValue();
+
+                if (!minimumName.get(token).equals(name)) {
+                    continue;
+                }
+                if (isRareAndShort(token, rank)
+                        || hasCommaOrDoubleQuote(token)) {
+                    continue;
+                }
+                filteredTokenAndRank.get(name).put(token, rank);
+                tokenCount.put(name, (tokenCount.get(name) + 1));
+            }
+        }
+        Map<String, String[]> result = new HashMap<>();
+        for (Map.Entry<String, Map<String, Long>> filteredTokenAndRankRef:
+                filteredTokenAndRank.entrySet()) {
+            String name = filteredTokenAndRankRef.getKey();
+            Map<String, Long> tokenRankPairs = filteredTokenAndRankRef.getValue();
+            List<Map.Entry<String, Long>> entries = new ArrayList<>(tokenRankPairs.entrySet());
+            Collections.sort(entries, new Comparator<Map.Entry<String, Long>>() {
+                @Override
+                public int compare(Map.Entry<String, Long> o1, Map.Entry<String, Long> o2) {
+                    return o1.getValue().compareTo(o2.getValue());
+                }
+            });
+            Integer cutoffLimit = params.get(name);
+            if (cutoffLimit != null && tokenRankPairs.size() > cutoffLimit) {
+                entries = entries.subList(0, cutoffLimit);
+            }
+            List<String> tr = new ArrayList<>();
+            for (Map.Entry<String, Long> tokenRankPairRef: entries) {
+                tr.add(tokenRankPairRef.getKey());
+            }
+            result.put(name, tr.toArray());
+        }
+        return result;
+    }
+}

@@ -60,7 +60,7 @@ public class Keyboard {
 
     private static String loadAsString(final String name) {
         try (final InputStream input = Keyboard.class.getResourceAsStream(name);
-             final BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
+             final BufferedReader reader = new BufferedReader(new InputStreamReader(input, "UTF-8"))) {
             final StringBuilder sb = new StringBuilder(1024 * 4);
             String str;
             while ((str = reader.readLine()) != null) {

@@ -14,6 +14,8 @@ apply plugin: 'signing'
 apply plugin: 'cobertura'
 apply plugin: 'com.github.kt3k.coveralls'
 
+apply from: 'dictionary.gradle'
+
 group = 'com.nulab-inc'
 version = '1.1.0'
 archivesBaseName = 'zxcvbn'
@@ -132,3 +134,9 @@ uploadArchives {
         }
     }
 }
+
+task preCompile << {
+    tasks.createDictionary.execute()
+}
+
+compileJava.dependsOn preCompile
