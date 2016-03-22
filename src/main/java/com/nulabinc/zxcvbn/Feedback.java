@@ -7,7 +7,9 @@ import java.util.*;
 
 public class Feedback {
 
-    private static final ResourceBundle MESSAGES = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages");
+    public static final String BUNDLE_NAME = "com/nulabinc/zxcvbn/messages";
+
+    private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(BUNDLE_NAME);
 
     public static final String DEFAULT_SUGGESTIONS_USE_FEW_WORDS = "feedback.default.suggestions.useFewWords";
     public static final String DEFAULT_SUGGESTIONS_NO_NEED_SYMBOLS = "feedback.default.suggestions.noNeedSymbols";
@@ -64,6 +66,11 @@ public class Feedback {
 
     public Feedback withResourceBundle(ResourceBundle messages) {
         return new Feedback(messages, warning, suggestions);
+    }
+
+    public Feedback withLocale(Locale locale) {
+        ResourceBundle messages = ResourceBundle.getBundle(BUNDLE_NAME, locale);
+        return this.withResourceBundle(messages);
     }
 
     private String l10n(String messageId) {
