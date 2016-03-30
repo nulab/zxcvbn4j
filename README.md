@@ -26,7 +26,7 @@ The following version is a port of [zxcvbn 4.2.0](https://github.com/dropbox/zxc
 ### gradle
 
 ```
-'com.nulab-inc:zxcvbn:1.1.1'
+compile 'com.nulab-inc:zxcvbn:1.1.1'
 ```
 
 ### maven
