@@ -26,7 +26,7 @@ zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxc
 ### gradle を利用する場合
 
 ```
-'com.nulab-inc:zxcvbn:1.1.1'
+compile 'com.nulab-inc:zxcvbn:1.1.1'
 ```
 
 ### maven を利用する場合
