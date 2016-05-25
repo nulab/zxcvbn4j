@@ -3,11 +3,15 @@ package com.nulabinc.zxcvbn;
 import com.nulabinc.zxcvbn.guesses.DictionaryGuess;
 import com.nulabinc.zxcvbn.matchers.Match;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class Feedback {
 
-    private static final ResourceBundle MESSAGES = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages");
+    private static final String DEFAULT_BUNDLE_NAME = "com/nulabinc/zxcvbn/messages";
 
     public static final String DEFAULT_SUGGESTIONS_USE_FEW_WORDS = "feedback.default.suggestions.useFewWords";
     public static final String DEFAULT_SUGGESTIONS_NO_NEED_SYMBOLS = "feedback.default.suggestions.noNeedSymbols";
@@ -36,37 +40,48 @@ public class Feedback {
     public static final String DICTIONARY_SUGGESTIONS_REVERSED = "feedback.dictionary.suggestions.reversed";
     public static final String DICTIONARY_SUGGESTIONS_L33T = "feedback.dictionary.suggestions.l33t";
 
-    final private ResourceBundle messages;
     final private String warning;
     final private String[] suggestions;
 
     private Feedback(String warning, String... suggestions) {
-        this(MESSAGES, warning, suggestions);
-    }
-
-    private Feedback(ResourceBundle messages, String warning, String... suggestions) {
-        this.messages = messages;
         this.warning = warning;
         this.suggestions = suggestions;
     }
 
     public String getWarning() {
-        return warning != null ? l10n(warning) : "";
+        return getWarning(Locale.getDefault());
+    }
+
+    public String getWarning(Locale locale) {
+        if (this.warning == null) {
+            return "";
+        }
+        ResourceBundle messages = resolveResourceBundle(locale);
+        return l10n(messages, this.warning);
     }
 
     public List<String> getSuggestions() {
-        List<String> suggestions = new ArrayList<>(this.suggestions.length);
+        return getSuggestions(Locale.getDefault());
+    }
+
+    public List<String> getSuggestions(Locale locale) {
+        List<String> suggestionTexts = new ArrayList<>(this.suggestions.length);
+        ResourceBundle messages = resolveResourceBundle(locale);
         for (String suggestion : this.suggestions) {
-            suggestions.add(l10n(suggestion));
+            suggestionTexts.add(l10n(messages, suggestion));
         }
-        return suggestions;
+        return suggestionTexts;
+    }
+
+    protected ResourceBundle resolveResourceBundle(Locale locale) {
+        return ResourceBundle.getBundle(DEFAULT_BUNDLE_NAME, locale);
     }
 
     public Feedback withResourceBundle(ResourceBundle messages) {
-        return new Feedback(messages, warning, suggestions);
+        return new ResourceBundleFeedback(messages, warning, suggestions);
     }
 
-    private String l10n(String messageId) {
+    private String l10n(ResourceBundle messages, String messageId) {
         return messages != null ? messages.getString(messageId) : messageId;
     }
 
@@ -180,5 +195,19 @@ public class Feedback {
             suggestions.add(DICTIONARY_SUGGESTIONS_L33T);
         }
         return new Feedback(warning, suggestions.toArray(new String[suggestions.size()]));
+    }
+
+    private static class ResourceBundleFeedback extends Feedback{
+        private ResourceBundle messages;
+
+        private ResourceBundleFeedback(ResourceBundle messages, String warning, String... suggestions) {
+            super(warning, suggestions);
+            this.messages = messages;
+        }
+
+        @Override
+        protected ResourceBundle resolveResourceBundle(Locale locale) {
+            return messages;
+        }
     }
 }
