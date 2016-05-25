@@ -103,6 +103,24 @@ public class FeedbackTest {
         }
     }
 
+    @Test
+    public void testUnknownWarning() {
+        Zxcvbn zxcvbn = new Zxcvbn();
+        Strength strength = zxcvbn.measure(password);
+        Feedback feedback = strength.getFeedback().withResourceBundle(null);
+
+        Assert.assertEquals("Unexpected warning", expectedWarning, feedback.getWarning());
+    }
+
+    @Test
+    public void testUnknownSuggestions() {
+        Zxcvbn zxcvbn = new Zxcvbn();
+        Strength strength = zxcvbn.measure(password);
+        Feedback feedback = strength.getFeedback().withResourceBundle(null);
+
+        Assert.assertArrayEquals("Unexpected suggestions", expectedSuggestions, feedback.getSuggestions().toArray());
+    }
+
     @Parameterized.Parameters(name = "{0}")
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][]{

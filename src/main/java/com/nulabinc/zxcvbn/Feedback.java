@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
 
 public class Feedback {
 
-    private static final String BUNDLE_NAME = "com/nulabinc/zxcvbn/messages";
+    private static final String DEFAULT_BUNDLE_NAME = "com/nulabinc/zxcvbn/messages";
 
     public static final String DEFAULT_SUGGESTIONS_USE_FEW_WORDS = "feedback.default.suggestions.useFewWords";
     public static final String DEFAULT_SUGGESTIONS_NO_NEED_SYMBOLS = "feedback.default.suggestions.noNeedSymbols";
@@ -56,8 +56,8 @@ public class Feedback {
         if (this.warning == null) {
             return "";
         }
-        ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
-        return bundle.getString(this.warning);
+        ResourceBundle messages = resolveResourceBundle(locale);
+        return l10n(messages, this.warning);
     }
 
     public List<String> getSuggestions() {
@@ -66,11 +66,23 @@ public class Feedback {
 
     public List<String> getSuggestions(Locale locale) {
         List<String> suggestionTexts = new ArrayList<>(this.suggestions.length);
-        ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
+        ResourceBundle messages = resolveResourceBundle(locale);
         for (String suggestion : this.suggestions) {
-            suggestionTexts.add(bundle.getString(suggestion));
+            suggestionTexts.add(l10n(messages, suggestion));
         }
         return suggestionTexts;
+    }
+
+    protected ResourceBundle resolveResourceBundle(Locale locale) {
+        return ResourceBundle.getBundle(DEFAULT_BUNDLE_NAME, locale);
+    }
+
+    public Feedback withResourceBundle(ResourceBundle messages) {
+        return new ResourceBundleFeedback(messages, warning, suggestions);
+    }
+
+    private String l10n(ResourceBundle messages, String messageId) {
+        return messages != null ? messages.getString(messageId) : messageId;
     }
 
     static Feedback getFeedback(int score, List<Match> sequence) {
@@ -183,5 +195,19 @@ public class Feedback {
             suggestions.add(DICTIONARY_SUGGESTIONS_L33T);
         }
         return new Feedback(warning, suggestions.toArray(new String[suggestions.size()]));
+    }
+
+    private static class ResourceBundleFeedback extends Feedback{
+        private ResourceBundle messages;
+
+        private ResourceBundleFeedback(ResourceBundle messages, String warning, String... suggestions) {
+            super(warning, suggestions);
+            this.messages = messages;
+        }
+
+        @Override
+        protected ResourceBundle resolveResourceBundle(Locale locale) {
+            return messages;
+        }
     }
 }
