@@ -27,10 +27,10 @@ public class FeedbackTest {
         Zxcvbn zxcvbn = new Zxcvbn();
         Strength strength = zxcvbn.measure(password);
         Feedback feedback = strength.getFeedback();
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages");
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages", Locale.ROOT);
 
         String expectedWarningL10n = expectedWarning.length() > 0 ? resourceBundle.getString(expectedWarning) : "";
-        Assert.assertEquals("Unexpected warning", expectedWarningL10n, feedback.getWarning());
+        Assert.assertEquals("Unexpected warning", expectedWarningL10n, feedback.getWarning(Locale.ENGLISH));
     }
 
     @Test
@@ -49,14 +49,14 @@ public class FeedbackTest {
         Zxcvbn zxcvbn = new Zxcvbn();
         Strength strength = zxcvbn.measure(password);
         Feedback feedback = strength.getFeedback();
-        ResourceBundle resourceBundle = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages");
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages", Locale.ROOT);
 
         String[] expectedSuggestionsL10n = new String[expectedSuggestions.length];
         for (int i = 0; i < expectedSuggestions.length; i++) {
             String expectedSuggestion = expectedSuggestions[i];
             expectedSuggestionsL10n[i] = resourceBundle.getString(expectedSuggestion);
         }
-        Assert.assertArrayEquals("Unexpected suggestions", expectedSuggestionsL10n, feedback.getSuggestions().toArray());
+        Assert.assertArrayEquals("Unexpected suggestions", expectedSuggestionsL10n, feedback.getSuggestions(Locale.ENGLISH).toArray());
     }
 
     @Test
