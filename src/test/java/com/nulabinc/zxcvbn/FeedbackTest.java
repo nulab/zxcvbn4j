@@ -1,6 +1,5 @@
 package com.nulabinc.zxcvbn;
 
-
 import org.junit.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
@@ -25,82 +24,54 @@ public class FeedbackTest {
 
     @Test
     public void testWarning() {
-        Locale defaultLocale = Locale.getDefault();
-        Locale.setDefault(Locale.ENGLISH);
+        Zxcvbn zxcvbn = new Zxcvbn();
+        Strength strength = zxcvbn.measure(password);
+        Feedback feedback = strength.getFeedback();
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages", Locale.ROOT);
 
-        try {
-            Zxcvbn zxcvbn = new Zxcvbn();
-            Strength strength = zxcvbn.measure(password);
-            Feedback feedback = strength.getFeedback();
-            ResourceBundle resourceBundle = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages");
-
-            String expectedWarningL10n = expectedWarning.length() > 0 ? resourceBundle.getString(expectedWarning) : "";
-            Assert.assertEquals("Unexpected warning", expectedWarningL10n, feedback.getWarning());
-        } finally {
-            Locale.setDefault(defaultLocale);
-        }
+        String expectedWarningL10n = expectedWarning.length() > 0 ? resourceBundle.getString(expectedWarning) : "";
+        Assert.assertEquals("Unexpected warning", expectedWarningL10n, feedback.getWarning(Locale.ENGLISH));
     }
 
     @Test
     public void testJapaneseWarning() {
-        Locale defaultLocale = Locale.getDefault();
-        Locale.setDefault(Locale.ENGLISH);
+        Zxcvbn zxcvbn = new Zxcvbn();
+        Strength strength = zxcvbn.measure(password);
+        Feedback feedback = strength.getFeedback();
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages", Locale.JAPANESE);
 
-        try {
-            Zxcvbn zxcvbn = new Zxcvbn();
-            Strength strength = zxcvbn.measure(password);
-            Feedback feedback = strength.getFeedback();
-            ResourceBundle resourceBundle = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages", Locale.JAPANESE);
-
-            String expectedWarningL10n = expectedWarning.length() > 0 ? resourceBundle.getString(expectedWarning) : "";
-            Assert.assertEquals("Unexpected warning", expectedWarningL10n, feedback.getWarning(Locale.JAPANESE));
-        } finally {
-            Locale.setDefault(defaultLocale);
-        }
+        String expectedWarningL10n = expectedWarning.length() > 0 ? resourceBundle.getString(expectedWarning) : "";
+        Assert.assertEquals("Unexpected warning", expectedWarningL10n, feedback.getWarning(Locale.JAPANESE));
     }
 
     @Test
     public void testSuggestions() {
-        Locale defaultLocale = Locale.getDefault();
-        Locale.setDefault(Locale.ENGLISH);
+        Zxcvbn zxcvbn = new Zxcvbn();
+        Strength strength = zxcvbn.measure(password);
+        Feedback feedback = strength.getFeedback();
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages", Locale.ROOT);
 
-        try {
-            Zxcvbn zxcvbn = new Zxcvbn();
-            Strength strength = zxcvbn.measure(password);
-            Feedback feedback = strength.getFeedback();
-            ResourceBundle resourceBundle = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages");
-
-            String[] expectedSuggestionsL10n = new String[expectedSuggestions.length];
-            for (int i = 0; i < expectedSuggestions.length; i++) {
-                String expectedSuggestion = expectedSuggestions[i];
-                expectedSuggestionsL10n[i] = resourceBundle.getString(expectedSuggestion);
-            }
-            Assert.assertArrayEquals("Unexpected suggestions", expectedSuggestionsL10n, feedback.getSuggestions().toArray());
-        } finally {
-            Locale.setDefault(defaultLocale);
+        String[] expectedSuggestionsL10n = new String[expectedSuggestions.length];
+        for (int i = 0; i < expectedSuggestions.length; i++) {
+            String expectedSuggestion = expectedSuggestions[i];
+            expectedSuggestionsL10n[i] = resourceBundle.getString(expectedSuggestion);
         }
+        Assert.assertArrayEquals("Unexpected suggestions", expectedSuggestionsL10n, feedback.getSuggestions(Locale.ENGLISH).toArray());
     }
 
     @Test
     public void testJapaneseSuggestions() {
-        Locale defaultLocale = Locale.getDefault();
-        Locale.setDefault(Locale.ENGLISH);
+        Zxcvbn zxcvbn = new Zxcvbn();
+        Strength strength = zxcvbn.measure(password);
+        Feedback feedback = strength.getFeedback();
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages", Locale.JAPANESE);
 
-        try {
-            Zxcvbn zxcvbn = new Zxcvbn();
-            Strength strength = zxcvbn.measure(password);
-            Feedback feedback = strength.getFeedback();
-            ResourceBundle resourceBundle = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages", Locale.JAPANESE);
-
-            String[] expectedSuggestionsL10n = new String[expectedSuggestions.length];
-            for (int i = 0; i < expectedSuggestions.length; i++) {
-                String expectedSuggestion = expectedSuggestions[i];
-                expectedSuggestionsL10n[i] = resourceBundle.getString(expectedSuggestion);
-            }
-            Assert.assertArrayEquals("Unexpected suggestions", expectedSuggestionsL10n, feedback.getSuggestions(Locale.JAPANESE).toArray());
-        } finally {
-            Locale.setDefault(defaultLocale);
+        String[] expectedSuggestionsL10n = new String[expectedSuggestions.length];
+        for (int i = 0; i < expectedSuggestions.length; i++) {
+            String expectedSuggestion = expectedSuggestions[i];
+            expectedSuggestionsL10n[i] = resourceBundle.getString(expectedSuggestion);
         }
+        Assert.assertArrayEquals("Unexpected suggestions", expectedSuggestionsL10n, feedback.getSuggestions(Locale.JAPANESE).toArray());
     }
 
     @Test
