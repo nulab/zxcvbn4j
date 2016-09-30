@@ -17,7 +17,7 @@ apply plugin: 'com.github.kt3k.coveralls'
 apply from: 'dictionary.gradle'
 
 group = 'com.nulab-inc'
-version = '1.1.5'
+version = '1.1.6'
 archivesBaseName = 'zxcvbn'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
