@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public class Feedback {
@@ -78,7 +79,12 @@ public class Feedback {
     }
 
     protected ResourceBundle resolveResourceBundle(Locale locale) {
-        return ResourceBundle.getBundle(DEFAULT_BUNDLE_NAME, locale, CONTROL);
+        try {
+            return ResourceBundle.getBundle(DEFAULT_BUNDLE_NAME, locale, CONTROL);
+        } catch (MissingResourceException e) {
+            // Fix for issue of Android refs: https://github.com/nulab/zxcvbn4j/issues/21
+            return ResourceBundle.getBundle(DEFAULT_BUNDLE_NAME, locale);
+        }
     }
 
     public Feedback withResourceBundle(ResourceBundle messages) {
@@ -201,7 +207,7 @@ public class Feedback {
         return new Feedback(warning, suggestions.toArray(new String[suggestions.size()]));
     }
 
-    private static class ResourceBundleFeedback extends Feedback{
+    private static class ResourceBundleFeedback extends Feedback {
         private ResourceBundle messages;
 
         private ResourceBundleFeedback(ResourceBundle messages, String warning, String... suggestions) {
