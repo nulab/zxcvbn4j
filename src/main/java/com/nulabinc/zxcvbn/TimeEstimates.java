@@ -41,7 +41,7 @@ public class TimeEstimates {
         else if (seconds < hour) return format(divide(seconds, minute), "%s minute");
         else if (seconds < day) return format(divide(seconds, hour), "%s hour");
         else if (seconds < month) return format(divide(seconds, day), "%s day");
-        else if (seconds < year) return format(divide(seconds, month), "%s monty");
+        else if (seconds < year) return format(divide(seconds, month), "%s month");
         else if (seconds < century) return format(divide(seconds, year), "%s year");
         else return format(null, "centuries");
     }
