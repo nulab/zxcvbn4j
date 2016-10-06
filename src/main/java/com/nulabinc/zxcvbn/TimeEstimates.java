@@ -37,11 +37,11 @@ public class TimeEstimates {
         final Double year = month * 12;
         final Double century = year * 100;
         if (seconds < 1) return format(null, "less than a second");
-        else if (seconds < minute) return format(seconds, "%s seconds");
+        else if (seconds < minute) return format(seconds, "%s second");
         else if (seconds < hour) return format(divide(seconds, minute), "%s minute");
         else if (seconds < day) return format(divide(seconds, hour), "%s hour");
         else if (seconds < month) return format(divide(seconds, day), "%s day");
-        else if (seconds < year) return format(divide(seconds, month), "%s monty");
+        else if (seconds < year) return format(divide(seconds, month), "%s month");
         else if (seconds < century) return format(divide(seconds, year), "%s year");
         else return format(null, "centuries");
     }
