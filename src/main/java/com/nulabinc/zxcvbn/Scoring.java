@@ -29,6 +29,14 @@ public class Scoring {
         for (Match m : matches) {
             matchesByJ.get(m.j).add(m);
         }
+        for(List<Match> lst : matchesByJ) {
+            Collections.sort(lst, new Comparator<Match>() {
+                @Override
+                public int compare(Match m1, Match m2) {
+                    return m1.i - m2.i;
+                }
+            });
+        }
         final Optimal optimal = new Optimal(n);
         for (int k = 0; k < n; k++) {
             for(Match m :matchesByJ.get(k)) {
@@ -44,7 +52,8 @@ public class Scoring {
             bruteforceUpdate(password, k, optimal, excludeAdditive);
         }
         List<Match> optimalMatchSequence = unwind(n, optimal);
-        double guesses = password.length() == 0 ? 1 : optimal.g.get(n - 1);
+        Integer optimalL = optimalMatchSequence.size();
+        double guesses = password.length() == 0 ? 1 : optimal.g.get(n - 1).get(optimalL);
         Strength strength = new Strength();
         strength.setPassword(password);
         strength.setGuesses(guesses);
@@ -59,16 +68,30 @@ public class Scoring {
         if (l > 1) {
             pi *= optimal.pi.get(m.i - 1).get(l - 1);
         }
+        if (Double.isInfinite(pi)) {
+            pi = Double.MAX_VALUE;
+        }
         double g = factorial(l) * pi;
+        if (Double.isInfinite(g)) {
+            g = Double.MAX_VALUE;
+        }
         if (!excludeAdditive) {
             g += Math.pow(MIN_GUESSES_BEFORE_GROWING_SEQUENCE, l - 1);
+            if (Double.isInfinite(g)) {
+                g = Double.MAX_VALUE;
+            }
         }
-        if (g < optimal.g.get(k)) {
-            optimal.g.set(k, g);
-            optimal.l.set(k, l);
-            optimal.m.get(k).put(l, m);
-            optimal.pi.get(k).put(l, pi);
+        for (Map.Entry<Integer, Double> competing : optimal.g.get(k).entrySet()) {
+            if (competing.getKey() > l) {
+                continue;
+            }
+            if (competing.getValue() <= g) {
+                return;
+            }
         }
+        optimal.g.get(k).put(l, g);
+        optimal.m.get(k).put(l, m);
+        optimal.pi.get(k).put(l, pi);
     }
 
     private static void bruteforceUpdate(String password, int k, Optimal optimal, boolean excludeAdditive) {
@@ -94,7 +117,14 @@ public class Scoring {
         List<Match> optimalMatchSequence = new ArrayList<>();
         int k = n - 1;
         if (0 <= k) {
-            int l = optimal.l.get(k);
+            Integer l = null;
+            Double g = Double.POSITIVE_INFINITY;
+            for (Map.Entry<Integer, Double> candidate : optimal.g.get(k).entrySet()) {
+                if (candidate.getValue() < g) {
+                    l = candidate.getKey();
+                    g = candidate.getValue();
+                }
+            }
             while (k >= 0) {
                 Match m = optimal.m.get(k).get(l);
                 optimalMatchSequence.add(0, m);
@@ -122,16 +152,13 @@ public class Scoring {
 
         public final List<Map<Integer, Double>> pi = new ArrayList<>();
 
-        public final List<Double> g = new ArrayList<>();
-
-        public final List<Integer> l = new ArrayList<>();
+        public final List<Map<Integer, Double>> g = new ArrayList<>();
 
         public Optimal(int n) {
             for (int i = 0; i < n; i++) {
                 m.add(new HashMap<Integer, Match>());
                 pi.add(new HashMap<Integer, Double>());
-                g.add(Double.POSITIVE_INFINITY);
-                l.add(0);
+                g.add(new HashMap<Integer, Double>());
             }
         }
     }
