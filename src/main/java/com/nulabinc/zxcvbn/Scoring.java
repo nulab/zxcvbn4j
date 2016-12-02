@@ -97,20 +97,19 @@ public class Scoring {
     private static void bruteforceUpdate(String password, int k, Optimal optimal, boolean excludeAdditive) {
         Match m = makeBruteforceMatch(password, 0, k);
         update(password, m, 1, optimal, excludeAdditive);
-        if (k == 0) {
-            return;
-        }
-        for (Map.Entry<Integer, Match> entry : optimal.m.get(k - 1).entrySet()) {
-            int l = entry.getKey();
-            Match last_m = entry.getValue();
-            if (last_m.pattern == Pattern.Bruteforce) {
-                m = makeBruteforceMatch(password, last_m.i, k);
-                update(password, m, l, optimal, excludeAdditive);
-            } else {
-                m = makeBruteforceMatch(password, k, k);
-                update(password, m, l + 1, optimal, excludeAdditive);
+        for (int i = 1; i <= k; i++) {
+            m = makeBruteforceMatch(password, i, k);
+            for (Map.Entry<Integer, Match> entry : optimal.m.get(i - 1).entrySet()) {
+                int l = entry.getKey();
+                Match last_m = entry.getValue();
+                if (last_m.pattern == Pattern.Bruteforce) {
+                    continue;
+                } else {
+                    update(password, m, l + 1, optimal, excludeAdditive);
+                }
             }
         }
+
     }
 
     private static List<Match> unwind(int n, Optimal optimal) {

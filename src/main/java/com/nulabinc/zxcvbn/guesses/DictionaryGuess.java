@@ -14,6 +14,7 @@ public class DictionaryGuess extends BaseGuess {
 
     @Override
     public double exec(Match match) {
+        match.baseGuesses = (double) match.rank;
         int uppercaseVariations = uppercaseVariations(match);
         int l33tVariations = l33tVariations(match);
         int reversedVariations = match.reversed ? 2 : 1;

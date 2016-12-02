@@ -26,7 +26,6 @@ public class Match {
     public final String regexName;
     public final java.util.regex.Matcher regexMatch;
     public final String baseToken;
-    public final double baseGuesses;
     public final List<Match> baseMatches;
     public final int repeatCount;
     public final String graph;
@@ -37,6 +36,7 @@ public class Match {
     public final int month;
     public final int day;
 
+    public Double baseGuesses;
     public Double guesses;
     public Double guessesLog10;
 
