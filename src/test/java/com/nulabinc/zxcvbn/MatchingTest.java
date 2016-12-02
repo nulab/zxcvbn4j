@@ -256,22 +256,28 @@ public class MatchingTest {
     @RunWith(Parameterized.class)
     public static class RepeatMatchingSimple {
         private String password;
+        private int size;
 
-        public RepeatMatchingSimple(String password) {
+        public RepeatMatchingSimple(String password, int size) {
             this.password = password;
+            this.size = size;
         }
 
         @Test
-        public void testSequenceMatching() throws Exception {
+        public void testRepeatMatchingSimple() throws Exception {
             String msg = String.format("doesn't match length-%s repeat patterns", password.length());
-            assertEquals(msg, new RepeatMatcher().execute(password).size(), 0);
+            assertEquals(msg, new RepeatMatcher().execute(password).size(), size);
         }
 
         @Parameterized.Parameters(name = "{0}")
         public static Collection<Object[]> data() {
             return Arrays.asList(new Object[][]{
-                    {""},
-                    {"#"}
+                    {"", 0},
+                    {"#", 0},
+                    {"abababababbbbbbbbbbbbb", 2},
+                    {"abababababbbbbbbbbbbb", 2},
+                    {"abababababbbbbbbbbbb", 2}
+
             });
         }
     }

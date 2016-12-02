@@ -15,10 +15,13 @@ public class RepeatMatcher extends BaseMatcher {
         Pattern greedy = Pattern.compile("(.+)\\1+");
         Pattern lazy = Pattern.compile("(.+?)\\1+");
         Pattern lazyAnchored = Pattern.compile("^(.+?)\\1+$");
+        int passwordLength = password.length();
         int lastIndex = 0;
-        java.util.regex.Matcher greedyMatch = greedy.matcher(password);
-        java.util.regex.Matcher lazyMatch = lazy.matcher(password);
-        while(lastIndex < password.length()) {
+        while(lastIndex < passwordLength) {
+            java.util.regex.Matcher greedyMatch = greedy.matcher(password);
+            java.util.regex.Matcher lazyMatch = lazy.matcher(password);
+            greedyMatch.region(lastIndex, passwordLength);
+            lazyMatch.region(lastIndex, passwordLength);
             if (!greedyMatch.find()) break;
             java.util.regex.Matcher match;
             String baseToken;
