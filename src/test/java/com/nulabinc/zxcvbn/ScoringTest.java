@@ -74,7 +74,7 @@ public class ScoringTest {
         public void testRepeatGuesses() throws Exception {
             double baseGuesses = Scoring.mostGuessableMatchSequence(
                     baseToken, new Matching().omnimatch(baseToken)).getGuesses();
-            Match match = new Match.Builder(Pattern.Date, 0, 0, token)
+            Match match = new Match.Builder(Pattern.Repeat, 0, 0, token)
                     .baseToken(baseToken)
                     .baseGuesses(baseGuesses)
                     .repeatCount(repeatCount)
