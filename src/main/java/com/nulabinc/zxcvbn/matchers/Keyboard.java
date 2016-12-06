@@ -38,7 +38,7 @@ public class Keyboard {
 
     private final int startingPositions;
 
-    private final int averageDegree;
+    private final double averageDegree;
 
     private Keyboard(final String name, final AdjacentGraphBuilder adjacentGraphBuilder) {
         this.name = name;
@@ -48,13 +48,23 @@ public class Keyboard {
         this.averageDegree = calcAverageDegree(adjacencyGraph);
     }
 
-    private static int calcAverageDegree(final Map<Character, List<String>> adjacencyGraph) {
-        int average = 0;
+    private static double calcAverageDegree(final Map<Character, List<String>> adjacencyGraph) {
+        double average = 0;
         for (Map.Entry<Character, List<String>> graphRef : adjacencyGraph.entrySet()) {
             List<String> neighbors = graphRef.getValue();
-            for (String neighbor : neighbors) if (neighbor != null) average += 1;
-            average /= adjacencyGraph.size();
+            List<String> results = new ArrayList<>();
+            for (String neighbor : neighbors) {
+                if (neighbor != null) {
+                    results.add(neighbor);
+                    average += results.size();
+                }
+            }
         }
+        List<Character> keys = new ArrayList<>();
+        for (Map.Entry<Character, List<String>> graphRef : adjacencyGraph.entrySet()) {
+            keys.add(graphRef.getKey());
+        }
+        average /= keys.size();
         return average;
     }
 
@@ -98,7 +108,7 @@ public class Keyboard {
         return startingPositions;
     }
 
-    public int getAverageDegree() {
+    public double getAverageDegree() {
         return averageDegree;
     }
 
