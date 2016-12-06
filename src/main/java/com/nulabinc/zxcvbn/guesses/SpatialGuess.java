@@ -9,13 +9,15 @@ public class SpatialGuess extends BaseGuess {
     public double exec(Match match) {
         Keyboard keyboard = Keyboard.of(match.graph);
         int s = keyboard.getStartingPositions();
-        int d = keyboard.getAverageDegree();
+        double d = keyboard.getAverageDegree();
         double guesses = 0;
         int l = match.token.length();
         int t = match.turns;
         for (int i = 2; i <= l; i++) {
             int possibleTurns = Math.min(t, i - 1);
-            for (int j = 1; j < possibleTurns; j++) guesses += nCk(i - 1, j - 1) * s * Math.pow(d, j);
+            for (int j = 1; j <= possibleTurns; j++) {
+                guesses += nCk(i - 1, j - 1) * s * Math.pow(d, j);
+            }
         }
         int shiftedCount = match.shiftedCount;
         int unshiftedCount = match.token.length() - match.shiftedCount;
