@@ -103,11 +103,11 @@ public class FeedbackTest {
                         Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
                         Feedback.REPEAT_SUGGESTIONS_AVOID_REPEATED_WORDS
                 }},
-                {"qwertyuiop", Feedback.SPATIAL_WARNING_STRAIGHT_ROWS_OF_KEYS, new String[]{
+                {"zxcvbnm,./", Feedback.SPATIAL_WARNING_STRAIGHT_ROWS_OF_KEYS, new String[]{
                         Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
                         Feedback.SPATIAL_SUGGESTIONS_USE_LONGER_KEYBOARD_PATTERN
                 }},
-                {"qwerfdsa", Feedback.SPATIAL_WARNING_SHORT_KEYBOARD_PATTERNS, new String[]{
+                {"lkjhgfdsa", Feedback.SPATIAL_WARNING_SHORT_KEYBOARD_PATTERNS, new String[]{
                         Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
                         Feedback.SPATIAL_SUGGESTIONS_USE_LONGER_KEYBOARD_PATTERN
                 }},
