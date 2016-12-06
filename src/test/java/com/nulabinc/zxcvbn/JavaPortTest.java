@@ -13,6 +13,8 @@ import javax.script.ScriptException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -34,8 +36,9 @@ public class JavaPortTest {
 
         try {
             //using the 4.4.1 release
-            engine.eval(new FileReader(new File(JavaPortTest.class.getClassLoader().getResource("zxcvbn.js").getFile())));
-        } catch (FileNotFoundException | ScriptException e) {
+            URL script = JavaPortTest.class.getClassLoader().getResource("zxcvbn.js");
+            engine.eval(new FileReader(new File(script.toURI())));
+        } catch (URISyntaxException | FileNotFoundException | ScriptException e) {
             throw new RuntimeException("Cannot instantiate Nashorn", e);
         }
     }
