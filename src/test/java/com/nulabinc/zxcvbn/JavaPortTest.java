@@ -48,7 +48,14 @@ public class JavaPortTest {
         engine.put("pwd", password);
         @SuppressWarnings("unchecked")
         Map<String, Object> result = (Map<String, Object>) engine.eval("zxcvbn(pwd);");
-        int jsScore = (int) result.get("score");
+        Object score = result.get("score");
+        int jsScore;
+        // nashorn returns int, rhino returns double
+        if (score instanceof Double) {
+            jsScore = ((Double) score).intValue();
+        } else {
+            jsScore = (int) score;
+        }
         int javaScore = zxcvbn.measure(password).getScore();
         Assert.assertEquals("Password score difference for " + password, jsScore, javaScore);
     }
