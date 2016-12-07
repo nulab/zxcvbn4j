@@ -32,7 +32,7 @@ public class JavaPortTest {
     @BeforeClass
     public static void initEngine() {
         ScriptEngineManager manager = new ScriptEngineManager();
-        engine = manager.getEngineByName("nashorn");
+        engine = manager.getEngineByName("js");
 
         try {
             //using the 4.4.1 release
