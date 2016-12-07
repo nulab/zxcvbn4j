@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -32,21 +31,23 @@ public class JavaPortTest {
     @BeforeClass
     public static void initEngine() {
         ScriptEngineManager manager = new ScriptEngineManager();
-        engine = manager.getEngineByName("js");
+        engine = manager.getEngineByName("JavaScript");
 
         try {
             //using the 4.4.1 release
             URL script = JavaPortTest.class.getClassLoader().getResource("zxcvbn.js");
             engine.eval(new FileReader(new File(script.toURI())));
         } catch (URISyntaxException | FileNotFoundException | ScriptException e) {
-            throw new RuntimeException("Cannot instantiate Nashorn", e);
+            throw new RuntimeException("Cannot instantiate Javascript Engine", e);
         }
     }
 
     @Test
     public void testMeasure() throws Exception {
+        // add password to the engine scope
+        engine.put("pwd", password);
         @SuppressWarnings("unchecked")
-        Map<String, Object> result = (Map<String, Object>) ((Invocable) engine).invokeFunction("zxcvbn", password);
+        Map<String, Object> result = (Map<String, Object>) engine.eval("zxcvbn(pwd);");
         int jsScore = (int) result.get("score");
         int javaScore = zxcvbn.measure(password).getScore();
         Assert.assertEquals("Password score difference for " + password, jsScore, javaScore);
