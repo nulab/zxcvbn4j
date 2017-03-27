@@ -8,7 +8,7 @@ import java.util.*;
 
 public class Scoring {
 
-    public static final int REFERENCE_YEAR = 2016;
+    public static final int REFERENCE_YEAR = Calendar.getInstance().get(Calendar.YEAR);
 
     public static final int MIN_GUESSES_BEFORE_GROWING_SEQUENCE = 10000;
 
