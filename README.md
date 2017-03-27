@@ -5,6 +5,10 @@ This is a java port of [zxcvbn](https://github.com/dropbox/zxcvbn), which is a J
 
 ## Update
 
+The following version is a port of [zxcvbn 4.4.2](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.2)
+
+* 2017/03/27 1.2.3 released.
+
 The following version is a port of [zxcvbn 4.4.1](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.1)
 
 * 2016/12/07 1.2.2 released.
@@ -40,7 +44,7 @@ The following version is a port of [zxcvbn 4.2.0](https://github.com/dropbox/zxc
 ### gradle
 
 ```
-compile 'com.nulab-inc:zxcvbn:1.2.2'
+compile 'com.nulab-inc:zxcvbn:1.2.3'
 ```
 
 ### maven
@@ -49,7 +53,7 @@ compile 'com.nulab-inc:zxcvbn:1.2.2'
 <dependency>
   <groupId>com.nulab-inc</groupId>
   <artifactId>zxcvbn</artifactId>
-  <version>1.2.2</version>
+  <version>1.2.3</version>
 </dependency>
 ```
 
