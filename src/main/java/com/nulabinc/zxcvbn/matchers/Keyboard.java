@@ -56,9 +56,9 @@ public class Keyboard {
             for (String neighbor : neighbors) {
                 if (neighbor != null) {
                     results.add(neighbor);
-                    average += results.size();
                 }
             }
+            average += results.size();
         }
         List<Character> keys = new ArrayList<>();
         for (Map.Entry<Character, List<String>> graphRef : adjacencyGraph.entrySet()) {

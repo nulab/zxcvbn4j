@@ -19,14 +19,16 @@ public class SpatialGuess extends BaseGuess {
                 guesses += nCk(i - 1, j - 1) * s * Math.pow(d, j);
             }
         }
-        int shiftedCount = match.shiftedCount;
-        int unshiftedCount = match.token.length() - match.shiftedCount;
-        if (shiftedCount == 0 || unshiftedCount == 0) {
-            guesses *= 2;
-        } else {
-            int shiftedVariations = 0;
-            for (int i = 1; i <= Math.min(shiftedCount, unshiftedCount); i++) {
-                shiftedVariations += nCk(shiftedCount + unshiftedCount, i);
+        if (match.shiftedCount != null && match.shiftedCount > 0) {
+            int shiftedCount = match.shiftedCount;
+            int unshiftedCount = match.token.length() - match.shiftedCount;
+            if (shiftedCount == 0 || unshiftedCount == 0) {
+                guesses *= 2;
+            } else {
+                int shiftedVariations = 0;
+                for (int i = 1; i <= Math.min(shiftedCount, unshiftedCount); i++) {
+                    shiftedVariations += nCk(shiftedCount + unshiftedCount, i);
+                }
                 guesses *= shiftedVariations;
             }
         }

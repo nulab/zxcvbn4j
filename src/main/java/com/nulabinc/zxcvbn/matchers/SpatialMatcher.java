@@ -47,7 +47,7 @@ public class SpatialMatcher extends BaseMatcher {
             while(true) {
                 Character prevChar = password.charAt(j-1);
                 boolean found = false;
-                int foundDirection;
+                int foundDirection = -1;
                 int curDirection = -1;
                 List<String> adjacents = graph.containsKey(prevChar) ? graph.get(prevChar) : Collections.<String>emptyList();
                 if (j < password.length()) {
