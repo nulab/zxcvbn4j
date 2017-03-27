@@ -92,7 +92,11 @@ public class JavaPortTest {
                 {"QMji&0uze5O#%+%2e_Y08E(R6L8p"},
                 {"6EG4y1nJASd!1~!//#6+Yhb1vW3d"},
                 {"8$q_5f2U3s6~W(S7iv)_8N%lJkOE"},
-                {"%nbd~$)2y/6hV6)2R9vYPpA49A~C"}
+                {"%nbd~$)2y/6hV6)2R9vYPpA49A~C"},
+                {"xsw234rfvb"},
+                {"yaq123edc"},
+                {"cde345tgbn"},
+                {"yaqwedcvb"}
                 //the following password fails in version 4.4.1
                 //https://github.com/dropbox/zxcvbn/issues/174
 //                {"Rh&pW%EXT=/Z1lzouG.wU_+2MT+FG4sm+&jqN?L25jDtjW3EQuppfvD_30Vo3K=SX4=z3-U2gVf7A0oSM5oWegRa_sV$-GLI3LzCo&@!h@$v#OkoN#@-eS8Y&W$pGmmVXc#XHAv?n$M+_wQx1FAB_*iaZE1_9ZV.cwn-d@+90B8z0bVOKc63lV9QntW0kryN7Y#rjv@0+Bd8hc-3WW_Yn%z5/DE?R*UeiKgR#$/F8kA9I!Ib*GDa.x0T7UWCCxDV&ithebyz$=7vW6TdmlmL%WZxmA7K%*Rg1035UO%WOTIgiMs4AjpmL1"}
