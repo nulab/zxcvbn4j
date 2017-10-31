@@ -1,7 +1,8 @@
 
 # zxcvbn4j [![Build Status](https://travis-ci.org/nulab/zxcvbn4j.svg?branch=master)](https://travis-ci.org/nulab/zxcvbn4j) [![Coverage Status](https://coveralls.io/repos/nulab/zxcvbn4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/nulab/zxcvbn4j?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.nulab-inc/zxcvbn/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.nulab-inc/zxcvbn)
 
-This is a java port of [zxcvbn](https://github.com/dropbox/zxcvbn), which is a JavaScript password strength generator.
+This is a java port of [zxcvbn](https://github.com/dropbox/zxcvbn), which is a password strength estimator inspired by password crackers written on JavaScript.
+Through pattern matching and conservative estimation, it recognizes and weighs 30k common passwords, common names and surnames according to US census data, popular English words from Wikipedia and US television and movies, and other common patterns like dates, repeats (`aaa`), sequences (`abcd`), keyboard patterns (`qwertyuiop`), and l33t speak.
 
 ## Update
 
