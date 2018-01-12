@@ -1,5 +1,9 @@
 language: java
 jdk:
-  - oraclejdk7
+  - openjdk7
+install:
+  # workaround for the missing EC cipher suites
+  # will download Gradle distribution using OracleJDK8
+  - if [ "openjdk7" == "$TRAVIS_JDK_VERSION" ]; then JAVA_HOME=$(jdk_switcher home openjdk8) ./gradlew testClasses ; fi
 after_success:
   - ./gradlew cobertura coveralls
