@@ -2,7 +2,6 @@ package com.nulabinc.zxcvbn;
 
 import com.nulabinc.zxcvbn.matchers.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
@@ -460,8 +459,7 @@ public class MatchingTest {
         }
     }
 
-    @Ignore
-    public static class ExpectedMatch {
+    private static class ExpectedMatch {
         String token;
         int start;
         int end;
