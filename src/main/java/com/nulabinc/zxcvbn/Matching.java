@@ -21,14 +21,22 @@ public class Matching {
         }
     }
 
-    private final Map<String, Map<String, Integer>> rankedDictionaries;
+    protected final Map<String, Map<String, Integer>> rankedDictionaries;
 
     public Matching() {
         this(null);
     }
 
     public Matching(List<String> orderedList) {
-        this.rankedDictionaries = new HashMap<>(BASE_RANKED_DICTIONARIES);
+        this(BASE_RANKED_DICTIONARIES, orderedList);
+    }
+
+    protected Matching(Map<String, Map<String, Integer>> rankedDictionaries, List<String> orderedList) {
+        if (rankedDictionaries != null) {
+            this.rankedDictionaries = new HashMap<>(rankedDictionaries);
+        } else {
+            this.rankedDictionaries = new HashMap<>();
+        }
         Map<String, Integer> rankedUserInputs;
         if (orderedList != null && !orderedList.isEmpty()) {
             rankedUserInputs = buildRankedDict(orderedList);
@@ -42,7 +50,7 @@ public class Matching {
         return new OmnibusMatcher(rankedDictionaries).execute(password);
     }
 
-    private static Map<String, Integer> buildRankedDict(List<String> orderedList) {
+    protected static Map<String, Integer> buildRankedDict(List<String> orderedList) {
         HashMap<String, Integer> result = new HashMap<>();
         int i = 1; // rank starts at 1, not 0
         for(String word: orderedList) {

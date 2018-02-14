@@ -29,7 +29,7 @@ public class Zxcvbn {
             lowerSanitizedInputs = Collections.emptyList();
         }
         long start = time();
-        Matching matching = new Matching(lowerSanitizedInputs);
+        Matching matching = createMatching(lowerSanitizedInputs);
         List<Match> matches = matching.omnimatch(password);
         Strength strength = Scoring.mostGuessableMatchSequence(password, matches);
         strength.setCalcTime(time() - start);
@@ -39,6 +39,10 @@ public class Zxcvbn {
         strength.setScore(attackTimes.getScore());
         strength.setFeedback(Feedback.getFeedback(strength.getScore(), strength.getSequence()));
         return strength;
+    }
+
+    protected Matching createMatching(List<String> lowerSanitizedInputs) {
+        return new Matching(lowerSanitizedInputs);
     }
 
     private long time() {
