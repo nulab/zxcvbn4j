@@ -1,9 +1,14 @@
 package com.nulabinc.zxcvbn;
 
-import com.nulabinc.zxcvbn.matchers.*;
 import com.nulabinc.zxcvbn.matchers.Dictionary;
+import com.nulabinc.zxcvbn.matchers.Match;
+import com.nulabinc.zxcvbn.matchers.OmnibusMatcher;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Matching {
 
@@ -12,32 +17,32 @@ public class Matching {
         for (Map.Entry<String, String[]> frequencyListRef : Dictionary.FREQUENCY_LISTS.entrySet()) {
             String name = frequencyListRef.getKey();
             String[] ls = frequencyListRef.getValue();
-            BASE_RANKED_DICTIONARIES.put(name, buildRankedDict(ls));
+            BASE_RANKED_DICTIONARIES.put(name, buildRankedDict(Arrays.asList(ls)));
         }
     }
 
     private final Map<String, Map<String, Integer>> rankedDictionaries;
 
     public Matching() {
-        this(new ArrayList<String>());
+        this(null);
     }
 
     public Matching(List<String> orderedList) {
-        if (orderedList == null) orderedList = new ArrayList<>();
-        this.rankedDictionaries = new HashMap<>();
-        for (Map.Entry<String, Map<String, Integer>> baseRankedDictionary : BASE_RANKED_DICTIONARIES.entrySet()) {
-            this.rankedDictionaries.put(
-                    baseRankedDictionary.getKey(),
-                    baseRankedDictionary.getValue());
+        this.rankedDictionaries = new HashMap<>(BASE_RANKED_DICTIONARIES);
+        Map<String, Integer> rankedUserInputs;
+        if (orderedList != null && !orderedList.isEmpty()) {
+            rankedUserInputs = buildRankedDict(orderedList);
+        } else {
+            rankedUserInputs = Collections.emptyMap();
         }
-        this.rankedDictionaries.put("user_inputs", buildRankedDict(orderedList.toArray(new String[]{})));
+        this.rankedDictionaries.put("user_inputs", rankedUserInputs);
     }
 
     public List<Match> omnimatch(String password) {
         return new OmnibusMatcher(rankedDictionaries).execute(password);
     }
 
-    private static Map<String, Integer> buildRankedDict(String[] orderedList) {
+    private static Map<String, Integer> buildRankedDict(List<String> orderedList) {
         HashMap<String, Integer> result = new HashMap<>();
         int i = 1; // rank starts at 1, not 0
         for(String word: orderedList) {
