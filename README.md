@@ -4,6 +4,10 @@
 This is a java port of [zxcvbn](https://github.com/dropbox/zxcvbn), which is a password strength estimator inspired by password crackers written on JavaScript.
 Through pattern matching and conservative estimation, it recognizes and weighs 30k common passwords, common names and surnames according to US census data, popular English words from Wikipedia and US television and movies, and other common patterns like dates, repeats (`aaa`), sequences (`abcd`), keyboard patterns (`qwertyuiop`), and l33t speak.
 
+## Related articles
+
+- [Five Algorithms to Measure Real Password Strength](https://nulab-inc.com/blog/nulab/password-strength/)
+
 ## Update
 
 The following version is a port of [zxcvbn 4.4.2](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.2)
@@ -194,6 +198,7 @@ MIT License
 
 ## Application using this library
 
+- [Backlog](https://backlog.com/)
 - [Cacoo](https://cacoo.com/)
-- [Typetalk](https://typetalk.in/)
+- [Typetalk](https://typetalk.com/)
 - [JetBrains Hub](https://www.jetbrains.com/hub/)

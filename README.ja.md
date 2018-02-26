@@ -3,6 +3,10 @@
 
 zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxcvbn](https://github.com/dropbox/zxcvbn)をJavaにポーティングしたものです。
 
+## 関連記事
+
+- [真のパスワード強度を測定する5つのアルゴリズム](https://nulab-inc.com/ja/blog/nulab/password-strength/)
+
 ## 更新
 
 以下のバージョンは[zxcvbn 4.4.2](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.2)をポーティング
@@ -177,6 +181,7 @@ MIT License
 
 ## このライブラリを使用しているアプリケーション
 
+- [Backlog](https://backlog.com/)
 - [Cacoo](https://cacoo.com/)
-- [Typetalk](https://typetalk.in/)
+- [Typetalk](https://typetalk.com/)
 - [JetBrains Hub](https://www.jetbrains.com/hub/)
