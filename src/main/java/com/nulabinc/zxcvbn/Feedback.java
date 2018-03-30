@@ -84,6 +84,11 @@ public class Feedback {
         } catch (MissingResourceException e) {
             // Fix for issue of Android refs: https://github.com/nulab/zxcvbn4j/issues/21
             return ResourceBundle.getBundle(DEFAULT_BUNDLE_NAME, locale);
+        } catch (UnsupportedOperationException e) {
+            // Fix for issue of JDK 9 refs: https://github.com/nulab/zxcvbn4j/issues/45
+            // ResourceBundle.Control is not supported in named modules.
+            // See https://docs.oracle.com/javase/9/docs/api/java/util/ResourceBundle.html#bundleprovider for more details
+            return ResourceBundle.getBundle(DEFAULT_BUNDLE_NAME, locale);
         }
     }
 
