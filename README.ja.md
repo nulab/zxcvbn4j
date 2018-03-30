@@ -1,5 +1,5 @@
 
-# zxcvbn4j [![Build Status](https://travis-ci.org/nulab/zxcvbn4j.svg?branch=master)](https://travis-ci.org/nulab/zxcvbn4j) [![Coverage Status](https://coveralls.io/repos/nulab/zxcvbn4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/nulab/zxcvbn4j?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.nulab-inc/zxcvbn/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.nulab-inc/zxcvbn)
+# zxcvbn4j [![Build Status](https://travis-ci.org/nulab/zxcvbn4j.svg?branch=master)](https://travis-ci.org/nulab/zxcvbn4j) [![Coverage Status](https://coveralls.io/repos/nulab/zxcvbn4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/nulab/zxcvbn4j?branch=master) [![Maven Central](https://img.shields.io/maven-central/v/com.nulab-inc/zxcvbn.svg)](https://img.shields.io/maven-central/v/com.nulab-inc/zxcvbn.svg)
 
 zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxcvbn](https://github.com/dropbox/zxcvbn)をJavaにポーティングしたものです。
 
@@ -10,10 +10,13 @@ zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxc
 ## 更新
 
 以下のバージョンは[zxcvbn 4.4.2](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.2)をポーティング
+
+* 2018/03/30 1.2.5 リリース.
 * 2018/02/27 1.2.4 リリース.
 * 2017/03/27 1.2.3 リリース.
 
 以下のバージョンは[zxcvbn 4.4.1](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.1)をポーティング
+
 * 2016/12/07 1.2.2 リリース.
 * 2016/12/03 1.2.1 リリース.
 
@@ -47,7 +50,7 @@ zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxc
 ### gradle を利用する場合
 
 ```
-compile 'com.nulab-inc:zxcvbn:1.2.4'
+compile 'com.nulab-inc:zxcvbn:1.2.5'
 ```
 
 ### maven を利用する場合
@@ -56,7 +59,7 @@ compile 'com.nulab-inc:zxcvbn:1.2.4'
 <dependency>
   <groupId>com.nulab-inc</groupId>
   <artifactId>zxcvbn</artifactId>
-  <version>1.2.4</version>
+  <version>1.2.5</version>
 </dependency>
 ```
 

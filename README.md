@@ -1,5 +1,5 @@
 
-# zxcvbn4j [![Build Status](https://travis-ci.org/nulab/zxcvbn4j.svg?branch=master)](https://travis-ci.org/nulab/zxcvbn4j) [![Coverage Status](https://coveralls.io/repos/nulab/zxcvbn4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/nulab/zxcvbn4j?branch=master) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.nulab-inc/zxcvbn/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.nulab-inc/zxcvbn)
+# zxcvbn4j [![Build Status](https://travis-ci.org/nulab/zxcvbn4j.svg?branch=master)](https://travis-ci.org/nulab/zxcvbn4j) [![Coverage Status](https://coveralls.io/repos/nulab/zxcvbn4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/nulab/zxcvbn4j?branch=master) [![Maven Central](https://img.shields.io/maven-central/v/com.nulab-inc/zxcvbn.svg)](https://img.shields.io/maven-central/v/com.nulab-inc/zxcvbn.svg)
 
 This is a java port of [zxcvbn](https://github.com/dropbox/zxcvbn), which is a password strength estimator inspired by password crackers written on JavaScript.
 Through pattern matching and conservative estimation, it recognizes and weighs 30k common passwords, common names and surnames according to US census data, popular English words from Wikipedia and US television and movies, and other common patterns like dates, repeats (`aaa`), sequences (`abcd`), keyboard patterns (`qwertyuiop`), and l33t speak.
@@ -12,6 +12,7 @@ Through pattern matching and conservative estimation, it recognizes and weighs 3
 
 The following version is a port of [zxcvbn 4.4.2](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.2)
 
+* 2018/03/30 1.2.5 released.
 * 2018/02/27 1.2.4 released.
 * 2017/03/27 1.2.3 released.
 
@@ -50,7 +51,7 @@ The following version is a port of [zxcvbn 4.2.0](https://github.com/dropbox/zxc
 ### gradle
 
 ```
-compile 'com.nulab-inc:zxcvbn:1.2.4'
+compile 'com.nulab-inc:zxcvbn:1.2.5'
 ```
 
 ### maven
@@ -59,7 +60,7 @@ compile 'com.nulab-inc:zxcvbn:1.2.4'
 <dependency>
   <groupId>com.nulab-inc</groupId>
   <artifactId>zxcvbn</artifactId>
-  <version>1.2.4</version>
+  <version>1.2.5</version>
 </dependency>
 ```
 
