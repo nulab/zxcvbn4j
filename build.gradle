@@ -10,7 +10,6 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'maven'
-apply plugin: 'signing'
 apply plugin: 'cobertura'
 apply plugin: 'com.github.kt3k.coveralls'
 
@@ -23,7 +22,7 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.9'
+    gradleVersion = '4.6'
 }
 
 repositories {
@@ -75,11 +74,15 @@ configurations {
     deployerJars
 }
 
-signing {
-    // Skip signing snapshot archives
-    if (System.env.TRAVIS || version.endsWith("-SNAPSHOT")) return
+if (project.hasProperty("signing.keyId")) {
+    apply plugin: 'signing'
 
-    sign configurations.archives
+    signing {
+        // Skip signing snapshot archives
+        if (System.env.TRAVIS || version.endsWith("-SNAPSHOT")) return
+
+        sign configurations.archives
+    }
 }
 
 def ossrhUsername = hasProperty('ossrhUsername') ? ossrhUsername : ''
