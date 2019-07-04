@@ -13,20 +13,22 @@ import java.util.Map;
 
 public class Keyboard {
 
+    private static final String RESOURCES_PACKAGE_PATH = "com/nulabinc/zxcvbn/matchers/keyboards/";
+
     public static final Keyboard QWERTY =
-            new Keyboard("qwerty", new SlantedAdjacentGraphBuilder(loadAsString("keyboards/qwerty.txt")));
+            new Keyboard("qwerty", new SlantedAdjacentGraphBuilder(loadAsString("qwerty.txt")));
 
     public static final Keyboard DVORAK =
-            new Keyboard("dvorak", new SlantedAdjacentGraphBuilder(loadAsString("keyboards/dvorak.txt")));
+            new Keyboard("dvorak", new SlantedAdjacentGraphBuilder(loadAsString("dvorak.txt")));
 
     public static final Keyboard JIS =
-            new Keyboard("jis", new SlantedAdjacentGraphBuilder(loadAsString("keyboards/jis.txt")));
+            new Keyboard("jis", new SlantedAdjacentGraphBuilder(loadAsString("jis.txt")));
 
     public static final Keyboard KEYPAD =
-            new Keyboard("keypad", new AlignedAdjacentAdjacentGraphBuilder(loadAsString("keyboards/keypad.txt")));
+            new Keyboard("keypad", new AlignedAdjacentAdjacentGraphBuilder(loadAsString("keypad.txt")));
 
     public static final Keyboard MAC_KEYPAD =
-            new Keyboard("mac_keypad", new AlignedAdjacentAdjacentGraphBuilder(loadAsString("keyboards/mac_keypad.txt")));
+            new Keyboard("mac_keypad", new AlignedAdjacentAdjacentGraphBuilder(loadAsString("mac_keypad.txt")));
 
     public static final List<Keyboard> ALL_KEYBOARDS = Arrays.asList(QWERTY, DVORAK, JIS, KEYPAD, MAC_KEYPAD);
 
@@ -69,8 +71,8 @@ public class Keyboard {
     }
 
     private static String loadAsString(final String name) {
-        try (final InputStream input = Keyboard.class.getResourceAsStream(name);
-             final BufferedReader reader = new BufferedReader(new InputStreamReader(input, "UTF-8"))) {
+        try (final InputStream input = ClassLoader.getSystemResourceAsStream(RESOURCES_PACKAGE_PATH + name);
+             final BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
             final StringBuilder sb = new StringBuilder(1024 * 4);
             String str;
             while ((str = reader.readLine()) != null) {
