@@ -3,14 +3,14 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'net.saliman:gradle-cobertura-plugin:2.0.0' // cobertura plugin
+        classpath 'net.saliman:gradle-cobertura-plugin:2.6.1' // cobertura plugin
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0'
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'maven'
-apply plugin: 'cobertura'
+apply plugin: 'net.saliman.cobertura'
 apply plugin: 'com.github.kt3k.coveralls'
 
 apply from: 'dictionary.gradle'
@@ -21,8 +21,8 @@ archivesBaseName = 'zxcvbn'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.6'
+wrapper {
+    gradleVersion = '5.5'
 }
 
 repositories {
@@ -142,9 +142,3 @@ test {
     maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
     forkEvery = 4
 }
-
-task preCompile << {
-    tasks.createDictionary.execute()
-}
-
-compileJava.dependsOn preCompile
