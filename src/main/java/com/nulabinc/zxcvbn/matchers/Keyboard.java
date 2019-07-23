@@ -15,6 +15,8 @@ public class Keyboard {
 
     private static final String RESOURCES_PACKAGE_PATH = "com/nulabinc/zxcvbn/matchers/keyboards/";
 
+    private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
+
     public static final Keyboard QWERTY =
             new Keyboard("qwerty", new SlantedAdjacentGraphBuilder(loadAsString("qwerty.txt")));
 
@@ -71,7 +73,7 @@ public class Keyboard {
     }
 
     private static String loadAsString(final String name) {
-        try (final InputStream input = ClassLoader.getSystemResourceAsStream(RESOURCES_PACKAGE_PATH + name);
+        try (final InputStream input = RESOURCE_LOADER.getInputStream(RESOURCES_PACKAGE_PATH + name);
              final BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
             final StringBuilder sb = new StringBuilder(1024 * 4);
             String str;
