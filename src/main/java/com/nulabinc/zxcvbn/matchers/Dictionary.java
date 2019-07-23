@@ -6,16 +6,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class Dictionary {
 
     private static final String RESOURCES_PACKAGE_PATH = "com/nulabinc/zxcvbn/matchers/dictionarys/";
+
+    private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
 
     private static final String EXT = ".txt";
 
@@ -41,7 +40,7 @@ public class Dictionary {
         Map<String, String[]> freqLists = new HashMap<>();
         for (String filename:  DICTIONARY_PARAMS) {
             List<String> words = new ArrayList<>();
-            try(InputStream is = ClassLoader.getSystemResourceAsStream(buildResourcePath(filename));
+            try(InputStream is = RESOURCE_LOADER.getInputStream(buildResourcePath(filename));
                 BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = br.readLine()) != null) {
