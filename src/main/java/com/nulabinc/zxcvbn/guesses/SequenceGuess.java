@@ -24,6 +24,6 @@ public class SequenceGuess extends BaseGuess {
             }
         };
         if (!match.ascending) baseGuesses *= 2;
-        return baseGuesses * match.token.length();
+        return baseGuesses * match.tokenLength();
     }
 }

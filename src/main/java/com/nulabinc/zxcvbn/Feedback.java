@@ -112,7 +112,7 @@ public class Feedback {
         Match longestMatch = sequence.get(0);
         if (sequence.size() > 1) {
             for (Match match : sequence.subList(1, sequence.size() - 1)) {
-                if (match.token.length() > longestMatch.token.length()) longestMatch = match;
+                if (match.tokenLength() > longestMatch.tokenLength()) longestMatch = match;
             }
         }
 
@@ -197,13 +197,13 @@ public class Feedback {
         List<String> suggestions = new ArrayList<>();
         suggestions.add(EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD);
 
-        String word = match.token;
+        String word = match.tokenStr();
         if (DictionaryGuess.START_UPPER.matcher(word).find()) {
             suggestions.add(DICTIONARY_SUGGESTIONS_CAPITALIZATION);
         } else if (DictionaryGuess.ALL_UPPER.matcher(word).find() && !word.toLowerCase().equals(word)) {
             suggestions.add(DICTIONARY_SUGGESTIONS_ALL_UPPERCASE);
         }
-        if (match.reversed && match.token.length() >= 4) {
+        if (match.reversed && match.tokenLength() >= 4) {
             suggestions.add(DICTIONARY_SUGGESTIONS_REVERSED);
         }
         if (match.l33t) {

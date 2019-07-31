@@ -32,7 +32,7 @@ public class MatchingTest {
             assertEquals(msg, expectedMatch.end, actualMatch.j);
 
             msg = String.format("%s: matches[%s].token == '%s'", prefix, k, expectedMatch.token);
-            assertEquals(msg, expectedMatch.token, actualMatch.token);
+            assertEquals(msg, expectedMatch.token, actualMatch.tokenStr());
 
             for (String fieldName : expectedMatch.fields.keySet()) {
                 Object expectedValue = expectedMatch.fields.get(fieldName);
@@ -43,7 +43,13 @@ public class MatchingTest {
                     throw new RuntimeException(e);
                 }
                 msg = String.format("%s: matches[%s].%s == '%s'", prefix, k, fieldName, expectedValue);
-                assertEquals(msg, expectedValue, actualValue);
+                if ((expectedValue instanceof String) && (actualValue != null) && (actualValue instanceof CharSequence)) {
+                    // If comparing a CharSequence to a String, convert the CharSequence to a String first
+                    // because String.equals doesn't consider it equal if it isn't a String itself.
+                    assertEquals(msg, expectedValue, actualValue.toString());
+                } else {
+                    assertEquals(msg, expectedValue, actualValue);
+                }
             }
         }
     }

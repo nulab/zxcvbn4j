@@ -6,9 +6,9 @@ import com.nulabinc.zxcvbn.matchers.Match;
 
 public class EstimateGuess extends BaseGuess {
 
-    private final String password;
+    private final CharSequence password;
 
-    public EstimateGuess(String password) {
+    public EstimateGuess(CharSequence password) {
         this.password = password;
     }
 
@@ -16,8 +16,8 @@ public class EstimateGuess extends BaseGuess {
     public double exec(Match match) {
         if (match.guesses != null) return match.guesses;
         int minGuesses = 1;
-        if (match.token.length() < password.length()) {
-            minGuesses = match.token.length() == 1 ? MIN_SUBMATCH_GUESSES_SINGLE_CHAR : MIN_SUBMATCH_GUESSES_MULTI_CHAR;
+        if (match.tokenLength() < password.length()) {
+            minGuesses = match.tokenLength() == 1 ? MIN_SUBMATCH_GUESSES_SINGLE_CHAR : MIN_SUBMATCH_GUESSES_MULTI_CHAR;
         }
         final Guess guess;
         switch (match.pattern) {

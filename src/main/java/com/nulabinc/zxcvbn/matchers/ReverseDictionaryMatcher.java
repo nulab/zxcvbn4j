@@ -15,14 +15,14 @@ public class ReverseDictionaryMatcher extends BaseMatcher {
     }
 
     @Override
-    public List<Match> execute(String password) {
-        String reversedPassword = new StringBuilder(password).reverse().toString();
+    public List<Match> execute(CharSequence password) {
+        CharSequence reversedPassword = new StringBuilder(password).reverse();
         List<Match> matches = new ArrayList<>();
         for (Match match: new DictionaryMatcher(this.rankedDictionaries).execute(reversedPassword)) {
             matches.add(MatchFactory.createReversedDictionaryMatch(
                     password.length() - 1 - match.j,
                     password.length() - 1 - match.i,
-                    new StringBuilder(match.token).reverse().toString(),
+                    new StringBuilder(match.token).reverse(),
                     match.matchedWord,
                     match.rank,
                     match.dictionaryName));

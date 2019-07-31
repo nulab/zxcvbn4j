@@ -11,7 +11,7 @@ public class SpatialGuess extends BaseGuess {
         int s = keyboard.getStartingPositions();
         double d = keyboard.getAverageDegree();
         double guesses = 0;
-        int l = match.token.length();
+        int l = match.tokenLength();
         int t = match.turns;
         for (int i = 2; i <= l; i++) {
             int possibleTurns = Math.min(t, i - 1);
@@ -21,7 +21,7 @@ public class SpatialGuess extends BaseGuess {
         }
         if (match.shiftedCount != null && match.shiftedCount > 0) {
             int shiftedCount = match.shiftedCount;
-            int unshiftedCount = match.token.length() - match.shiftedCount;
+            int unshiftedCount = match.tokenLength() - match.shiftedCount;
             if (shiftedCount == 0 || unshiftedCount == 0) {
                 guesses *= 2;
             } else {

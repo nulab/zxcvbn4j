@@ -12,8 +12,8 @@ public class Match {
     public final Pattern pattern;
     public final int i;
     public final int j;
-    public final String token;
-    public final String matchedWord;
+    public final CharSequence token;
+    public final CharSequence matchedWord;
     public final int rank;
     public final String dictionaryName;
     public final boolean reversed;
@@ -25,7 +25,7 @@ public class Match {
     public final boolean ascending;
     public final String regexName;
     public final java.util.regex.Matcher regexMatch;
-    public final String baseToken;
+    public final CharSequence baseToken;
     public final List<Match> baseMatches;
     public final int repeatCount;
     public final String graph;
@@ -74,14 +74,23 @@ public class Match {
         this.guessesLog10 = builder.guessesLog10;
     }
 
+    @Deprecated
+    public String tokenStr() {
+        return token == null ? null : token.toString();
+    }
+
+    public int tokenLength() {
+        return token == null ? 0 : token.length();
+    }
+
     public static class Builder {
 
         private final Pattern pattern;
         private final int i;
         private final int j;
-        private final String token;
+        private final CharSequence token;
 
-        private String matchedWord;
+        private CharSequence matchedWord;
         private int rank;
         private String dictionaryName;
         private boolean reversed;
@@ -93,7 +102,7 @@ public class Match {
         private boolean ascending;
         private String regexName;
         private java.util.regex.Matcher regexMatch;
-        private String baseToken;
+        private CharSequence baseToken;
         private double baseGuesses;
         private List<Match> baseMatches;
         private int repeatCount;
@@ -108,14 +117,14 @@ public class Match {
         private Double guesses;
         private Double guessesLog10;
 
-        public Builder(Pattern pattern, int i, int j, String token) {
+        public Builder(Pattern pattern, int i, int j, CharSequence token) {
             this.pattern = pattern;
             this.i = i;
             this.j = j;
             this.token = token;
         }
 
-        public Builder matchedWord(String matchedWord) {
+        public Builder matchedWord(CharSequence matchedWord) {
             this.matchedWord = matchedWord;
             return this;
         }
@@ -175,7 +184,7 @@ public class Match {
             return this;
         }
 
-        public Builder baseToken(String baseToken) {
+        public Builder baseToken(CharSequence baseToken) {
             this.baseToken = baseToken;
             return this;
         }

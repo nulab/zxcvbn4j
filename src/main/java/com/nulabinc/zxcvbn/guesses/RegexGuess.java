@@ -20,9 +20,9 @@ public class RegexGuess extends BaseGuess {
     @Override
     public double exec(Match match) {
         if (CHAR_CLASS_BASES.containsKey(match.regexName)) {
-            return Math.pow(CHAR_CLASS_BASES.get(match.regexName), match.token.length());
+            return Math.pow(CHAR_CLASS_BASES.get(match.regexName), match.tokenLength());
         } else if ("recent_year".equals(match.regexName)) {
-            double yearSpace = Math.abs(parseInt(match.token) - REFERENCE_YEAR);
+            double yearSpace = Math.abs(parseInt(match.tokenStr()) - REFERENCE_YEAR);
             yearSpace = Math.max(yearSpace, MIN_YEAR_SPACE);
             return yearSpace;
         }

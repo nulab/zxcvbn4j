@@ -14,7 +14,7 @@ public class RegexMatcher extends BaseMatcher {
     }
 
     @Override
-    public List<Match> execute(String password) {
+    public List<Match> execute(CharSequence password) {
         List<Match> matches = new ArrayList<>();
         for(Map.Entry<String, String> regexenRef: REGEXEN.entrySet()) {
             String name = regexenRef.getKey();

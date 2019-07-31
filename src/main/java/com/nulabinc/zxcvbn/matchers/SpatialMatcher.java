@@ -21,7 +21,7 @@ public class SpatialMatcher extends BaseMatcher {
     }
 
     @Override
-    public List<Match> execute(String password) {
+    public List<Match> execute(CharSequence password) {
         List<Match> matches = new ArrayList<>();
         for (Keyboard keyboard : keyboards) {
             extend(matches, spatialMatchHelper(password, keyboard));
@@ -30,7 +30,7 @@ public class SpatialMatcher extends BaseMatcher {
     }
 
 
-    private List<Match> spatialMatchHelper(String password, Keyboard keyboard) {
+    private List<Match> spatialMatchHelper(CharSequence password, Keyboard keyboard) {
         List<Match> matches = new ArrayList<>();
         int i = 0;
         while (i < password.length() - 1) {
@@ -75,7 +75,7 @@ public class SpatialMatcher extends BaseMatcher {
                         matches.add(MatchFactory.createSpatialMatch(
                                 i,
                                 j - 1,
-                                password.substring(i, j),
+                                password.subSequence(i, j),
                                 keyboard.getName(),
                                 turns,
                                 shiftedCount));

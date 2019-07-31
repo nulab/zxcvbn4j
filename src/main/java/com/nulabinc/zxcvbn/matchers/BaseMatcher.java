@@ -21,20 +21,22 @@ public abstract class BaseMatcher implements Matcher {
         return matches;
     }
 
-    protected String translate(String string, Map<Character, Character> chrMap) {
+    protected CharSequence translate(CharSequence string, Map<Character, Character> chrMap) {
         List<Character> characters = new ArrayList<>();
-        for (Character chr: string.toCharArray()) {
+        for (int n = 0; n < string.length(); n++) {
+            char chr = string.charAt(n);
             characters.add(chrMap.containsKey(chr) ? chrMap.get(chr) : chr);
         }
         String result = "";
         for (char c: characters) {
             result += String.valueOf(c);
         }
-        return String.valueOf(result);
+        return result;
     }
 
     protected List<Match> extend(List<Match> lst, List<Match> lst2) {
         lst.addAll(lst2);
         return lst;
     }
+
 }

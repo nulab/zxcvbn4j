@@ -22,23 +22,24 @@ public class DateMatcher extends BaseMatcher {
     private final Pattern maybe_date_with_separator = Pattern.compile("^(\\d{1,4})([\\s/\\\\_.-])(\\d{1,2})\\2(\\d{1,4})$");
 
     @Override
-    public List<Match> execute(String password) {
+    public List<Match> execute(CharSequence password) {
         List<Match> matches = new ArrayList<>();
         for (int i = 0; i <= password.length() - 4; i++) {
             for (int j = i + 3; j <= i + 7; j++) {
                 if (j >= password.length()) break;
-                String token = password.substring(i, j + 1);
+                CharSequence token = password.subSequence(i, j + 1);
                 if (!maybe_date_no_separator.matcher(token).find()) {
                     continue;
                 }
+                String dateStr = token.toString(); // Safe, as its just a date as text
                 List<Dmy> candidates = new ArrayList<>();
                 for(Integer[] date: DATE_SPLITS.get(token.length())) {
                     int k = date[0];
                     int l = date[1];
                     List<Integer> ints = new ArrayList<>();
-                    ints.add(Integer.parseInt(token.substring(0, k)));
-                    ints.add(Integer.parseInt(token.substring(k, l)));
-                    ints.add(Integer.parseInt(token.substring(l)));
+                    ints.add(Integer.parseInt(dateStr.substring(0, k)));
+                    ints.add(Integer.parseInt(dateStr.substring(k, l)));
+                    ints.add(Integer.parseInt(dateStr.substring(l)));
                     Dmy dmy = mapIntsToDmy(ints);
                     if (dmy != null) {
                         candidates.add(dmy);
@@ -62,7 +63,7 @@ public class DateMatcher extends BaseMatcher {
         for (int i = 0; i <= password.length() - 6; i++) {
             for (int j = i + 5; j <= i + 9; j++) {
                 if (j >= password.length()) break;
-                String token = password.substring(i, j + 1);
+                CharSequence token = password.subSequence(i, j + 1);
                 java.util.regex.Matcher rxMatch = maybe_date_with_separator.matcher(token);
                 if (!rxMatch.find()) continue;
                 List<Integer> ints = new ArrayList<>();

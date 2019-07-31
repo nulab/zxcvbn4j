@@ -11,11 +11,11 @@ public class Zxcvbn {
     public Zxcvbn() {
     }
 
-    public Strength measure(String password) {
+    public Strength measure(CharSequence password) {
         return measure(password, null);
     }
 
-    public Strength measure(String password, List<String> sanitizedInputs) {
+    public Strength measure(CharSequence password, List<String> sanitizedInputs) {
         if (password == null) {
             throw new IllegalArgumentException("Password is null.");
         }
