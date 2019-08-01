@@ -1,6 +1,7 @@
 package com.nulabinc.zxcvbn.matchers;
 
 import com.nulabinc.zxcvbn.Scoring;
+import com.nulabinc.zxcvbn.WipeableString;
 
 import java.util.*;
 import java.util.regex.*;
@@ -31,15 +32,14 @@ public class DateMatcher extends BaseMatcher {
                 if (!maybe_date_no_separator.matcher(token).find()) {
                     continue;
                 }
-                String dateStr = token.toString(); // Safe, as its just a date as text
                 List<Dmy> candidates = new ArrayList<>();
                 for(Integer[] date: DATE_SPLITS.get(token.length())) {
                     int k = date[0];
                     int l = date[1];
                     List<Integer> ints = new ArrayList<>();
-                    ints.add(Integer.parseInt(dateStr.substring(0, k)));
-                    ints.add(Integer.parseInt(dateStr.substring(k, l)));
-                    ints.add(Integer.parseInt(dateStr.substring(l)));
+                    ints.add(WipeableString.parseInt(token.subSequence(0, k)));
+                    ints.add(WipeableString.parseInt(token.subSequence(k, l)));
+                    ints.add(WipeableString.parseInt(token.subSequence(l,token.length())));
                     Dmy dmy = mapIntsToDmy(ints);
                     if (dmy != null) {
                         candidates.add(dmy);
