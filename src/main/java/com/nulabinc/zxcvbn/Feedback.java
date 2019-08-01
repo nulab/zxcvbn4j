@@ -197,10 +197,11 @@ public class Feedback {
         List<String> suggestions = new ArrayList<>();
         suggestions.add(EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD);
 
-        String word = match.tokenStr();
+        CharSequence word = match.token;
+        WipeableString lower = WipeableString.lowerCase(word);
         if (DictionaryGuess.START_UPPER.matcher(word).find()) {
             suggestions.add(DICTIONARY_SUGGESTIONS_CAPITALIZATION);
-        } else if (DictionaryGuess.ALL_UPPER.matcher(word).find() && !word.toLowerCase().equals(word)) {
+        } else if (DictionaryGuess.ALL_UPPER.matcher(word).find() && !lower.equals(word)) {
             suggestions.add(DICTIONARY_SUGGESTIONS_ALL_UPPERCASE);
         }
         if (match.reversed && match.tokenLength() >= 4) {
@@ -209,6 +210,7 @@ public class Feedback {
         if (match.l33t) {
             suggestions.add(DICTIONARY_SUGGESTIONS_L33T);
         }
+        lower.wipe();
         return new Feedback(warning, suggestions.toArray(new String[suggestions.size()]));
     }
 

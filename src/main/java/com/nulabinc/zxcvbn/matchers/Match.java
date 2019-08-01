@@ -74,11 +74,6 @@ public class Match {
         this.guessesLog10 = builder.guessesLog10;
     }
 
-    @Deprecated
-    public String tokenStr() {
-        return token == null ? null : token.toString();
-    }
-
     public int tokenLength() {
         return token == null ? 0 : token.length();
     }

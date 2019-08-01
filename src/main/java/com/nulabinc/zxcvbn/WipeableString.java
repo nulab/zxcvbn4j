@@ -60,9 +60,23 @@ public class WipeableString implements CharSequence {
      * Returns a new wipeable string with the specified content forced into lower case.
      */
     public static WipeableString lowerCase(CharSequence source) {
+        assert source != null;
         char[] chars = new char[source.length()];
         for (int n = 0; n < source.length(); n++) {
             chars[n] = Character.toLowerCase(source.charAt(n));
+        }
+        return new WipeableString(chars);
+    }
+
+    /**
+     * Returns a new wipeable string with the specified content but with the order of the characters reversed.
+     */
+    public static WipeableString reversed(CharSequence source) {
+        assert source != null;
+        int length = source.length();
+        char[] chars = new char[length];
+        for (int n = 0; n < source.length(); n++) {
+            chars[n] = source.charAt(length-n-1);
         }
         return new WipeableString(chars);
     }
@@ -95,6 +109,80 @@ public class WipeableString implements CharSequence {
      */
     public boolean isWiped() {
         return this.wiped;
+    }
+
+    /**
+     * Returns a copy of the content as a char array.
+     */
+    public char[] charArray() {
+        return Arrays.copyOf(content,content.length);
+    }
+
+    /**
+     * A version of Integer.parse(String) that accepts CharSequence as parameter.
+     */
+    public static int parseInt(CharSequence s) throws NumberFormatException {
+        return parseInt(s,10);
+    }
+
+    /**
+     * A version of Integer.parse(String) that accepts CharSequence as parameter.
+     */
+    public static int parseInt(CharSequence s, int radix) throws NumberFormatException {
+        if (s == null) {
+            throw new NumberFormatException("null");
+        }
+
+        if (radix < Character.MIN_RADIX) {
+            throw new NumberFormatException("radix " + radix +
+                    " less than Character.MIN_RADIX");
+        }
+
+        if (radix > Character.MAX_RADIX) {
+            throw new NumberFormatException("radix " + radix +
+                    " greater than Character.MAX_RADIX");
+        }
+
+        int result = 0;
+        boolean negative = false;
+        int i = 0, len = s.length();
+        int limit = -Integer.MAX_VALUE;
+        int multmin;
+        int digit;
+
+        if (len > 0) {
+            char firstChar = s.charAt(0);
+            if (firstChar < '0') { // Possible leading "+" or "-"
+                if (firstChar == '-') {
+                    negative = true;
+                    limit = Integer.MIN_VALUE;
+                } else if (firstChar != '+')
+                    throw new NumberFormatException("For input string: \"" + s + "\"");
+
+                if (len == 1) // Cannot have lone "+" or "-"
+                    throw new NumberFormatException("For input string: \"" + s + "\"");
+                i++;
+            }
+            multmin = limit / radix;
+            while (i < len) {
+                // Accumulating negatively avoids surprises near MAX_VALUE
+                digit = Character.digit(s.charAt(i++),radix);
+                if (digit < 0) {
+                    throw new NumberFormatException("For input string: \"" + s + "\"");
+                }
+                if (result < multmin) {
+                    throw new NumberFormatException("For input string: \"" + s + "\"");
+                }
+                result *= radix;
+                if (result < limit + digit) {
+                    throw new NumberFormatException("For input string: \"" + s + "\"");
+                }
+                result -= digit;
+            }
+        } else {
+            throw new NumberFormatException("For input string: \"" + s + "\"");
+        }
+        return negative ? result : -result;
     }
 
     @Override
@@ -174,4 +262,5 @@ public class WipeableString implements CharSequence {
         }
 
     }
+
 }

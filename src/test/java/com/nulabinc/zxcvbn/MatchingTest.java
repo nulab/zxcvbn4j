@@ -32,7 +32,7 @@ public class MatchingTest {
             assertEquals(msg, expectedMatch.end, actualMatch.j);
 
             msg = String.format("%s: matches[%s].token == '%s'", prefix, k, expectedMatch.token);
-            assertEquals(msg, expectedMatch.token, actualMatch.tokenStr());
+            assertEquals(msg, expectedMatch.token, actualMatch.token.toString());
 
             for (String fieldName : expectedMatch.fields.keySet()) {
                 Object expectedValue = expectedMatch.fields.get(fieldName);
