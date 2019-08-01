@@ -1,5 +1,7 @@
 package com.nulabinc.zxcvbn.matchers;
 
+import com.nulabinc.zxcvbn.WipeableString;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +22,7 @@ public class RegexMatcher extends BaseMatcher {
             String name = regexenRef.getKey();
             java.util.regex.Matcher rxMatch = Pattern.compile(regexenRef.getValue()).matcher(password);
             while(rxMatch.find()){
-                String token = rxMatch.group();
+                CharSequence token = new WipeableString(rxMatch.group());
                 matches.add(MatchFactory.createRegexMatch(
                         rxMatch.start(),
                         rxMatch.start() + token.length() - 1,

@@ -82,6 +82,13 @@ public class WipeableString implements CharSequence {
     }
 
     /**
+     * Returns a copy of a portion of a character sequence as a wipeable string.
+     */
+    public static WipeableString copy(CharSequence source, int start, int end) {
+        return new WipeableString(source.subSequence(start,end));
+    }
+
+    /**
      * Returns the position of the first match of the specified character (indexed from 0).
      */
     public int indexOf(char character) {

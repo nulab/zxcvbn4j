@@ -28,8 +28,9 @@ public class DateMatcher extends BaseMatcher {
         for (int i = 0; i <= password.length() - 4; i++) {
             for (int j = i + 3; j <= i + 7; j++) {
                 if (j >= password.length()) break;
-                CharSequence token = password.subSequence(i, j + 1);
+                WipeableString token = WipeableString.copy(password,i, j + 1);
                 if (!maybe_date_no_separator.matcher(token).find()) {
+                    token.wipe();
                     continue;
                 }
                 List<Dmy> candidates = new ArrayList<>();
@@ -46,6 +47,7 @@ public class DateMatcher extends BaseMatcher {
                     }
                 }
                 if (candidates.isEmpty()) {
+                    token.wipe();
                     continue;
                 }
                 Dmy bestCandidate = candidates.get(0);
@@ -63,15 +65,21 @@ public class DateMatcher extends BaseMatcher {
         for (int i = 0; i <= password.length() - 6; i++) {
             for (int j = i + 5; j <= i + 9; j++) {
                 if (j >= password.length()) break;
-                CharSequence token = password.subSequence(i, j + 1);
+                WipeableString token = WipeableString.copy(password,i, j + 1);
                 java.util.regex.Matcher rxMatch = maybe_date_with_separator.matcher(token);
-                if (!rxMatch.find()) continue;
+                if (!rxMatch.find()) {
+                    token.wipe();
+                    continue;
+                }
                 List<Integer> ints = new ArrayList<>();
                 ints.add(Integer.parseInt(rxMatch.group(1)));
                 ints.add(Integer.parseInt(rxMatch.group(3)));
                 ints.add(Integer.parseInt(rxMatch.group(4)));
                 Dmy dmy = mapIntsToDmy(ints);
-                if (dmy == null) continue;
+                if (dmy == null) {
+                    token.wipe();
+                    continue;
+                }
                 matches.add(MatchFactory.createDateMatch(i, j, token, rxMatch.group(2), dmy.year, dmy.month, dmy.day));
             }
         }

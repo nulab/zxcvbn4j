@@ -1,5 +1,7 @@
 package com.nulabinc.zxcvbn.matchers;
 
+import com.nulabinc.zxcvbn.WipeableString;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -75,7 +77,7 @@ public class SpatialMatcher extends BaseMatcher {
                         matches.add(MatchFactory.createSpatialMatch(
                                 i,
                                 j - 1,
-                                password.subSequence(i, j),
+                                WipeableString.copy(password, i, j),
                                 keyboard.getName(),
                                 turns,
                                 shiftedCount));

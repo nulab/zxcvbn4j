@@ -3,6 +3,7 @@ package com.nulabinc.zxcvbn.matchers;
 import com.nulabinc.zxcvbn.Matching;
 import com.nulabinc.zxcvbn.Scoring;
 import com.nulabinc.zxcvbn.Strength;
+import com.nulabinc.zxcvbn.WipeableString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,7 @@ public class RepeatMatcher extends BaseMatcher {
             Strength baseAnalysis = Scoring.mostGuessableMatchSequence(baseToken, new Matching(new ArrayList<String>()).omnimatch(baseToken));
             List<Match> baseMatches = baseAnalysis.getSequence();
             double baseGuesses = baseAnalysis.getGuesses();
+            baseToken = new WipeableString(baseToken);
             matches.add(MatchFactory.createRepeatMatch(i, j, match.group(0), baseToken, baseGuesses, baseMatches, match.group(0).length() / baseToken.length()));
             lastIndex = j + 1;
         }

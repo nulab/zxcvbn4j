@@ -15,7 +15,7 @@ public class SequenceMatcher extends BaseMatcher {
         if ((j - i) > 1 || (delta != null && Math.abs(delta) == 1)) {
             CharSequence token;
             if (0 < Math.abs(delta) && Math.abs(delta) <= MAX_DELTA) {
-                token = password.subSequence(i, j + 1);
+                token = WipeableString.copy(password, i, j + 1);
                 final String sequenceName;
                 final int sequenceSpace;
                 if (Pattern.compile("^[a-z]+$").matcher(token).find()) {

@@ -29,7 +29,7 @@ public class DictionaryMatcher extends BaseMatcher {
                     CharSequence word = passwordLower.subSequence(i, j + 1);
                     if (rankedDict.containsKey(word)) {
                         int rank = rankedDict.get(word);
-                        CharSequence token = password.subSequence(i, j + 1);
+                        WipeableString token = WipeableString.copy(password,i, j + 1);
                         matches.add(MatchFactory.createDictionaryMatch(i, j, token, word, rank, dictionaryName));
                     }
                 }

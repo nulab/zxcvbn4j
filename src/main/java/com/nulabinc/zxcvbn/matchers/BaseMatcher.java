@@ -1,6 +1,7 @@
 package com.nulabinc.zxcvbn.matchers;
 
 import com.nulabinc.zxcvbn.Matcher;
+import com.nulabinc.zxcvbn.WipeableString;
 
 import java.util.*;
 
@@ -27,10 +28,12 @@ public abstract class BaseMatcher implements Matcher {
             char chr = string.charAt(n);
             characters.add(chrMap.containsKey(chr) ? chrMap.get(chr) : chr);
         }
-        String result = "";
+        StringBuilder sb = new StringBuilder();
         for (char c: characters) {
-            result += String.valueOf(c);
+            sb.append(c);
         }
+        WipeableString result = new WipeableString(sb);
+        WipeableString.wipeIfPossible(sb);
         return result;
     }
 

@@ -63,9 +63,13 @@ public class L33tMatcher extends BaseMatcher {
             if (sub.isEmpty()) break;
             CharSequence subbedPassword = translate(password, sub);
             for (Match match: new DictionaryMatcher(rankedDictionaries).execute(subbedPassword)) {
-                WipeableString token = new WipeableString(password).subSequence(match.i, match.j + 1);
+                WipeableString token = WipeableString.copy(password,match.i, match.j + 1);
                 WipeableString lower = WipeableString.lowerCase(token);
-                if (lower.equals(match.matchedWord)) continue;
+                if (lower.equals(match.matchedWord)) {
+                    token.wipe();
+                    lower.wipe();
+                    continue;
+                }
                 Map<Character, Character> matchSub = new HashMap<>();
                 for (Map.Entry<Character, Character> subRef: sub.entrySet()) {
                     Character subbedChr = subRef.getKey();
