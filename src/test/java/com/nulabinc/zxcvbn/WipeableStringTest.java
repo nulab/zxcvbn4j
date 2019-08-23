@@ -82,4 +82,26 @@ public class WipeableStringTest {
         assertEquals("string passwords cannot be wiped","pa55w0rd", strength.getPassword().toString());
     }
 
+    @Test
+    public void testParseIntWithTrailingSpaces() {
+        assertEquals(2001, WipeableString.parseInt("2001 "));
+        assertEquals(1, WipeableString.parseInt("1 "));
+        assertEquals(2001, WipeableString.parseInt("2001     "));
+    }
+
+    @Test
+    public void testParseIntWithTrailingCRLF() {
+        assertEquals(2001, WipeableString.parseInt(CharBuffer.wrap(new char[]{'2','0','0','1',(char)13,(char)10})));
+    }
+
+    @Test
+    public void testParseIntWithTrailingCR() {
+        assertEquals(2001, WipeableString.parseInt(CharBuffer.wrap(new char[]{'2','0','0','1',(char)13})));
+    }
+
+    @Test
+    public void testParseIntWithTrailingLF() {
+        assertEquals(2001, WipeableString.parseInt(CharBuffer.wrap(new char[]{'2','0','0','1',(char)10})));
+    }
+
 }

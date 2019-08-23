@@ -126,6 +126,28 @@ public class WipeableString implements CharSequence {
     }
 
     /**
+     * Trims whitespace from a CharSequence.
+     *
+     * If there is no trailing whitespace then the original value is returned.
+     * If there is trailing whitespace then the content (without that trailing
+     * whitespace) is copied into a new WipeableString.
+     */
+    static CharSequence trimTrailingWhitespace(CharSequence s) {
+        if (!Character.isWhitespace(s.charAt(s.length()-1))) {
+            return s;
+        }
+
+        int length = s.length();
+
+        while (length > 0 && Character.isWhitespace(s.charAt(length-1))) {
+            length--;
+        }
+
+        return WipeableString.copy(s,0,length);
+    }
+
+
+    /**
      * A version of Integer.parse(String) that accepts CharSequence as parameter.
      */
     public static int parseInt(CharSequence s) throws NumberFormatException {
@@ -139,6 +161,8 @@ public class WipeableString implements CharSequence {
         if (s == null) {
             throw new NumberFormatException("null");
         }
+
+        s = trimTrailingWhitespace(s);
 
         if (radix < Character.MIN_RADIX) {
             throw new NumberFormatException("radix " + radix +
