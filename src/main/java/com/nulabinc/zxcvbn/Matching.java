@@ -46,7 +46,7 @@ public class Matching {
         this.rankedDictionaries.put("user_inputs", rankedUserInputs);
     }
 
-    public List<Match> omnimatch(String password) {
+    public List<Match> omnimatch(CharSequence password) {
         return new OmnibusMatcher(rankedDictionaries).execute(password);
     }
 

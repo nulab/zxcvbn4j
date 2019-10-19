@@ -1,5 +1,6 @@
 package com.nulabinc.zxcvbn.guesses;
 
+import com.nulabinc.zxcvbn.WipeableString;
 import com.nulabinc.zxcvbn.matchers.Match;
 import java.util.regex.Pattern;
 
@@ -22,18 +23,20 @@ public class DictionaryGuess extends BaseGuess {
     }
 
     public int uppercaseVariations(Match match) {
-        String word = match.token;
-        if (ALL_LOWER.matcher(word).find(0) || word.toLowerCase().equals(word)) return 1;
+        CharSequence word = match.token;
+        WipeableString lowercaseWord = WipeableString.lowerCase(word);
+        if (ALL_LOWER.matcher(word).find(0) || lowercaseWord.equals(word)) return 1;
         for(Pattern pattern: new Pattern[] { START_UPPER, END_UPPER, ALL_UPPER })
             if (pattern.matcher(word).find()) return 2;
-        Pattern upper = Pattern.compile("[A-Z]");
-        Pattern lower = Pattern.compile("[a-z]");
         int u = 0;
         int l = 0;
-        for (String str: word.split("")) if (upper.matcher(str).find()) u++;
-        for (String str: word.split("")) if (lower.matcher(str).find()) l++;
+        for (int n = 0; n < word.length(); n++) {
+            l +=  Character.isLowerCase(word.charAt(n)) ? 1 : 0;
+            u +=  Character.isUpperCase(word.charAt(n)) ? 1 : 0;
+        }
         int variations = 0;
         for (int i = 1; i <= Math.min(u, l); i++) variations += nCk(u + l, i);
+        lowercaseWord.wipe();
         return variations;
     }
 
@@ -45,7 +48,8 @@ public class DictionaryGuess extends BaseGuess {
             Character unsubbed = subRef.getValue();
             int s = 0;
             int u = 0;
-            for (char chr: match.token.toLowerCase().toCharArray()) {
+            WipeableString lower = WipeableString.lowerCase(match.token);
+            for (char chr: lower.charArray()) {
                 if (chr == subbed) s++;
                 if (chr == unsubbed) u++;
             }

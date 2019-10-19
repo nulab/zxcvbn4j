@@ -3,6 +3,7 @@ package com.nulabinc.zxcvbn.matchers;
 import com.nulabinc.zxcvbn.Matching;
 import com.nulabinc.zxcvbn.Scoring;
 import com.nulabinc.zxcvbn.Strength;
+import com.nulabinc.zxcvbn.WipeableString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.regex.*;
 
 public class RepeatMatcher extends BaseMatcher {
     @Override
-    public List<Match> execute(String password) {
+    public List<Match> execute(CharSequence password) {
         List<Match> matches = new ArrayList<>();
         Pattern greedy = Pattern.compile("(.+)\\1+");
         Pattern lazy = Pattern.compile("(.+?)\\1+");
@@ -24,7 +25,7 @@ public class RepeatMatcher extends BaseMatcher {
             lazyMatch.region(lastIndex, passwordLength);
             if (!greedyMatch.find()) break;
             java.util.regex.Matcher match;
-            String baseToken;
+            CharSequence baseToken;
             if(greedyMatch.group(0).length() > (lazyMatch.find() ? lazyMatch.group(0).length() : 0)) {
                 match = greedyMatch;
                 Matcher matcher = lazyAnchored.matcher(match.group(0));
@@ -38,6 +39,7 @@ public class RepeatMatcher extends BaseMatcher {
             Strength baseAnalysis = Scoring.mostGuessableMatchSequence(baseToken, new Matching(new ArrayList<String>()).omnimatch(baseToken));
             List<Match> baseMatches = baseAnalysis.getSequence();
             double baseGuesses = baseAnalysis.getGuesses();
+            baseToken = new WipeableString(baseToken);
             matches.add(MatchFactory.createRepeatMatch(i, j, match.group(0), baseToken, baseGuesses, baseMatches, match.group(0).length() / baseToken.length()));
             lastIndex = j + 1;
         }

@@ -20,7 +20,7 @@ public class MeasureTest {
     public void testMeasure() throws Exception {
         Zxcvbn zxcvbn = new Zxcvbn();
         Strength strength = zxcvbn.measure(password);
-        assertEquals("Unexpected error. Password is " + password, password, strength.getPassword());
+        assertEquals("Unexpected error. Password is " + password, password, strength.getPassword().toString());
     }
 
     @Parameterized.Parameters(name = "{0}")

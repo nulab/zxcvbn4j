@@ -7,15 +7,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Map;
+
+import static com.nulabinc.zxcvbn.ApproachComparisonTest.initScriptEngine;
 
 @RunWith(Parameterized.class)
 public class JavaPortTest {
@@ -30,16 +25,7 @@ public class JavaPortTest {
 
     @BeforeClass
     public static void initEngine() {
-        ScriptEngineManager manager = new ScriptEngineManager();
-        engine = manager.getEngineByName("JavaScript");
-
-        try {
-            //using the 4.4.1 release
-            URL script = JavaPortTest.class.getClassLoader().getResource("zxcvbn.js");
-            engine.eval(new FileReader(new File(script.toURI())));
-        } catch (URISyntaxException | FileNotFoundException | ScriptException e) {
-            throw new RuntimeException("Cannot instantiate Javascript Engine", e);
-        }
+        engine = initScriptEngine();
     }
 
     @Test

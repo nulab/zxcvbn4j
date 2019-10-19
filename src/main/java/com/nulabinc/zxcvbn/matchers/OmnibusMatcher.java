@@ -17,7 +17,7 @@ public class OmnibusMatcher extends BaseMatcher {
     }
 
     @Override
-    public List<Match> execute(String password) {
+    public List<Match> execute(CharSequence password) {
         List<Match> matches = new ArrayList<>();
         List<Matcher> matchers = new ArrayList<>();
         matchers.add(new DictionaryMatcher(dictionaries));

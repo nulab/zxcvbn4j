@@ -1,5 +1,7 @@
 package com.nulabinc.zxcvbn.matchers;
 
+import com.nulabinc.zxcvbn.WipeableString;
+
 import java.util.*;
 
 public class L33tMatcher extends BaseMatcher {
@@ -31,13 +33,15 @@ public class L33tMatcher extends BaseMatcher {
         L33T_TABLE.put('z', new Character[]{'2'});
     }
 
-    public HashMap<Character, Character[]> relevantL33tSubTable(String password) {
+    public HashMap<Character, Character[]> relevantL33tSubTable(CharSequence password) {
         return relevantL33tSubTable(password, L33T_TABLE);
     }
 
-    public HashMap<Character, Character[]> relevantL33tSubTable(String password, Map<Character, Character[]> table) {
+    public HashMap<Character, Character[]> relevantL33tSubTable(CharSequence password, Map<Character, Character[]> table) {
         HashMap<Character, Boolean> passwordChars = new HashMap<>();
-        for(Character chr: password.toCharArray()) passwordChars.put(chr, true);
+        for (int n = 0; n < password.length(); n++) {
+            passwordChars.put(password.charAt(n), true);
+        }
         HashMap<Character, Character[]> subTable = new HashMap<>();
         for(Map.Entry<Character, Character[]> l33tRowRef: table.entrySet()) {
             Character letter = l33tRowRef.getKey();
@@ -50,17 +54,22 @@ public class L33tMatcher extends BaseMatcher {
     }
 
     @Override
-    public List<Match> execute(String password) {
+    public List<Match> execute(CharSequence password) {
         List<Match> matches = new ArrayList<>();
         HashMap<Character, Character[]> subTable = relevantL33tSubTable(password);
         L33tSubsEnumerator l33tSubs = new L33tSubsEnumerator(subTable);
         List<Map<Character, Character>> subs =  l33tSubs.enumerate();
         for (Map<Character, Character> sub: subs) {
             if (sub.isEmpty()) break;
-            String subbedPassword = translate(password, sub);
+            CharSequence subbedPassword = translate(password, sub);
             for (Match match: new DictionaryMatcher(rankedDictionaries).execute(subbedPassword)) {
-                String token = password.substring(match.i, match.j + 1);
-                if (token.toLowerCase().equals(match.matchedWord)) continue;
+                WipeableString token = WipeableString.copy(password,match.i, match.j + 1);
+                WipeableString lower = WipeableString.lowerCase(token);
+                if (lower.equals(match.matchedWord)) {
+                    token.wipe();
+                    lower.wipe();
+                    continue;
+                }
                 Map<Character, Character> matchSub = new HashMap<>();
                 for (Map.Entry<Character, Character> subRef: sub.entrySet()) {
                     Character subbedChr = subRef.getKey();
@@ -86,11 +95,12 @@ public class L33tMatcher extends BaseMatcher {
                         match.reversed,
                         matchSub,
                         subDisplay));
-
+                // Don't wipe token as the Match needs it
+                lower.wipe();
             }
         }
         List<Match> lst = new ArrayList<>();
-        for(Match match: matches) if (match.token.length() > 1) lst.add(match);
+        for(Match match: matches) if (match.tokenLength() > 1) lst.add(match);
         return this.sorted(lst);
     }
 

@@ -1,5 +1,7 @@
 package com.nulabinc.zxcvbn.matchers;
 
+import com.nulabinc.zxcvbn.WipeableString;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,14 +17,14 @@ public class ReverseDictionaryMatcher extends BaseMatcher {
     }
 
     @Override
-    public List<Match> execute(String password) {
-        String reversedPassword = new StringBuilder(password).reverse().toString();
+    public List<Match> execute(CharSequence password) {
+        CharSequence reversedPassword =  WipeableString.reversed(password);
         List<Match> matches = new ArrayList<>();
         for (Match match: new DictionaryMatcher(this.rankedDictionaries).execute(reversedPassword)) {
             matches.add(MatchFactory.createReversedDictionaryMatch(
                     password.length() - 1 - match.j,
                     password.length() - 1 - match.i,
-                    new StringBuilder(match.token).reverse().toString(),
+                    WipeableString.reversed(match.token),
                     match.matchedWord,
                     match.rank,
                     match.dictionaryName));

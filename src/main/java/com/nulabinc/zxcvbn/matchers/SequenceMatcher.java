@@ -1,5 +1,7 @@
 package com.nulabinc.zxcvbn.matchers;
 
+import com.nulabinc.zxcvbn.WipeableString;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -8,12 +10,12 @@ public class SequenceMatcher extends BaseMatcher {
 
     private static final int MAX_DELTA = 5;
 
-    private static Match update(String password, int i, int j, Integer delta) {
+    private static Match update(CharSequence password, int i, int j, Integer delta) {
         Match match = null;
         if ((j - i) > 1 || (delta != null && Math.abs(delta) == 1)) {
-            String token;
+            CharSequence token;
             if (0 < Math.abs(delta) && Math.abs(delta) <= MAX_DELTA) {
-                token = password.substring(i, j + 1);
+                token = WipeableString.copy(password, i, j + 1);
                 final String sequenceName;
                 final int sequenceSpace;
                 if (Pattern.compile("^[a-z]+$").matcher(token).find()) {
@@ -38,7 +40,7 @@ public class SequenceMatcher extends BaseMatcher {
     }
 
     @Override
-    public List<Match> execute(String password) {
+    public List<Match> execute(CharSequence password) {
         List<Match> matches = new ArrayList<>();
         // Identifies sequences by looking for repeated differences in unicode codepoint.
         // this allows skipping, such as 9753, and also matches some extended unicode sequences
@@ -55,8 +57,9 @@ public class SequenceMatcher extends BaseMatcher {
         if (password == null || password.length() == 1) return matches;
         int i = 0;
         Integer lastDelta = null;
+        WipeableString wipeable = new WipeableString(password);
         for (int k = 1; k < password.length(); k++) {
-            int delta = password.codePointAt(k) - password.codePointAt(k - 1);
+            int delta = wipeable.codePointAt(k) - wipeable.codePointAt(k - 1);
             if (lastDelta == null) {
                 lastDelta = delta;
             }
@@ -67,6 +70,7 @@ public class SequenceMatcher extends BaseMatcher {
             i = j;
             lastDelta = delta;
         }
+        wipeable.wipe();
         Match match = update(password, i, password.length() - 1, lastDelta);
         if (match != null) matches.add(match);
         return matches;

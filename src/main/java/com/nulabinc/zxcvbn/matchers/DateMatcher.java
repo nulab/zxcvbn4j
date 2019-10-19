@@ -1,6 +1,7 @@
 package com.nulabinc.zxcvbn.matchers;
 
 import com.nulabinc.zxcvbn.Scoring;
+import com.nulabinc.zxcvbn.WipeableString;
 
 import java.util.*;
 import java.util.regex.*;
@@ -22,13 +23,14 @@ public class DateMatcher extends BaseMatcher {
     private final Pattern maybe_date_with_separator = Pattern.compile("^(\\d{1,4})([\\s/\\\\_.-])(\\d{1,2})\\2(\\d{1,4})$");
 
     @Override
-    public List<Match> execute(String password) {
+    public List<Match> execute(CharSequence password) {
         List<Match> matches = new ArrayList<>();
         for (int i = 0; i <= password.length() - 4; i++) {
             for (int j = i + 3; j <= i + 7; j++) {
                 if (j >= password.length()) break;
-                String token = password.substring(i, j + 1);
+                WipeableString token = WipeableString.copy(password,i, j + 1);
                 if (!maybe_date_no_separator.matcher(token).find()) {
+                    token.wipe();
                     continue;
                 }
                 List<Dmy> candidates = new ArrayList<>();
@@ -36,15 +38,16 @@ public class DateMatcher extends BaseMatcher {
                     int k = date[0];
                     int l = date[1];
                     List<Integer> ints = new ArrayList<>();
-                    ints.add(Integer.parseInt(token.substring(0, k)));
-                    ints.add(Integer.parseInt(token.substring(k, l)));
-                    ints.add(Integer.parseInt(token.substring(l)));
+                    ints.add(WipeableString.parseInt(token.subSequence(0, k)));
+                    ints.add(WipeableString.parseInt(token.subSequence(k, l)));
+                    ints.add(WipeableString.parseInt(token.subSequence(l,token.length())));
                     Dmy dmy = mapIntsToDmy(ints);
                     if (dmy != null) {
                         candidates.add(dmy);
                     }
                 }
                 if (candidates.isEmpty()) {
+                    token.wipe();
                     continue;
                 }
                 Dmy bestCandidate = candidates.get(0);
@@ -62,15 +65,21 @@ public class DateMatcher extends BaseMatcher {
         for (int i = 0; i <= password.length() - 6; i++) {
             for (int j = i + 5; j <= i + 9; j++) {
                 if (j >= password.length()) break;
-                String token = password.substring(i, j + 1);
+                WipeableString token = WipeableString.copy(password,i, j + 1);
                 java.util.regex.Matcher rxMatch = maybe_date_with_separator.matcher(token);
-                if (!rxMatch.find()) continue;
+                if (!rxMatch.find()) {
+                    token.wipe();
+                    continue;
+                }
                 List<Integer> ints = new ArrayList<>();
                 ints.add(Integer.parseInt(rxMatch.group(1)));
                 ints.add(Integer.parseInt(rxMatch.group(3)));
                 ints.add(Integer.parseInt(rxMatch.group(4)));
                 Dmy dmy = mapIntsToDmy(ints);
-                if (dmy == null) continue;
+                if (dmy == null) {
+                    token.wipe();
+                    continue;
+                }
                 matches.add(MatchFactory.createDateMatch(i, j, token, rxMatch.group(2), dmy.year, dmy.month, dmy.day));
             }
         }

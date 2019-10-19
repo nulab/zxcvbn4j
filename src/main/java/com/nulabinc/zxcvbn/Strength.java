@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Strength {
 
-    private String password;
+    private CharSequence password;
     private double guesses;
     private double guessesLog10;
     private AttackTimes.CrackTimeSeconds crackTimeSeconds;
@@ -19,11 +19,11 @@ public class Strength {
     public Strength() {
     }
 
-    public String getPassword() {
+    public CharSequence getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(CharSequence password) {
         this.password = password;
     }
 
@@ -90,4 +90,17 @@ public class Strength {
     public void setCalcTime(long calcTime) {
         this.calcTime = calcTime;
     }
+
+    /**
+     * Attempts to wipe any sensitive content from the object.
+     */
+    public void wipe() {
+        WipeableString.wipeIfPossible(password);
+        for (Match match : sequence) {
+            WipeableString.wipeIfPossible(match.token);
+            WipeableString.wipeIfPossible(match.baseToken);
+            WipeableString.wipeIfPossible(match.matchedWord);
+        }
+    }
+
 }

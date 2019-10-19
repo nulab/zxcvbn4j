@@ -1,5 +1,6 @@
 package com.nulabinc.zxcvbn.guesses;
 
+import com.nulabinc.zxcvbn.WipeableString;
 import com.nulabinc.zxcvbn.matchers.Match;
 
 import java.util.HashMap;
@@ -20,7 +21,7 @@ public class RegexGuess extends BaseGuess {
     @Override
     public double exec(Match match) {
         if (CHAR_CLASS_BASES.containsKey(match.regexName)) {
-            return Math.pow(CHAR_CLASS_BASES.get(match.regexName), match.token.length());
+            return Math.pow(CHAR_CLASS_BASES.get(match.regexName), match.tokenLength());
         } else if ("recent_year".equals(match.regexName)) {
             double yearSpace = Math.abs(parseInt(match.token) - REFERENCE_YEAR);
             yearSpace = Math.max(yearSpace, MIN_YEAR_SPACE);
@@ -29,10 +30,10 @@ public class RegexGuess extends BaseGuess {
         return 0;
     }
 
-    private static final int parseInt(String s) {
+    private static final int parseInt(CharSequence s) {
         int result = 0;
         try {
-            result = Integer.parseInt(s);
+            result = WipeableString.parseInt(s);
         } catch (NumberFormatException e) {
             System.out.println(e.getStackTrace());
         }

@@ -16,11 +16,11 @@ public class Scoring {
         return Math.log(n) / Math.log(10);
     }
 
-    public static Strength mostGuessableMatchSequence(String password, List<Match> matches) {
+    public static Strength mostGuessableMatchSequence(CharSequence password, List<Match> matches) {
         return mostGuessableMatchSequence(password, matches, false);
     }
 
-    public static Strength mostGuessableMatchSequence(String password, List<Match> matches, boolean excludeAdditive) {
+    public static Strength mostGuessableMatchSequence(CharSequence password, List<Match> matches, boolean excludeAdditive) {
         final int n = password.length();
         final List<List<Match>> matchesByJ = new ArrayList<>();
         for (int i = 0; i < n; i++) {
@@ -62,7 +62,7 @@ public class Scoring {
         return strength;
     }
 
-    private static void update(String password, Match m, int l, Optimal optimal, boolean excludeAdditive) {
+    private static void update(CharSequence password, Match m, int l, Optimal optimal, boolean excludeAdditive) {
         int k = m.j;
         double pi = new EstimateGuess(password).exec(m);
         if (l > 1) {
@@ -94,7 +94,7 @@ public class Scoring {
         optimal.pi.get(k).put(l, pi);
     }
 
-    private static void bruteforceUpdate(String password, int k, Optimal optimal, boolean excludeAdditive) {
+    private static void bruteforceUpdate(CharSequence password, int k, Optimal optimal, boolean excludeAdditive) {
         Match m = makeBruteforceMatch(password, 0, k);
         update(password, m, 1, optimal, excludeAdditive);
         for (int i = 1; i <= k; i++) {
@@ -134,8 +134,8 @@ public class Scoring {
         return optimalMatchSequence;
     }
 
-    private static Match makeBruteforceMatch(String password, int i, int j) {
-        return MatchFactory.createBruteforceMatch(i, j, password.substring(i, j + 1));
+    private static Match makeBruteforceMatch(CharSequence password, int i, int j) {
+        return MatchFactory.createBruteforceMatch(i, j, password.subSequence(i, j + 1));
     }
 
     private static int factorial(int n) {
