@@ -207,3 +207,4 @@ MIT License
 - [Cacoo](https://cacoo.com/)
 - [Typetalk](https://typetalk.com/)
 - [JetBrains Hub](https://www.jetbrains.com/hub/)
+- [Cryptomator](https://cryptomator.org/)
