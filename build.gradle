@@ -8,6 +8,10 @@ buildscript {
     }
 }
 
+plugins {
+    id "me.champeau.gradle.jmh" version "0.5.0"
+}
+
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'net.saliman.cobertura'
