@@ -122,9 +122,9 @@ public class FeedbackTest {
                         Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
                         Feedback.SEQUENCE_SUGGESTIONS_AVOID_SEQUENCES
                 }},
-                {new SimpleDateFormat("yyyy").format(new Date()), Feedback.REGEX_WARNING_RECENT_YEARS, new String[]{
+                {new SimpleDateFormat("yyyy").format(new Date()), Feedback.REPEAT_WARNING_LIKE_ABCABCABC, new String[]{
                         Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
-                        Feedback.REGEX_SUGGESTIONS_AVOID_RECENT_YEARS
+                        Feedback.REPEAT_SUGGESTIONS_AVOID_REPEATED_WORDS
                 }},
                 {new SimpleDateFormat("dd-MM-yyyy").format(new Date()), Feedback.DATE_WARNING_DATES, new String[]{
                         Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,

@@ -141,4 +141,5 @@ uploadArchives {
 test {
     maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
     forkEvery = 4
+    testLogging.showStandardStreams = true
 }
