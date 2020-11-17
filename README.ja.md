@@ -48,6 +48,9 @@ zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxc
 
 * 隣接したキー配列の照合処理にJISキーボードを対応。
 * フィードバックメッセージのローカライズに対応。
+* パスワードの引数はStringだけでなくCharSequenceも受付可能。
+  * これによりパスワードのフォーマットを柔軟に変更可能。
+  * センシティブな中間オブジェクトにも文字列を使用しない。
 
 ## インストール
 
@@ -187,9 +190,12 @@ MIT License
 
 * Java 1.7以上
 
-## このライブラリを使用しているアプリケーション
+## このライブラリの使用
 
 - [Backlog](https://backlog.com/)
 - [Cacoo](https://cacoo.com/)
 - [Typetalk](https://typetalk.com/)
 - [JetBrains Hub](https://www.jetbrains.com/hub/)
+- And many Open Source Softwares
+  - https://github.com/search?q=com.nulab-inc+zxcvbn&type=code
+  - https://mvnrepository.com/artifact/com.nulab-inc/zxcvbn/usages

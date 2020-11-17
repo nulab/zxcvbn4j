@@ -45,10 +45,13 @@ The following version is a port of [zxcvbn 4.2.0](https://github.com/dropbox/zxc
 * 2016/01/27 1.0.1 released.
 * 2015/12/24 1.0.0 released.
 
-## Special Feature
+## Special Features
 
 * It includes JIS keyboard layout in spatial matching.
 * Localization feedback messages.
+* Password args accept CharSequence as well as String.
+  * This gives a lot more flexibility in what format the password can be in.
+  * Also attempts to avoid using Strings for any sensitive intermediate objects.
 
 ## Install
 
@@ -202,10 +205,13 @@ MIT License
 
 * Java 1.7+
 
-## Application using this library
+## Using this library
 
 - [Backlog](https://backlog.com/)
 - [Cacoo](https://cacoo.com/)
 - [Typetalk](https://typetalk.com/)
 - [JetBrains Hub](https://www.jetbrains.com/hub/)
 - [Cryptomator](https://cryptomator.org/)
+- And many Open Source Softwares
+  - https://github.com/search?q=com.nulab-inc+zxcvbn&type=code
+  - https://mvnrepository.com/artifact/com.nulab-inc/zxcvbn/usages
