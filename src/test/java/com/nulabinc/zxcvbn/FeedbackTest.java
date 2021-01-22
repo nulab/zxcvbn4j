@@ -1,14 +1,12 @@
 package com.nulabinc.zxcvbn;
 
+import com.nulabinc.zxcvbn.matchers.Match;
 import org.junit.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 @RunWith(Parameterized.class)
 public class FeedbackTest {
@@ -90,6 +88,99 @@ public class FeedbackTest {
         Feedback feedback = strength.getFeedback().withResourceBundle(null);
 
         Assert.assertArrayEquals("Unexpected suggestions", expectedSuggestions, feedback.getSuggestions().toArray());
+    }
+
+    @Test
+    public void testCorrectGetFeedback() {
+        System.out.println("password: [" + (password == null || password.trim().isEmpty() ? "" : password) + "]");
+        Zxcvbn zxcvbn = new Zxcvbn();
+        Strength strength = zxcvbn.measure(password);
+
+        List<Match> matches = strength.getSequence();
+
+        System.out.println("matches: " + matches.size());
+        for (int index = 0; index < matches.size(); index++) {
+            System.out.println("match index=" + index + ": " + this.toStringMatch(matches.get(index)));
+        }
+        System.out.println();
+
+        if (matches.size() == 0) {
+            System.out.println();
+            return;
+        }
+
+        Match longestMatch = matches.get(0);
+        if (matches.size() > 1) {
+            List<Match> matchesSubList = matches.subList(1, matches.size());
+            System.out.println("matches sublist: " + matchesSubList.size());
+            for (int index = 0; index < matchesSubList.size(); index++) {
+                System.out.println("match index=" + index + ": " + this.toStringMatch(matchesSubList.get(index)));
+            }
+            System.out.println();
+
+            System.out.println("first longest=" + this.toStringMatch(longestMatch));
+
+            for (Match match : matches.subList(1, matches.size())) {
+                if (match.tokenLength() > longestMatch.tokenLength()) {
+                    longestMatch = match;
+                    System.out.println("replaced longest by match: " + this.toStringMatch(match));
+                }
+            }
+
+            System.out.println("last longest=" + this.toStringMatch(longestMatch));
+        }
+        System.out.println();
+    }
+
+    @Test
+    public void testErrorGetFeedback() {
+        System.out.println("password: [" + (password == null || password.trim().isEmpty() ? "" : password) + "]");
+        Zxcvbn zxcvbn = new Zxcvbn();
+        Strength strength = zxcvbn.measure(password);
+
+        List<Match> matches = strength.getSequence();
+
+        System.out.println("matches: " + matches.size());
+        for (int index = 0; index < matches.size(); index++) {
+            System.out.println("match index=" + index + ": " + this.toStringMatch(matches.get(index)));
+        }
+        System.out.println();
+
+        if (matches.size() == 0) {
+            System.out.println();
+            return;
+        }
+
+        Match longestMatch = matches.get(0);
+        if (matches.size() > 1) {
+            List<Match> matchesSubList = matches.subList(1, matches.size() - 1);
+            System.out.println("matches sublist: " + matchesSubList.size());
+            for (int index = 0; index < matchesSubList.size(); index++) {
+                System.out.println("match index=" + index + ": " + this.toStringMatch(matchesSubList.get(index)));
+            }
+            System.out.println();
+
+            System.out.println("first longest=" + this.toStringMatch(longestMatch));
+
+            for (Match match : matches.subList(1, matches.size() - 1)) {
+                if (match.tokenLength() > longestMatch.tokenLength()) {
+                    longestMatch = match;
+                    System.out.println("replaced longest by match: " + this.toStringMatch(match));
+                }
+            }
+
+            System.out.println("last longest=" + this.toStringMatch(longestMatch));
+        }
+        System.out.println();
+    }
+
+    private String toStringMatch(Match match) {
+        return "Match{" + "pattern=" + match.pattern +
+                ", i=" + match.i +
+                ", j=" + match.j +
+                ", token=" + match.token +
+                ", dictionaryName='" + match.dictionaryName + '\'' +
+                '}';
     }
 
     @Parameterized.Parameters(name = "{0}")

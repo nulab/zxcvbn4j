@@ -111,7 +111,7 @@ public class Feedback {
         }
         Match longestMatch = sequence.get(0);
         if (sequence.size() > 1) {
-            for (Match match : sequence.subList(1, sequence.size() - 1)) {
+            for (Match match : sequence.subList(1, sequence.size())) {
                 if (match.tokenLength() > longestMatch.tokenLength()) longestMatch = match;
             }
         }
