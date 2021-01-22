@@ -12,6 +12,7 @@ Through pattern matching and conservative estimation, it recognizes and weighs 3
 
 The following version is a port of [zxcvbn 4.4.2](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.2)
 
+* 2021/01/21 1.3.3 released.
 * 2021/01/19 1.3.2 released.
 * 2020/10/28 1.3.1 released.
 * 2019/10/19 1.3.0 released.
@@ -59,7 +60,7 @@ The following version is a port of [zxcvbn 4.2.0](https://github.com/dropbox/zxc
 ### gradle
 
 ```
-compile 'com.nulab-inc:zxcvbn:1.3.2'
+compile 'com.nulab-inc:zxcvbn:1.3.3'
 ```
 
 ### maven
@@ -68,7 +69,7 @@ compile 'com.nulab-inc:zxcvbn:1.3.2'
 <dependency>
   <groupId>com.nulab-inc</groupId>
   <artifactId>zxcvbn</artifactId>
-  <version>1.3.2</version>
+  <version>1.3.3</version>
 </dependency>
 ```
 
