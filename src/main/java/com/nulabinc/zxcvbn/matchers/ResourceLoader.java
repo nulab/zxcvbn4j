@@ -5,51 +5,73 @@ import java.io.InputStream;
 class ResourceLoader {
 
     InputStream getInputStream(String path) {
-        ClassLoader cl = getDefaultClassLoader();
-        if (cl == null) {
-            throw new IllegalStateException("Cannot determine classloader");
+        InputStream in = this.getResourceAsStreamWithFallback(path);
+        if (in == null) {
+            throw new IllegalStateException("Could not get resource as stream");
         }
-        return cl.getResourceAsStream(path);
+        return in;
     }
 
     /**
-     * This code is a copy of spring-framework's ClassUtils#getDefaultClassLoader().
+     * This code base is spring-framework's ClassUtils#getDefaultClassLoader().
      * https://github.com/spring-projects/spring-framework/blob/dfb7ca733ad309b35040e0027fb7a2f10f3a196a/spring-core/src/main/java/org/springframework/util/ClassUtils.java#L173-L210
      *
-     * Return the default ClassLoader to use: typically the thread context
-     * ClassLoader, if available; the ClassLoader that loaded the ClassUtils
-     * class will be used as fallback.
-     * <p>Call this method if you intend to use the thread context ClassLoader
-     * in a scenario where you clearly prefer a non-null ClassLoader reference:
-     * for example, for class path resource loading (but not necessarily for
-     * {@code Class.forName}, which accepts a {@code null} ClassLoader
-     * reference as well).
-     * @return the default ClassLoader (only {@code null} if even the system
-     * ClassLoader isn't accessible)
-     * @see Thread#getContextClassLoader()
-     * @see ClassLoader#getSystemClassLoader()
+     * First, return the InputStream to use: typically the thread context ClassLoader, if available;
+     * Next, the ClassLoader that loaded the ResourceLoader class will be used as fallback.
+     * Finally, if even the system ClassLoader could not access resource as stream, return null.
      */
-    public static ClassLoader getDefaultClassLoader() {
-        ClassLoader cl = null;
+    public InputStream getResourceAsStreamWithFallback(String path) {
+        // 1. try to get resource with thread context ClassLoader
         try {
-            cl = Thread.currentThread().getContextClassLoader();
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            InputStream in = this.getResourceAsStream(cl, path);
+            if (in != null) {
+                return in;
+            }
         }
         catch (Throwable ex) {
             // Cannot access thread context ClassLoader - falling back...
         }
-        if (cl == null) {
-            // No thread context class loader -> use class loader of this class.
-            cl = ResourceLoader.class.getClassLoader();
-            if (cl == null) {
-                // getClassLoader() returning null indicates the bootstrap ClassLoader
-                try {
-                    cl = ClassLoader.getSystemClassLoader();
-                }
-                catch (Throwable ex) {
-                    // Cannot access system ClassLoader - oh well, maybe the caller can live with null...
+
+        // 2. try to get resource with this class context ClassLoader
+        try {
+            ClassLoader cl = this.getClass().getClassLoader();
+            InputStream in = this.getResourceAsStream(cl, path);
+            if (in != null) {
+                return in;
+            }
+        }
+        catch (Throwable ex) {
+            // Cannot access this class context ClassLoader - falling back...
+        }
+
+        // 3. try to get resource with this class context ClassLoader
+        try {
+            ClassLoader cl = ClassLoader.getSystemClassLoader();
+            InputStream in = this.getResourceAsStream(cl, path);
+            if (in != null) {
+                return in;
+            }
+        }
+        catch (Throwable ex) {
+            // Cannot access system ClassLoader - oh well, maybe the caller can live with null...
+        }
+
+        return null;
+    }
+
+    private InputStream getResourceAsStream(ClassLoader cl, String path) {
+        try {
+            if (cl != null) {
+                InputStream in = cl.getResourceAsStream(path);
+                if (in != null) {
+                    return in;
                 }
             }
         }
-        return cl;
+        catch (Throwable ex) {
+            // Cannot access resource as stream
+        }
+        return null;
     }
 }
