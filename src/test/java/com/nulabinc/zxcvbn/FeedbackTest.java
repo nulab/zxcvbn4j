@@ -91,96 +91,17 @@ public class FeedbackTest {
     }
 
     @Test
-    public void testCorrectGetFeedback() {
-        System.out.println("password: [" + (password == null || password.trim().isEmpty() ? "" : password) + "]");
+    public void testPrepareGetFeedback() {
         Zxcvbn zxcvbn = new Zxcvbn();
         Strength strength = zxcvbn.measure(password);
-
-        List<Match> matches = strength.getSequence();
-
-        System.out.println("matches: " + matches.size());
-        for (int index = 0; index < matches.size(); index++) {
-            System.out.println("match index=" + index + ": " + this.toStringMatch(matches.get(index)));
-        }
-        System.out.println();
-
-        if (matches.size() == 0) {
-            System.out.println();
+        List<Match> sequence = strength.getSequence();
+        if (sequence.size() == 0) {
             return;
         }
-
-        Match longestMatch = matches.get(0);
-        if (matches.size() > 1) {
-            List<Match> matchesSubList = matches.subList(1, matches.size());
-            System.out.println("matches sublist: " + matchesSubList.size());
-            for (int index = 0; index < matchesSubList.size(); index++) {
-                System.out.println("match index=" + index + ": " + this.toStringMatch(matchesSubList.get(index)));
-            }
-            System.out.println();
-
-            System.out.println("first longest=" + this.toStringMatch(longestMatch));
-
-            for (Match match : matches.subList(1, matches.size())) {
-                if (match.tokenLength() > longestMatch.tokenLength()) {
-                    longestMatch = match;
-                    System.out.println("replaced longest by match: " + this.toStringMatch(match));
-                }
-            }
-
-            System.out.println("last longest=" + this.toStringMatch(longestMatch));
+        if (sequence.size() > 1) {
+            List<Match> sublistSequence = sequence.subList(1, sequence.size());
+            Assert.assertEquals(sequence.size(), sublistSequence.size() + 1);
         }
-        System.out.println();
-    }
-
-    @Test
-    public void testErrorGetFeedback() {
-        System.out.println("password: [" + (password == null || password.trim().isEmpty() ? "" : password) + "]");
-        Zxcvbn zxcvbn = new Zxcvbn();
-        Strength strength = zxcvbn.measure(password);
-
-        List<Match> matches = strength.getSequence();
-
-        System.out.println("matches: " + matches.size());
-        for (int index = 0; index < matches.size(); index++) {
-            System.out.println("match index=" + index + ": " + this.toStringMatch(matches.get(index)));
-        }
-        System.out.println();
-
-        if (matches.size() == 0) {
-            System.out.println();
-            return;
-        }
-
-        Match longestMatch = matches.get(0);
-        if (matches.size() > 1) {
-            List<Match> matchesSubList = matches.subList(1, matches.size() - 1);
-            System.out.println("matches sublist: " + matchesSubList.size());
-            for (int index = 0; index < matchesSubList.size(); index++) {
-                System.out.println("match index=" + index + ": " + this.toStringMatch(matchesSubList.get(index)));
-            }
-            System.out.println();
-
-            System.out.println("first longest=" + this.toStringMatch(longestMatch));
-
-            for (Match match : matches.subList(1, matches.size() - 1)) {
-                if (match.tokenLength() > longestMatch.tokenLength()) {
-                    longestMatch = match;
-                    System.out.println("replaced longest by match: " + this.toStringMatch(match));
-                }
-            }
-
-            System.out.println("last longest=" + this.toStringMatch(longestMatch));
-        }
-        System.out.println();
-    }
-
-    private String toStringMatch(Match match) {
-        return "Match{" + "pattern=" + match.pattern +
-                ", i=" + match.i +
-                ", j=" + match.j +
-                ", token=" + match.token +
-                ", dictionaryName='" + match.dictionaryName + '\'' +
-                '}';
     }
 
     @Parameterized.Parameters(name = "{0}")
