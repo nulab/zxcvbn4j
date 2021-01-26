@@ -1,14 +1,12 @@
 package com.nulabinc.zxcvbn;
 
+import com.nulabinc.zxcvbn.matchers.Match;
 import org.junit.*;
 import org.junit.runner.*;
 import org.junit.runners.*;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 @RunWith(Parameterized.class)
 public class FeedbackTest {
@@ -90,6 +88,20 @@ public class FeedbackTest {
         Feedback feedback = strength.getFeedback().withResourceBundle(null);
 
         Assert.assertArrayEquals("Unexpected suggestions", expectedSuggestions, feedback.getSuggestions().toArray());
+    }
+
+    @Test
+    public void testPrepareGetFeedback() {
+        Zxcvbn zxcvbn = new Zxcvbn();
+        Strength strength = zxcvbn.measure(password);
+        List<Match> sequence = strength.getSequence();
+        if (sequence.size() == 0) {
+            return;
+        }
+        if (sequence.size() > 1) {
+            List<Match> sublistSequence = sequence.subList(1, sequence.size());
+            Assert.assertEquals(sequence.size(), sublistSequence.size() + 1);
+        }
     }
 
     @Parameterized.Parameters(name = "{0}")
