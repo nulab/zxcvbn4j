@@ -122,11 +122,11 @@ public class MatchingTest {
 
     @RunWith(Parameterized.class)
     public static class L33tMatching {
-        private Map<Character, Character[]> testTable = new HashMap<Character, Character[]>() {{
-            put('a', new Character[]{'4', '@'});
-            put('c', new Character[]{'(', '{', '[', '<'});
-            put('g', new Character[]{'6', '9'});
-            put('o', new Character[]{'0'});
+        private Map<Character, List<Character>> testTable = new HashMap<Character, List<Character>>() {{
+            put('a', Arrays.asList('4', '@'));
+            put('c', Arrays.asList('(', '{', '[', '<'));
+            put('g', Arrays.asList('6', '9'));
+            put('o', Arrays.asList('0'));
         }};
 
         private String password;
