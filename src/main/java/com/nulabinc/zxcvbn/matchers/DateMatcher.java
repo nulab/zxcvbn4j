@@ -38,9 +38,14 @@ public class DateMatcher extends BaseMatcher {
                     int k = date[0];
                     int l = date[1];
                     List<Integer> ints = new ArrayList<>();
-                    ints.add(WipeableString.parseInt(token.subSequence(0, k)));
-                    ints.add(WipeableString.parseInt(token.subSequence(k, l)));
-                    ints.add(WipeableString.parseInt(token.subSequence(l,token.length())));
+                    try {
+                        ints.add(WipeableString.parseInt(token.subSequence(0, k)));
+                        ints.add(WipeableString.parseInt(token.subSequence(k, l)));
+                        ints.add(WipeableString.parseInt(token.subSequence(l,token.length())));
+                    } catch (NumberFormatException e) {
+                        System.out.println(e.getStackTrace());
+                        continue;
+                    }
                     Dmy dmy = mapIntsToDmy(ints);
                     if (dmy != null) {
                         candidates.add(dmy);
@@ -72,9 +77,15 @@ public class DateMatcher extends BaseMatcher {
                     continue;
                 }
                 List<Integer> ints = new ArrayList<>();
-                ints.add(Integer.parseInt(rxMatch.group(1)));
-                ints.add(Integer.parseInt(rxMatch.group(3)));
-                ints.add(Integer.parseInt(rxMatch.group(4)));
+                try {
+                    ints.add(WipeableString.parseInt(rxMatch.group(1)));
+                    ints.add(WipeableString.parseInt(rxMatch.group(3)));
+                    ints.add(WipeableString.parseInt(rxMatch.group(4)));
+                } catch (NumberFormatException e) {
+                    System.out.println(e.getStackTrace());
+                    token.wipe();
+                    continue;
+                }
                 Dmy dmy = mapIntsToDmy(ints);
                 if (dmy == null) {
                     token.wipe();
