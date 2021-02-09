@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.3.6](https://github.com/nulab/zxcvbn4j/compare/1.3.5...1.3.6) (2021-02-09)
+
+* fix NumberFormatException in DateMatcher (#78) [#87](https://github.com/nulab/zxcvbn4j/pull/87) ([vvatanabe](https://github.com/vvatanabe))
+
 ## [1.3.5](https://github.com/nulab/zxcvbn4j/compare/1.3.4...1.3.5) (2021-02-02)
 
 * Improve L33tMatcher performance a bit [#86](https://github.com/nulab/zxcvbn4j/pull/86) ([yasuyuki-baba](https://github.com/yasuyuki-baba))
