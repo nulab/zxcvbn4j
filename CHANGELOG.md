@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.4.0](https://github.com/nulab/zxcvbn4j/compare/1.3.6...1.4.0) (2021-02-18)
+
+* Additional french translations [#89](https://github.com/nulab/zxcvbn4j/pull/89) ([er1c](https://github.com/er1c) and [vvatanabe](https://github.com/vvatanabe))
+* added german translation [#88](https://github.com/nulab/zxcvbn4j/pull/88) ([echox](https://github.com/echox))
+
 ## [1.3.6](https://github.com/nulab/zxcvbn4j/compare/1.3.5...1.3.6) (2021-02-09)
 
 * fix NumberFormatException in DateMatcher (#78) [#87](https://github.com/nulab/zxcvbn4j/pull/87) ([vvatanabe](https://github.com/vvatanabe))

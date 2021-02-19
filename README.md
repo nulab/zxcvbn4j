@@ -12,6 +12,7 @@ Through pattern matching and conservative estimation, it recognizes and weighs 3
 
 The following version is a port of [zxcvbn 4.4.2](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.2)
 
+* 2021/02/19 1.4.0 released.
 * 2021/02/09 1.3.6 released.
 * 2021/02/02 1.3.5 released.
 * 2021/01/26 1.3.4 released.
@@ -63,7 +64,7 @@ The following version is a port of [zxcvbn 4.2.0](https://github.com/dropbox/zxc
 ### gradle
 
 ```
-compile 'com.nulab-inc:zxcvbn:1.3.6'
+compile 'com.nulab-inc:zxcvbn:1.4.0'
 ```
 
 ### maven
@@ -72,7 +73,7 @@ compile 'com.nulab-inc:zxcvbn:1.3.6'
 <dependency>
   <groupId>com.nulab-inc</groupId>
   <artifactId>zxcvbn</artifactId>
-  <version>1.3.6</version>
+  <version>1.4.0</version>
 </dependency>
 ```
 
@@ -196,6 +197,14 @@ String localizedWarning = localizedFeedback.getWarning();
 
 Defined Key and the message in the properties file. Reference the [messages.properties](https://github.com/nulab/zxcvbn4j/blob/master/src/main/resources/com/nulabinc/zxcvbn/messages.properties).
 
+Supported languages by default:
+
+- English ([default](./src/main/resources/com/nulabinc/zxcvbn/messages.properties))
+- Japanese ([ja](./src/main/resources/com/nulabinc/zxcvbn/messages_ja.properties))
+- Dutch ([nl](./src/main/resources/com/nulabinc/zxcvbn/messages_nl.properties))
+- German ([de](./src/main/resources/com/nulabinc/zxcvbn/messages_de.properties))
+- French ([fr](./src/main/resources/com/nulabinc/zxcvbn/messages_fr.properties))
+
 ## Bugs and Feedback
 
 For bugs, questions and discussions please use the [Github Issues](https://github.com/nulab/zxcvbn4j/issues).
@@ -217,6 +226,6 @@ MIT License
 - [Typetalk](https://typetalk.com/)
 - [JetBrains Hub](https://www.jetbrains.com/hub/)
 - [Cryptomator](https://cryptomator.org/)
-- And many Open Source Softwares
+- And many Open Source Software
   - https://github.com/search?q=com.nulab-inc+zxcvbn&type=code
   - https://mvnrepository.com/artifact/com.nulab-inc/zxcvbn/usages

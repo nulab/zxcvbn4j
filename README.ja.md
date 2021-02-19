@@ -11,6 +11,7 @@ zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxc
 
 以下のバージョンは[zxcvbn 4.4.2](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.2)をポーティング
 
+* 2021/02/19 1.4.0 リリース.
 * 2021/02/09 1.3.6 リリース.
 * 2021/02/02 1.3.5 リリース.
 * 2021/01/26 1.3.4 リリース.
@@ -62,7 +63,7 @@ zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxc
 ### gradle を利用する場合
 
 ```
-compile 'com.nulab-inc:zxcvbn:1.3.6'
+compile 'com.nulab-inc:zxcvbn:1.4.0'
 ```
 
 ### maven を利用する場合
@@ -71,7 +72,7 @@ compile 'com.nulab-inc:zxcvbn:1.3.6'
 <dependency>
   <groupId>com.nulab-inc</groupId>
   <artifactId>zxcvbn</artifactId>
-  <version>1.3.6</version>
+  <version>1.4.0</version>
 </dependency>
 ```
 
@@ -181,6 +182,14 @@ String localizedWarning = localizedFeedback.getWarning();
 
 プロパティファイルに定義するキーとメッセージは、[messages.properties](https://github.com/nulab/zxcvbn4j/blob/master/src/main/resources/com/nulabinc/zxcvbn/messages.properties) を参考に作成してください。
 
+デフォルトでサポートしている言語:
+
+- English ([default](./src/main/resources/com/nulabinc/zxcvbn/messages.properties))
+- Japanese ([ja](./src/main/resources/com/nulabinc/zxcvbn/messages_ja.properties))
+- Dutch ([nl](./src/main/resources/com/nulabinc/zxcvbn/messages_nl.properties))
+- German ([de](./src/main/resources/com/nulabinc/zxcvbn/messages_de.properties))
+- French ([fr](./src/main/resources/com/nulabinc/zxcvbn/messages_fr.properties))
+
 ## バグ報告やご意見
 
 バグ報告, ご意見、ご質問等は [Github Issues](https://github.com/nulab/zxcvbn4j/issues) にお願い致します。
@@ -201,6 +210,6 @@ MIT License
 - [Cacoo](https://cacoo.com/)
 - [Typetalk](https://typetalk.com/)
 - [JetBrains Hub](https://www.jetbrains.com/hub/)
-- And many Open Source Softwares
+- And many Open Source Software
   - https://github.com/search?q=com.nulab-inc+zxcvbn&type=code
   - https://mvnrepository.com/artifact/com.nulab-inc/zxcvbn/usages
