@@ -1,14 +1,21 @@
 package com.nulabinc.zxcvbn;
 
-import com.nulabinc.zxcvbn.matchers.Match;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.nulabinc.zxcvbn.matchers.CustomDictionary;
+import com.nulabinc.zxcvbn.matchers.Match;
+
 public class Zxcvbn {
 
+    private List<CustomDictionary> dictionaries = new ArrayList<>();
+
     public Zxcvbn() {
+    }
+
+    public void addDictionary(String resourcePackagePath, String... filenames) {
+        dictionaries.add(new CustomDictionary(resourcePackagePath, filenames));
     }
 
     public Strength measure(CharSequence password) {
@@ -42,7 +49,12 @@ public class Zxcvbn {
     }
 
     protected Matching createMatching(List<String> lowerSanitizedInputs) {
-        return new Matching(lowerSanitizedInputs);
+        if (dictionaries.isEmpty()) {
+            return new Matching(lowerSanitizedInputs);
+        }
+        else {
+            return new Matching(dictionaries, lowerSanitizedInputs);
+        }
     }
 
     private long time() {
