@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.4.1](https://github.com/nulab/zxcvbn4j/compare/1.4.0...1.4.1) (2021-03-20)
+
+* Fix message from full-width to half-width [#91](https://github.com/nulab/zxcvbn4j/pull/91) ([kxn4t](https://github.com/kxn4t))
+
 ## [1.4.0](https://github.com/nulab/zxcvbn4j/compare/1.3.6...1.4.0) (2021-02-18)
 
 * Additional french translations [#89](https://github.com/nulab/zxcvbn4j/pull/89) ([er1c](https://github.com/er1c) and [vvatanabe](https://github.com/vvatanabe))
