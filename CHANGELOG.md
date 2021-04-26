@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.0](https://github.com/nulab/zxcvbn4j/compare/1.4.1...1.5.0) (2021-04-26)
+
+* Improved to be able to replace the message arbitrarily [#92](https://github.com/nulab/zxcvbn4j/pull/92) ([kxn4t](https://github.com/kxn4t))
+* Fix typo in German translation [#96](https://github.com/nulab/zxcvbn4j/pull/96) ([bleeding182](https://github.com/bleeding182))
+
 ## [1.4.1](https://github.com/nulab/zxcvbn4j/compare/1.4.0...1.4.1) (2021-03-20)
 
 * Fix message from full-width to half-width [#91](https://github.com/nulab/zxcvbn4j/pull/91) ([kxn4t](https://github.com/kxn4t))
