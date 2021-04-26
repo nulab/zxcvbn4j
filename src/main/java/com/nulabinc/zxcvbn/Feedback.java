@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -94,6 +95,10 @@ public class Feedback {
 
     public Feedback withResourceBundle(ResourceBundle messages) {
         return new ResourceBundleFeedback(messages, warning, suggestions);
+    }
+
+    public Feedback replaceResourceBundle(Map<Locale, ResourceBundle> messages) {
+        return new ReplacedMessagesFeedback(messages, warning, suggestions);
     }
 
     private String l10n(ResourceBundle messages, String messageId) {
@@ -225,6 +230,29 @@ public class Feedback {
         @Override
         protected ResourceBundle resolveResourceBundle(Locale locale) {
             return messages;
+        }
+    }
+
+    private static class ReplacedMessagesFeedback extends Feedback {
+        private final Map<Locale, ResourceBundle> messages;
+
+        private ReplacedMessagesFeedback(Map<Locale, ResourceBundle> messages, String warning, String... suggestions) {
+            super(warning, suggestions);
+            this.messages = messages;
+        }
+
+        @Override
+        protected ResourceBundle resolveResourceBundle(Locale locale) {
+            try {
+                if (messages.containsKey(locale)) {
+                    return messages.get(locale);
+                }
+                return ResourceBundle.getBundle(DEFAULT_BUNDLE_NAME, locale, CONTROL);
+            } catch (MissingResourceException e) {
+                return ResourceBundle.getBundle(DEFAULT_BUNDLE_NAME, locale);
+            } catch (UnsupportedOperationException e) {
+                return ResourceBundle.getBundle(DEFAULT_BUNDLE_NAME, locale);
+            }
         }
     }
 }

@@ -43,6 +43,21 @@ public class FeedbackTest {
     }
 
     @Test
+    public void testReplaceMessage() {
+        Zxcvbn zxcvbn = new Zxcvbn();
+        Strength strength = zxcvbn.measure(password);
+        Feedback feedback = strength.getFeedback();
+
+        Map<Locale, ResourceBundle> messages = new HashMap<>();
+        ResourceBundle resourceBundle = ResourceBundle.getBundle("com/nulabinc/zxcvbn/messages", Locale.JAPANESE);
+        messages.put(Locale.ITALIAN, resourceBundle);
+        Feedback replacedFeedback = feedback.replaceResourceBundle(messages);
+
+        String expectedWarningL10n = expectedWarning.length() > 0 ? resourceBundle.getString(expectedWarning) : "";
+        Assert.assertEquals("Unexpected warning", expectedWarningL10n, replacedFeedback.getWarning(Locale.ITALIAN));
+    }
+
+    @Test
     public void testSuggestions() {
         Zxcvbn zxcvbn = new Zxcvbn();
         Strength strength = zxcvbn.measure(password);
