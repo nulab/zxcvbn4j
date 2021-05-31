@@ -20,6 +20,7 @@ version = '1.5.0'
 archivesBaseName = 'zxcvbn'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
+ext.moduleName = 'com.nulabinc.zxcvbn'
 
 wrapper {
     gradleVersion = '5.5'
@@ -51,8 +52,10 @@ if (JavaVersion.current().isJava8Compatible()) {
 }
 
 jar {
+    inputs.property("moduleName", moduleName)
+
     manifest {
-        attributes 'Implementation-Title': archivesBaseName, 'Implementation-Version': version
+        attributes 'Implementation-Title': archivesBaseName, 'Implementation-Version': version, 'Automatic-Module-Name': moduleName
     }
 }
 
