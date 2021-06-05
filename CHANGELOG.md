@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.1](https://github.com/nulab/zxcvbn4j/compare/1.5.0...1.5.1) (2021-06-05)
+
+* Bump junit 4.11 to 4.13.2 [#101](https://github.com/nulab/zxcvbn4j/pull/101) ([yasuyuki-baba](https://github.com/yasuyuki-baba))
+* Add Automatic-Module-Name to manifest [#99](https://github.com/nulab/zxcvbn4j/pull/99) ([overheadhunter](https://github.com/overheadhunter))
+
 ## [1.5.0](https://github.com/nulab/zxcvbn4j/compare/1.4.1...1.5.0) (2021-04-26)
 
 * Improved to be able to replace the message arbitrarily [#92](https://github.com/nulab/zxcvbn4j/pull/92) ([kxn4t](https://github.com/kxn4t))
