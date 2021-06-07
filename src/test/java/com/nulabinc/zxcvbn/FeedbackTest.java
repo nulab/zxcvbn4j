@@ -149,9 +149,9 @@ public class FeedbackTest {
                         Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
                         Feedback.SEQUENCE_SUGGESTIONS_AVOID_SEQUENCES
                 }},
-                {new SimpleDateFormat("yyyy").format(new Date()), Feedback.DATE_WARNING_DATES, new String[]{
+                {new SimpleDateFormat("yyyy").format(new Date()), Feedback.REGEX_WARNING_RECENT_YEARS, new String[]{
                         Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
-                        Feedback.DATE_SUGGESTIONS_AVOID_DATES
+                        Feedback.REGEX_SUGGESTIONS_AVOID_RECENT_YEARS
                 }},
                 {new SimpleDateFormat("dd-MM-yyyy").format(new Date()), Feedback.DATE_WARNING_DATES, new String[]{
                         Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
