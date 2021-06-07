@@ -12,7 +12,7 @@ public class RegexMatcher extends BaseMatcher {
 
     private static final Map<String, String> REGEXEN = new HashMap<>();
     static {
-        REGEXEN.put("recent_year", "19\\d\\d|200\\d|201\\d");
+        REGEXEN.put("recent_year", "19\\d\\d|200\\d|201\\d|202\\d");
     }
 
     @Override
