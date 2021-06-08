@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.5.2](https://github.com/nulab/zxcvbn4j/compare/1.5.1...1.5.2) (2021-06-07)
+
+* fix recent years #100 [#102](https://github.com/nulab/zxcvbn4j/pull/102) ([kxn4t](https://github.com/kxn4t))
+
 ## [1.5.1](https://github.com/nulab/zxcvbn4j/compare/1.5.0...1.5.1) (2021-06-05)
 
 * Bump junit 4.11 to 4.13.2 [#101](https://github.com/nulab/zxcvbn4j/pull/101) ([yasuyuki-baba](https://github.com/yasuyuki-baba))
