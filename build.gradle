@@ -56,7 +56,6 @@ task compileModuleInfoJava(type: JavaCompile, dependsOn: compileJava) {
 classes.dependsOn compileModuleInfoJava
 
 javadoc {
-    excludes = ['module-info.java']
     options.locale = 'en_US'
     title = 'zxcvbn4j ' + version + ' API'
 }
