@@ -11,9 +11,7 @@ import java.util.Map;
 
 public class Dictionary {
 
-    private static final String RESOURCES_PACKAGE_PATH = "com/nulabinc/zxcvbn/matchers/dictionarys/";
-
-    private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
+    private static final String RESOURCES_PACKAGE_PATH = "/com/nulabinc/zxcvbn/matchers/dictionarys/";
 
     private static final String EXT = ".txt";
 
@@ -42,7 +40,7 @@ public class Dictionary {
         Map<String, String[]> freqLists = new HashMap<>();
         for (String filename:  DICTIONARY_PARAMS) {
             List<String> words = new ArrayList<>();
-            try(InputStream is = RESOURCE_LOADER.getInputStream(buildResourcePath(filename));
+            try(InputStream is = Dictionary.class.getResourceAsStream(buildResourcePath(filename));
                 // Reasons for not using StandardCharsets
                 // refs: https://github.com/nulab/zxcvbn4j/issues/62
                 BufferedReader br = new BufferedReader(new InputStreamReader(is, UTF_8))) {
