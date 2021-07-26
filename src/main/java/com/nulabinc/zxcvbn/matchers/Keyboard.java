@@ -1,10 +1,5 @@
 package com.nulabinc.zxcvbn.matchers;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,29 +8,20 @@ import java.util.Map;
 
 public class Keyboard {
 
-    private static final String RESOURCES_PACKAGE_PATH = "com/nulabinc/zxcvbn/matchers/keyboards/";
+    private static final String PACKAGE_PATH = "com/nulabinc/zxcvbn/matchers/";
+    private static final String SLANTED_DIRECTORY_PATH = PACKAGE_PATH + "keyboards/slanted/";
+    private static final String ALIGNED_DIRECTORY_PATH = PACKAGE_PATH + "keyboards/aligned/";
+    private static final String SLANTED_CONFIG_FILE_PATH = PACKAGE_PATH + ".slantedKeyboards";
+    private static final String ALIGNED_CONFIG_FILE_PATH = PACKAGE_PATH + ".alignedKeyboards";
+    private static final String KEYBOARD_FILES_EXT = ".txt";
 
     private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
+    public static final Map<String, Keyboard> ALL_KEYBOARDS = new HashMap<>();
+    private static final List<String> slantedKeyboardList = new ArrayList<>(Arrays.asList("dvorak", "jis", "qwerty"));
+    private static final List<String> alignedKeyboardList = new ArrayList<>(Arrays.asList("mac_keypad", "keypad"));
 
-    public static final Keyboard QWERTY =
-            new Keyboard("qwerty", new SlantedAdjacentGraphBuilder(loadAsString("qwerty.txt")));
-
-    public static final Keyboard DVORAK =
-            new Keyboard("dvorak", new SlantedAdjacentGraphBuilder(loadAsString("dvorak.txt")));
-
-    public static final Keyboard JIS =
-            new Keyboard("jis", new SlantedAdjacentGraphBuilder(loadAsString("jis.txt")));
-
-    public static final Keyboard KEYPAD =
-            new Keyboard("keypad", new AlignedAdjacentAdjacentGraphBuilder(loadAsString("keypad.txt")));
-
-    public static final Keyboard MAC_KEYPAD =
-            new Keyboard("mac_keypad", new AlignedAdjacentAdjacentGraphBuilder(loadAsString("mac_keypad.txt")));
-
-    public static final List<Keyboard> ALL_KEYBOARDS = Arrays.asList(QWERTY, DVORAK, JIS, KEYPAD, MAC_KEYPAD);
 
     private final String name;
-
     private final Map<Character, List<String>> adjacencyGraph;
 
     private final boolean slanted;
@@ -50,6 +36,45 @@ public class Keyboard {
         this.slanted = adjacentGraphBuilder.isSlanted();
         this.startingPositions = adjacencyGraph.size();
         this.averageDegree = calcAverageDegree(adjacencyGraph);
+    }
+
+    static {
+        initListsFromConfigIfSupplied();
+        initKeyboardsFromFiles(slantedKeyboardList, true);
+        initKeyboardsFromFiles(alignedKeyboardList, false);
+
+    }
+
+    private static void initListsFromConfigIfSupplied() {
+        List<String> slantedConfigEntries = RESOURCE_LOADER.getEntriesFromFile(SLANTED_CONFIG_FILE_PATH, true);
+        List<String> alignedConfigEntries = RESOURCE_LOADER.getEntriesFromFile(ALIGNED_CONFIG_FILE_PATH, true);
+
+        if (slantedConfigEntries != null) {
+            slantedKeyboardList.clear();
+            slantedKeyboardList.addAll(slantedConfigEntries);
+        }
+        if (alignedConfigEntries != null) {
+            alignedKeyboardList.clear();
+            alignedKeyboardList.addAll(alignedConfigEntries);
+        }
+    }
+
+    private static void initKeyboardsFromFiles(List<String> keyboardEntries, boolean slanted) {
+        for (String entry : keyboardEntries) {
+            Keyboard generatedKeyboard;
+
+            if (slanted) {
+                generatedKeyboard = new Keyboard(entry, new SlantedAdjacentGraphBuilder(loadAsString(SLANTED_DIRECTORY_PATH + entry + KEYBOARD_FILES_EXT)));
+            } else {
+                generatedKeyboard = new Keyboard(entry, new AlignedAdjacentAdjacentGraphBuilder(loadAsString(ALIGNED_DIRECTORY_PATH + entry + KEYBOARD_FILES_EXT)));
+            }
+
+            if (!ALL_KEYBOARDS.containsKey(entry)) {
+                ALL_KEYBOARDS.put(entry, generatedKeyboard);
+            } else {
+                throw new RuntimeException("Keyboard with name: " + entry + " already defined");
+            }
+        }
     }
 
     private static double calcAverageDegree(final Map<Character, List<String>> adjacencyGraph) {
@@ -72,23 +97,19 @@ public class Keyboard {
         return average;
     }
 
-    private static String loadAsString(final String name) {
-        try (final InputStream input = RESOURCE_LOADER.getInputStream(RESOURCES_PACKAGE_PATH + name);
-             final BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
-            final StringBuilder sb = new StringBuilder(1024 * 4);
-            String str;
-            while ((str = reader.readLine()) != null) {
-                sb.append(str);
-                sb.append('\n');
-            }
-            return sb.toString();
-        } catch (final IOException e) {
-            throw new IllegalArgumentException(e);
+    private static String loadAsString(final String filePath) {
+        List<String> fileEntries = RESOURCE_LOADER.getEntriesFromFile(filePath, false);
+        final StringBuilder sb = new StringBuilder(1024 * 4);
+
+        for (String entry : fileEntries) {
+            sb.append(entry);
+            sb.append('\n');
         }
+        return sb.toString();
     }
 
     public static Keyboard of(final String graph) {
-        for (Keyboard keyboard : ALL_KEYBOARDS) {
+        for (Keyboard keyboard : ALL_KEYBOARDS.values()) {
             if (keyboard.getName().equals(graph)) {
                 return keyboard;
             }

@@ -216,20 +216,22 @@ public class MatchingTest {
         @Parameterized.Parameters(name = "{0}")
         public static Collection<Object[]> data() {
             return Arrays.asList(new Object[][]{
-                    {"12345", Keyboard.QWERTY, 1, 0},
-                    {"@WSX", Keyboard.QWERTY, 1, 4},
-                    {"6tfGHJ", Keyboard.QWERTY, 2, 3},
-                    {"hGFd", Keyboard.QWERTY, 0, 2},
-                    {"/;p09876yhn", Keyboard.QWERTY, 3, 0},
-                    {"Xdr%", Keyboard.QWERTY, 1, 2},
-                    {"159-", Keyboard.KEYPAD, 1, 0},
-                    {"*84", Keyboard.KEYPAD, 1, 0},
-                    {"/8520", Keyboard.KEYPAD, 1, 0},
-                    {"369", Keyboard.KEYPAD, 1, 0},
-                    {"/963.", Keyboard.MAC_KEYPAD, 1, 0},
-                    {"*-632.0214", Keyboard.MAC_KEYPAD, 9, 0},
-                    {"aoEP%yIxkjq:", Keyboard.DVORAK, 4, 5},
-                    {";qoaOQ:Aoq;a", Keyboard.DVORAK, 11, 4}
+
+
+                    {"12345", Keyboard.ALL_KEYBOARDS.get("qwerty"), 1, 0},
+                    {"@WSX", Keyboard.ALL_KEYBOARDS.get("qwerty"), 1, 4},
+                    {"6tfGHJ", Keyboard.ALL_KEYBOARDS.get("qwerty"), 2, 3},
+                    {"hGFd", Keyboard.ALL_KEYBOARDS.get("qwerty"), 0, 2},
+                    {"/;p09876yhn", Keyboard.ALL_KEYBOARDS.get("qwerty"), 3, 0},
+                    {"Xdr%", Keyboard.ALL_KEYBOARDS.get("qwerty"), 1, 2},
+                    {"159-", Keyboard.ALL_KEYBOARDS.get("keypad"), 1, 0},
+                    {"*84", Keyboard.ALL_KEYBOARDS.get("keypad"), 1, 0},
+                    {"/8520", Keyboard.ALL_KEYBOARDS.get("keypad"), 1, 0},
+                    {"369", Keyboard.ALL_KEYBOARDS.get("keypad"), 1, 0},
+                    {"/963.", Keyboard.ALL_KEYBOARDS.get("mac_keypad"), 1, 0},
+                    {"*-632.0214", Keyboard.ALL_KEYBOARDS.get("mac_keypad"), 9, 0},
+                    {"aoEP%yIxkjq:", Keyboard.ALL_KEYBOARDS.get("dvorak"), 4, 5},
+                    {";qoaOQ:Aoq;a", Keyboard.ALL_KEYBOARDS.get("dvorak"), 11, 4}
             });
         }
     }
@@ -400,7 +402,7 @@ public class MatchingTest {
 
         @Test
         public void testSpatialMatching() throws Exception {
-            final Keyboard keyboard = Keyboard.QWERTY;
+            final Keyboard keyboard = Keyboard.ALL_KEYBOARDS.get("qwerty");
             final String token = "6tfGHJ";
             List<Match> actualMatches = new SpatialMatcher(Collections.singletonList(keyboard))
                     .execute("rz!" + token + "%z");

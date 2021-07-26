@@ -177,6 +177,23 @@ strength.sequence
 # how long it took zxcvbn to calculate an answer, in milliseconds.
 strength.calc_time
 ```
+## Configure what resources should be used and add your own resources
+  !!Note this will result in different scores from the zxcvbn JS version!!
+
+You can specify what resources(keyboard layouts and dictionaries) you want to be used by the library by adding config files (.dictionaries, .alignedKeyboards and .slantedKeyboards) under the directory `src/main/resources/com/nulabinc/matchers`,
+this makes it possible to exclude resources that come with the library itself and gives you the possibility to use your own resources.
+
+It is also possible to add your own dictionaries and layouts the only thing you have to do is to put them in te according directories:
+
+* for dictionaries -> `src/main/resources/com/nulabinc/matchers/dictionaries`
+* for slanted keyboards -> `src/main/resources/com/nulabinc/matchers/keyboards/slanted`
+* for aligned keyboards, like number pads -> `src/main/resources/com/nulabinc/matchers/keyboards/aligned`
+
+and reference them, like described above.
+
+You can find an example here: https://github.com/1and1/zxcvbn4j-example
+
+
 
 ## Localization feedback messages
 

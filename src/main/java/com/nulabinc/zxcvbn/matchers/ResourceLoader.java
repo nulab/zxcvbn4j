@@ -1,8 +1,33 @@
 package com.nulabinc.zxcvbn.matchers;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 class ResourceLoader {
+
+    public List<String> getEntriesFromFile(String filePath, boolean fileIsOptional) {
+        List<String> entries = new ArrayList<>();
+        try (final InputStream input = getResourceAsStreamWithFallback(filePath)) {
+            if (input == null && fileIsOptional) {
+                return null;
+            }
+
+            // Reasons for not using StandardCharsets
+            // refs: https://github.com/nulab/zxcvbn4j/issues/62
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(input, "UTF-8"));
+            String str;
+            while ((str = reader.readLine()) != null) {
+                entries.add(str);
+            }
+            return entries;
+        } catch (final RuntimeException | IOException e) {
+            throw new IllegalArgumentException("File :" + filePath + " could not be loaded");
+        }
+    }
 
     InputStream getInputStream(String path) {
         InputStream in = this.getResourceAsStreamWithFallback(path);

@@ -19,7 +19,7 @@ public class SpatialMatcher extends BaseMatcher {
     }
 
     public SpatialMatcher() {
-        this(Keyboard.ALL_KEYBOARDS);
+        this(new ArrayList<>(Keyboard.ALL_KEYBOARDS.values()));
     }
 
     @Override
