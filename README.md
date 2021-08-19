@@ -211,7 +211,7 @@ Supported languages by default:
 
 ## Bugs and Feedback
 
-For bugs, questions and discussions please use the [Github Issues](https://github.com/nulab/zxcvbn4j/issues).
+For bugs, questions and discussions please use the [GitHub Issues](https://github.com/nulab/zxcvbn4j/issues).
 
 ## License
 
