@@ -1,19 +1,10 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'net.saliman:gradle-cobertura-plugin:2.6.1' // cobertura plugin
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0'
-    }
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+    id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.12.0'
 }
-
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'net.saliman.cobertura'
-apply plugin: 'com.github.kt3k.coveralls'
-
-apply from: 'dictionary.gradle'
 
 group = 'com.nulab-inc'
 version = '1.5.2'
@@ -21,9 +12,10 @@ archivesBaseName = 'zxcvbn'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 ext.moduleName = 'com.nulabinc.zxcvbn'
+ext.isReleaseVersion = !version.endsWith('SNAPSHOT')
 
 wrapper {
-    gradleVersion = '5.5'
+    gradleVersion = '7.2'
 }
 
 repositories {
@@ -31,10 +23,8 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.13.2'
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 }
-
-cobertura.coverageFormats = ['html', 'xml'] // coveralls plugin depends on xml format report
 
 javadoc {
     options.locale = 'en_US'
@@ -55,22 +45,13 @@ jar {
     inputs.property("moduleName", moduleName)
 
     manifest {
-        attributes 'Implementation-Title': archivesBaseName, 'Implementation-Version': version, 'Automatic-Module-Name': moduleName
+        attributes 'Implementation-Title': archivesBaseName, 'Implementation-Version': archiveVersion, 'Automatic-Module-Name': moduleName
     }
 }
 
-task sourceJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allJava
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives sourceJar, javadocJar
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 configurations {
@@ -78,63 +59,55 @@ configurations {
 }
 
 if (project.hasProperty("signing.keyId")) {
-    apply plugin: 'signing'
-
     signing {
         // Skip signing snapshot archives
-        if (System.env.GITHUB_ACTIONS || version.endsWith("-SNAPSHOT")) return
+        if (System.env.GITHUB_ACTIONS || !isReleaseVersion) return
 
-        sign configurations.archives
+        sign publishing.publications.mavenJava
     }
 }
 
-def ossrhUsername = hasProperty('ossrhUsername') ? ossrhUsername : ''
-def ossrhPassword = hasProperty('ossrhPassword') ? ossrhPassword : ''
-
-uploadArchives {
-    // Skip uploading production archives when using github actions
-    if (System.env.GITHUB_ACTIONS && !version.endsWith("-SNAPSHOT")) return
-
+publishing {
     repositories {
-        mavenDeployer {
-            beforeDeployment {
-                MavenDeployment deployment -> if (!version.endsWith("-SNAPSHOT")) { signing.signPom(deployment) }
+        maven {
+            // Skip uploading production archives when using github actions
+            if (System.env.GITHUB_ACTIONS && isReleaseVersion) return
+
+            def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+            url = isReleaseVersion ? releasesRepoUrl : snapshotsRepoUrl
+            credentials {
+                username = project.hasProperty('ossrhUsername') ? ossrhUsername : 'Unknown user'
+                password = project.hasProperty('ossrhPassword') ? ossrhPassword : 'Unknown password'
             }
+        }
+    }
 
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            pom.project {
-                name 'zxcvbn4j'
-                artifactId archivesBaseName
-                packaging 'jar'
-                description 'This is a java port of zxcvbn, which is a JavaScript password strength generator.'
-                url 'https://github.com/nulab/zxcvbn4j'
-
-                scm {
-                    connection 'https://github.com/nulab/zxcvbn4j.git'
-                    developerConnection 'https://github.com/nulab/zxcvbn4j.git'
-                    url 'https://github.com/nulab/zxcvbn4j.git'
-                }
-
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifactId = archivesBaseName
+            pom {
+                name = 'zxcvbn4j'
+                description = 'This is a java port of zxcvbn, which is a JavaScript password strength generator.'
+                url = 'https://github.com/nulab/zxcvbn4j'
                 licenses {
                     license {
-                        name 'MIT License'
-                        url 'http://www.opensource.org/licenses/mit-license.php'
+                        name = 'MIT License'
+                        url = 'http://www.opensource.org/licenses/mit-license.php'
                     }
                 }
-
                 developers {
                     developer {
-                        id 'vvatanabe'
-                        name 'Yuichi Watanabe'
-                        email 'yuichi.watanabe@nulab-inc.com'
+                        id = 'vvatanabe'
+                        name = 'Yuichi Watanabe'
+                        email = 'yuichi.watanabe@nulab-inc.com'
                     }
+                }
+                scm {
+                    connection = 'https://github.com/nulab/zxcvbn4j.git'
+                    developerConnection = 'https://github.com/nulab/zxcvbn4j.git'
+                    url = 'https://github.com/nulab/zxcvbn4j.git'
                 }
             }
         }
@@ -145,4 +118,12 @@ test {
     maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
     forkEvery = 4
     testLogging.showStandardStreams = true
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true // coveralls plugin depends on xml format report
+        html.required = true
+    }
 }

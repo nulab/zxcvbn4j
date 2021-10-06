@@ -19,4 +19,4 @@ jobs:
           java-version: ${{ matrix.java }}
           distribution: 'temurin'
           cache: 'gradle'
-      - run: ./gradlew build cobertura coveralls --no-daemon
+      - run: ./gradlew jacocoTestReport coveralls publishToMavenLocal --no-daemon
