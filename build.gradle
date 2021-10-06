@@ -82,7 +82,7 @@ if (project.hasProperty("signing.keyId")) {
 
     signing {
         // Skip signing snapshot archives
-        if (System.env.TRAVIS || version.endsWith("-SNAPSHOT")) return
+        if (System.env.GITHUB_ACTIONS || version.endsWith("-SNAPSHOT")) return
 
         sign configurations.archives
     }
@@ -92,8 +92,8 @@ def ossrhUsername = hasProperty('ossrhUsername') ? ossrhUsername : ''
 def ossrhPassword = hasProperty('ossrhPassword') ? ossrhPassword : ''
 
 uploadArchives {
-    // Skip uploading production archives when travis
-    if (System.env.TRAVIS && !version.endsWith("-SNAPSHOT")) return
+    // Skip uploading production archives when using github actions
+    if (System.env.GITHUB_ACTIONS && !version.endsWith("-SNAPSHOT")) return
 
     repositories {
         mavenDeployer {
