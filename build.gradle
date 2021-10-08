@@ -86,28 +86,33 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-            artifactId = archivesBaseName
+
             pom {
                 name = 'zxcvbn4j'
+                artifactId = archivesBaseName
+                packaging = 'jar'
                 description = 'This is a java port of zxcvbn, which is a JavaScript password strength generator.'
                 url = 'https://github.com/nulab/zxcvbn4j'
+
+                scm {
+                    connection = 'https://github.com/nulab/zxcvbn4j.git'
+                    developerConnection = 'https://github.com/nulab/zxcvbn4j.git'
+                    url = 'https://github.com/nulab/zxcvbn4j.git'
+                }
+
                 licenses {
                     license {
                         name = 'MIT License'
                         url = 'http://www.opensource.org/licenses/mit-license.php'
                     }
                 }
+
                 developers {
                     developer {
                         id = 'vvatanabe'
                         name = 'Yuichi Watanabe'
                         email = 'yuichi.watanabe@nulab-inc.com'
                     }
-                }
-                scm {
-                    connection = 'https://github.com/nulab/zxcvbn4j.git'
-                    developerConnection = 'https://github.com/nulab/zxcvbn4j.git'
-                    url = 'https://github.com/nulab/zxcvbn4j.git'
                 }
             }
         }
