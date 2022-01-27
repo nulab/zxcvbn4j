@@ -4,6 +4,17 @@ import java.math.BigDecimal;
 
 public class TimeEstimates {
 
+    public static final String ESTIMATES_LESSTHANASECOND = "estimates.lessThanASecond";
+    public static final String ESTIMATES_SECONDS = "estimates.seconds";
+    public static final String ESTIMATES_MINUTES = "estimates.minutes";
+    public static final String ESTIMATES_HOURS = "estimates.hours";
+    public static final String ESTIMATES_DAYS = "estimates.days";
+    public static final String ESTIMATES_MONTHS = "estimates.months";
+    public static final String ESTIMATES_YEARS = "estimates.years";
+    public static final String ESTIMATES_CENTURIES = "estimates.centuries";
+
+
+
     public static AttackTimes estimateAttackTimes(double guesses) {
         AttackTimes.CrackTimeSeconds crackTimeSeconds = new AttackTimes.CrackTimeSeconds(
                 divide(guesses, 100.0 / 3600.0),
@@ -36,14 +47,14 @@ public class TimeEstimates {
         final Double month = day * 31;
         final Double year = month * 12;
         final Double century = year * 100;
-        if (seconds < 1) return format(null, "less than a second");
-        else if (seconds < minute) return format(seconds, "%s second");
-        else if (seconds < hour) return format(divide(seconds, minute), "%s minute");
-        else if (seconds < day) return format(divide(seconds, hour), "%s hour");
-        else if (seconds < month) return format(divide(seconds, day), "%s day");
-        else if (seconds < year) return format(divide(seconds, month), "%s month");
-        else if (seconds < century) return format(divide(seconds, year), "%s year");
-        else return format(null, "centuries");
+        if (seconds < 1) return format(null, ESTIMATES_LESSTHANASECOND);
+        else if (seconds < minute) return format(seconds, "%s " + ESTIMATES_SECONDS);
+        else if (seconds < hour) return format(divide(seconds, minute), "%s " + ESTIMATES_MINUTES);
+        else if (seconds < day) return format(divide(seconds, hour), "%s " + ESTIMATES_HOURS);
+        else if (seconds < month) return format(divide(seconds, day), "%s " + ESTIMATES_DAYS);
+        else if (seconds < year) return format(divide(seconds, month), "%s " + ESTIMATES_MONTHS);
+        else if (seconds < century) return format(divide(seconds, year), "%s " + ESTIMATES_YEARS);
+        else return format(null, ESTIMATES_CENTURIES);
     }
 
     private static String format(Double number, String text) {
