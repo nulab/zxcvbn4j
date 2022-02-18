@@ -152,11 +152,11 @@ strength.crackTimeSeconds
 strength.crackTimeDisplay
 
 # Integer from 0-4 (useful for implementing a strength bar)
-# 0 Weak        （guesses < ^ 3 10）
-# 1 Fair        （guesses <^ 6 10）
-# 2 Good        （guesses <^ 8 10）
-# 3 Strong      （guesses < 10 ^ 10）
-# 4 Very strong （guesses >= 10 ^ 10）
+# 0 Weak        （guesses < 10^3 + 5）
+# 1 Fair        （guesses < 10^6 + 5）
+# 2 Good        （guesses < 10^8 + 5）
+# 3 Strong      （guesses < 10^10 + 5）
+# 4 Very strong （guesses >= 10^10 + 5）
 strength.score
 
 # verbal feedback to help choose better passwords. set when score <= 2.
