@@ -11,8 +11,9 @@ import java.util.Map;
 
 public class Dictionary {
 
-    private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
     private static final String RESOURCES_PACKAGE_PATH = "/com/nulabinc/zxcvbn/matchers/dictionarys/";
+
+    private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
 
     private static final String EXT = ".txt";
 
