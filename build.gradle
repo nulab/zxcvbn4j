@@ -11,7 +11,6 @@ version = '1.5.2'
 archivesBaseName = 'zxcvbn'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-ext.moduleName = 'com.nulabinc.zxcvbn'
 ext.isReleaseVersion = !version.endsWith('SNAPSHOT')
 
 wrapper {
@@ -25,6 +24,26 @@ repositories {
 dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 }
+
+task compileModuleInfoJava(type: JavaCompile, dependsOn: compileJava) {
+    classpath = files()
+    source = 'src/main/java9/module-info.java'
+    destinationDir = compileJava.destinationDir
+    doLast {
+        def descriptor = new File(compileJava.destinationDir, 'module-info.class')
+        def dest = new File(compileJava.destinationDir, 'META-INF/versions/9')
+        ant.move file: descriptor, todir: dest
+    }
+
+    doFirst {
+        options.compilerArgs = [
+                '--release', '9',
+                '--module-path', compileJava.classpath.asPath
+        ]
+    }
+ }
+
+classes.dependsOn compileModuleInfoJava
 
 javadoc {
     options.locale = 'en_US'
@@ -42,10 +61,8 @@ if (JavaVersion.current().isJava8Compatible()) {
 }
 
 jar {
-    inputs.property("moduleName", moduleName)
-
     manifest {
-        attributes 'Implementation-Title': archivesBaseName, 'Implementation-Version': archiveVersion, 'Automatic-Module-Name': moduleName
+        attributes 'Implementation-Title': archivesBaseName, 'Implementation-Version': archiveVersion, 'Multi-Release': true
     }
 }
 

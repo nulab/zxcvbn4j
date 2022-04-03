@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class Keyboard {
 
-    private static final String RESOURCES_PACKAGE_PATH = "com/nulabinc/zxcvbn/matchers/keyboards/";
+    private static final String RESOURCES_PACKAGE_PATH = "/com/nulabinc/zxcvbn/matchers/keyboards/";
 
     private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
 
