@@ -13,8 +13,9 @@ import java.util.Map;
 
 public class Keyboard {
 
-    private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
     private static final String RESOURCES_PACKAGE_PATH = "/com/nulabinc/zxcvbn/matchers/keyboards/";
+
+    private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
 
     public static final Keyboard QWERTY =
             new Keyboard("qwerty", new SlantedAdjacentGraphBuilder(loadAsString("qwerty.txt")));
