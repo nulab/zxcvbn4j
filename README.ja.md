@@ -140,11 +140,11 @@ strength.crackTimeDisplay
 
 
 # 0から4の整数
-# 0 弱い       （guesses < ^ 3 10）
-# 1 やや弱い    （guesses <^ 6 10）
-# 2 普通       （guesses <^ 8 10）
-# 3 強い       （guesses < 10 ^ 10）
-# 4 とても強い   （guesses >= 10 ^ 10）
+# 0 弱い      （guesses < 10^3 + 5）
+# 1 やや弱い   （guesses < 10^6 + 5）
+# 2 普通      （guesses < 10^8 + 5）
+# 3 強い      （guesses < 10^10 + 5）
+# 4 とても強い （guesses >= 10^10 + 5）
 strength.score
 
 # 安全なパスワード作成に役立つフィードバック。(score <= 2 のみ表示)
@@ -214,6 +214,7 @@ MIT License
 - [Cacoo](https://cacoo.com/)
 - [Typetalk](https://typetalk.com/)
 - [JetBrains Hub](https://www.jetbrains.com/hub/)
+- [Cryptomator](https://cryptomator.org/)
 - And many Open Source Software
   - https://github.com/search?q=com.nulab-inc+zxcvbn&type=code
   - https://mvnrepository.com/artifact/com.nulab-inc/zxcvbn/usages
