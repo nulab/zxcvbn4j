@@ -1,5 +1,5 @@
 
-# zxcvbn4j [![Build Status](https://travis-ci.com/nulab/zxcvbn4j.svg?branch=master)](https://travis-ci.com/nulab/zxcvbn4j) [![Coverage Status](https://coveralls.io/repos/nulab/zxcvbn4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/nulab/zxcvbn4j?branch=master) [![Maven Central](https://img.shields.io/maven-central/v/com.nulab-inc/zxcvbn.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.nulab-inc%22%20AND%20a:%22zxcvbn%22)
+# zxcvbn4j [![Build](https://github.com/nulab/zxcvbn4j/actions/workflows/build.yml/badge.svg)](https://github.com/nulab/zxcvbn4j/actions/workflows/build.yml) [![Coverage Status](https://coveralls.io/repos/nulab/zxcvbn4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/nulab/zxcvbn4j?branch=master) [![Maven Central](https://img.shields.io/maven-central/v/com.nulab-inc/zxcvbn.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.nulab-inc%22%20AND%20a:%22zxcvbn%22)
 
 This is a java port of [zxcvbn](https://github.com/dropbox/zxcvbn), which is a password strength estimator inspired by password crackers written on JavaScript.
 Through pattern matching and conservative estimation, it recognizes and weighs 30k common passwords, common names and surnames according to US census data, popular English words from Wikipedia and US television and movies, and other common patterns like dates, repeats (`aaa`), sequences (`abcd`), keyboard patterns (`qwertyuiop`), and l33t speak.
@@ -211,7 +211,7 @@ Supported languages by default:
 
 ## Bugs and Feedback
 
-For bugs, questions and discussions please use the [Github Issues](https://github.com/nulab/zxcvbn4j/issues).
+For bugs, questions and discussions please use the [GitHub Issues](https://github.com/nulab/zxcvbn4j/issues).
 
 ## License
 
