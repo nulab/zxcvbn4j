@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         java: [
-            '9',
+            # '8', Refs: https://github.com/nulab/zxcvbn4j/pull/104
             '11',
             # '17' Refs: https://github.com/nulab/zxcvbn4j/issues/118
         ]
