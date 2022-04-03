@@ -1,6 +1,0 @@
-language: java
-jdk:
-  - openjdk9
-  - openjdk12
-after_success:
-  - ./gradlew cobertura coveralls
