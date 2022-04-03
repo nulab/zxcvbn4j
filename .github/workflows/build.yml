@@ -8,7 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: ['8', '11', '17']
+        java: [
+            '8',
+            '11',
+            # '17' Refs: https://github.com/nulab/zxcvbn4j/issues/118
+        ]
       fail-fast: false
     name: Build and test on JDK ${{ matrix.Java }}
     if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]')"
