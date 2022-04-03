@@ -13,6 +13,7 @@ import java.util.Map;
 
 public class Keyboard {
 
+    private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
     private static final String RESOURCES_PACKAGE_PATH = "/com/nulabinc/zxcvbn/matchers/keyboards/";
 
     public static final Keyboard QWERTY =
@@ -71,7 +72,7 @@ public class Keyboard {
     }
 
     private static String loadAsString(final String name) {
-        try (final InputStream input = Keyboard.class.getResourceAsStream(RESOURCES_PACKAGE_PATH + name);
+        try (final InputStream input = RESOURCE_LOADER.getInputStream(RESOURCES_PACKAGE_PATH + name);
              final BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
             final StringBuilder sb = new StringBuilder(1024 * 4);
             String str;
