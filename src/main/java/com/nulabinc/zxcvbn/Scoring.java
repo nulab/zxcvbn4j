@@ -12,7 +12,7 @@ public class Scoring {
 
     public static final int MIN_GUESSES_BEFORE_GROWING_SEQUENCE = 10000;
 
-    public static final long JS_NUMBER_MAX = 9007199254740992L;
+    public static final long JS_NUMBER_MAX = 9007199254740991L;
 
     public static double log10(double n) {
         return Math.log(n) / Math.log(10);
