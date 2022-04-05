@@ -12,6 +12,8 @@ public class Scoring {
 
     public static final int MIN_GUESSES_BEFORE_GROWING_SEQUENCE = 10000;
 
+    public static final long JS_NUMBER_MAX = 9007199254740991L;
+
     public static double log10(double n) {
         return Math.log(n) / Math.log(10);
     }
@@ -138,9 +140,10 @@ public class Scoring {
         return MatchFactory.createBruteforceMatch(i, j, password.subSequence(i, j + 1));
     }
 
-    private static int factorial(int n) {
+    private static long factorial(int n) {
         if (n < 2) return 1;
-        int f = 1;
+        if (n > 19) return JS_NUMBER_MAX;
+        long f = 1;
         for (int i = 2; i <= n; i++) f *= i;
         return f;
     }
