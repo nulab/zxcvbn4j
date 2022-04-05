@@ -80,7 +80,7 @@ if (project.hasProperty("signing.keyId")) {
         // Skip signing snapshot archives
         if (System.env.GITHUB_ACTIONS || !isReleaseVersion) return
 
-        sign publishing.publications.mavenJava
+        sign configurations.archives
     }
 }
 
