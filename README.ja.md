@@ -194,6 +194,7 @@ String localizedWarning = localizedFeedback.getWarning();
 - Dutch ([nl](./src/main/resources/com/nulabinc/zxcvbn/messages_nl.properties))
 - German ([de](./src/main/resources/com/nulabinc/zxcvbn/messages_de.properties))
 - French ([fr](./src/main/resources/com/nulabinc/zxcvbn/messages_fr.properties))
+- Italian ([it](./src/main/resources/com/nulabinc/zxcvbn/messages_it.properties))
 
 ## バグ報告やご意見
 
