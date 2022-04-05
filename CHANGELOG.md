@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.6.0](https://github.com/nulab/zxcvbn4j/compare/1.5.2...1.6.0) (2022-04-05)
+
+* Change the position of the defining signing (#121) [#123](https://github.com/nulab/zxcvbn4j/pull/123) ([vvatanabe](https://github.com/vvatanabe))
+* use configurations.archives in signing (#121) [#122](https://github.com/nulab/zxcvbn4j/pull/122) ([vvatanabe](https://github.com/vvatanabe))
+* Make Scoring.factorial(int) return long [#116](https://github.com/nulab/zxcvbn4j/pull/116) ([InkerBot](https://github.com/InkerBot))
+* Added Italian translation [#113](https://github.com/nulab/zxcvbn4j/pull/113) ([gdonisi](https://github.com/gdonisi))
+* Correct strength.score definition [#117](https://github.com/nulab/zxcvbn4j/pull/117) ([AChep](https://github.com/AChep))
+* Fixes #110 - correct encoding for French and German. [#111](https://github.com/nulab/zxcvbn4j/pull/111) ([40rn05lyv](https://github.com/40rn05lyv))
+* Add module-info.java [#104](https://github.com/nulab/zxcvbn4j/pull/104) ([overheadhunter](https://github.com/overheadhunter))
+* temporarily remove test with JDK 17 (#119) [#120](https://github.com/nulab/zxcvbn4j/pull/120) ([vvatanabe](https://github.com/vvatanabe))
+* Migrated to GitHub Actions [#112](https://github.com/nulab/zxcvbn4j/pull/112) ([overheadhunter](https://github.com/overheadhunter))
+* Update README.md [#108](https://github.com/nulab/zxcvbn4j/pull/108) ([eltociear](https://github.com/eltociear))
+
 ## [1.5.2](https://github.com/nulab/zxcvbn4j/compare/1.5.1...1.5.2) (2021-06-07)
 
 * fix recent years #100 [#102](https://github.com/nulab/zxcvbn4j/pull/102) ([kxn4t](https://github.com/kxn4t))
