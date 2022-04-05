@@ -209,7 +209,8 @@ Supported languages by default:
 - Dutch ([nl](./src/main/resources/com/nulabinc/zxcvbn/messages_nl.properties))
 - German ([de](./src/main/resources/com/nulabinc/zxcvbn/messages_de.properties))
 - French ([fr](./src/main/resources/com/nulabinc/zxcvbn/messages_fr.properties))
-
+- Italian ([it](./src/main/resources/com/nulabinc/zxcvbn/messages_it.properties))
+ 
 ## Bugs and Feedback
 
 For bugs, questions and discussions please use the [GitHub Issues](https://github.com/nulab/zxcvbn4j/issues).
