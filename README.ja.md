@@ -1,5 +1,5 @@
 
-# zxcvbn4j [![Build Status](https://travis-ci.com/nulab/zxcvbn4j.svg?branch=master)](https://travis-ci.com/nulab/zxcvbn4j) [![Coverage Status](https://coveralls.io/repos/nulab/zxcvbn4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/nulab/zxcvbn4j?branch=master) [![Maven Central](https://img.shields.io/maven-central/v/com.nulab-inc/zxcvbn.svg)](https://img.shields.io/maven-central/v/com.nulab-inc/zxcvbn.svg)
+# zxcvbn4j [![Build](https://github.com/nulab/zxcvbn4j/actions/workflows/build.yml/badge.svg)](https://github.com/nulab/zxcvbn4j/actions/workflows/build.yml) [![Coverage Status](https://coveralls.io/repos/nulab/zxcvbn4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/nulab/zxcvbn4j?branch=master) [![Maven Central](https://img.shields.io/maven-central/v/com.nulab-inc/zxcvbn.svg)](https://img.shields.io/maven-central/v/com.nulab-inc/zxcvbn.svg)
 
 zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxcvbn](https://github.com/dropbox/zxcvbn)をJavaにポーティングしたものです。
 
@@ -11,6 +11,7 @@ zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxc
 
 以下のバージョンは[zxcvbn 4.4.2](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.2)をポーティング
 
+* 2022/04/05 1.6.0 リリース.
 * 2021/06/08 1.5.2 リリース.
 * 2021/06/05 1.5.1 リリース.
 * 2021/04/26 1.5.0 リリース.
@@ -67,7 +68,7 @@ zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxc
 ### gradle を利用する場合
 
 ```
-compile 'com.nulab-inc:zxcvbn:1.5.2'
+compile 'com.nulab-inc:zxcvbn:1.6.0'
 ```
 
 ### maven を利用する場合
@@ -76,7 +77,7 @@ compile 'com.nulab-inc:zxcvbn:1.5.2'
 <dependency>
   <groupId>com.nulab-inc</groupId>
   <artifactId>zxcvbn</artifactId>
-  <version>1.5.2</version>
+  <version>1.6.0</version>
 </dependency>
 ```
 
@@ -140,11 +141,11 @@ strength.crackTimeDisplay
 
 
 # 0から4の整数
-# 0 弱い       （guesses < ^ 3 10）
-# 1 やや弱い    （guesses <^ 6 10）
-# 2 普通       （guesses <^ 8 10）
-# 3 強い       （guesses < 10 ^ 10）
-# 4 とても強い   （guesses >= 10 ^ 10）
+# 0 弱い      （guesses < 10^3 + 5）
+# 1 やや弱い   （guesses < 10^6 + 5）
+# 2 普通      （guesses < 10^8 + 5）
+# 3 強い      （guesses < 10^10 + 5）
+# 4 とても強い （guesses >= 10^10 + 5）
 strength.score
 
 # 安全なパスワード作成に役立つフィードバック。(score <= 2 のみ表示)
@@ -193,6 +194,7 @@ String localizedWarning = localizedFeedback.getWarning();
 - Dutch ([nl](./src/main/resources/com/nulabinc/zxcvbn/messages_nl.properties))
 - German ([de](./src/main/resources/com/nulabinc/zxcvbn/messages_de.properties))
 - French ([fr](./src/main/resources/com/nulabinc/zxcvbn/messages_fr.properties))
+- Italian ([it](./src/main/resources/com/nulabinc/zxcvbn/messages_it.properties))
 
 ## バグ報告やご意見
 
@@ -214,6 +216,7 @@ MIT License
 - [Cacoo](https://cacoo.com/)
 - [Typetalk](https://typetalk.com/)
 - [JetBrains Hub](https://www.jetbrains.com/hub/)
+- [Cryptomator](https://cryptomator.org/)
 - And many Open Source Software
   - https://github.com/search?q=com.nulab-inc+zxcvbn&type=code
   - https://mvnrepository.com/artifact/com.nulab-inc/zxcvbn/usages

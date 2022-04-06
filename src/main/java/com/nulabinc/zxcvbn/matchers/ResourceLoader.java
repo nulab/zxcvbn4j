@@ -46,6 +46,14 @@ class ResourceLoader {
      * Finally, if even the system ClassLoader could not access resource as stream, return null.
      */
     public InputStream getResourceAsStreamWithFallback(String path) {
+        // 0. try loading the resource from the same artifact as this class
+        {
+            InputStream in = getClass().getResourceAsStream(path);
+            if (in != null) {
+                return in;
+            }
+        } // no exceptions thrown
+
         // 1. try to get resource with thread context ClassLoader
         try {
             ClassLoader cl = Thread.currentThread().getContextClassLoader();

@@ -1,5 +1,5 @@
 
-# zxcvbn4j [![Build Status](https://travis-ci.com/nulab/zxcvbn4j.svg?branch=master)](https://travis-ci.com/nulab/zxcvbn4j) [![Coverage Status](https://coveralls.io/repos/nulab/zxcvbn4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/nulab/zxcvbn4j?branch=master) [![Maven Central](https://img.shields.io/maven-central/v/com.nulab-inc/zxcvbn.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.nulab-inc%22%20AND%20a:%22zxcvbn%22)
+# zxcvbn4j [![Build](https://github.com/nulab/zxcvbn4j/actions/workflows/build.yml/badge.svg)](https://github.com/nulab/zxcvbn4j/actions/workflows/build.yml) [![Coverage Status](https://coveralls.io/repos/nulab/zxcvbn4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/nulab/zxcvbn4j?branch=master) [![Maven Central](https://img.shields.io/maven-central/v/com.nulab-inc/zxcvbn.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.nulab-inc%22%20AND%20a:%22zxcvbn%22)
 
 This is a java port of [zxcvbn](https://github.com/dropbox/zxcvbn), which is a password strength estimator inspired by password crackers written on JavaScript.
 Through pattern matching and conservative estimation, it recognizes and weighs 30k common passwords, common names and surnames according to US census data, popular English words from Wikipedia and US television and movies, and other common patterns like dates, repeats (`aaa`), sequences (`abcd`), keyboard patterns (`qwertyuiop`), and l33t speak.
@@ -12,6 +12,7 @@ Through pattern matching and conservative estimation, it recognizes and weighs 3
 
 The following version is a port of [zxcvbn 4.4.2](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.2)
 
+* 2022/04/05 1.6.0 released.
 * 2021/06/08 1.5.2 released.
 * 2021/06/05 1.5.1 released.
 * 2021/04/26 1.5.0 released.
@@ -68,7 +69,7 @@ The following version is a port of [zxcvbn 4.2.0](https://github.com/dropbox/zxc
 ### gradle
 
 ```
-compile 'com.nulab-inc:zxcvbn:1.5.2'
+compile 'com.nulab-inc:zxcvbn:1.6.0'
 ```
 
 ### maven
@@ -77,7 +78,7 @@ compile 'com.nulab-inc:zxcvbn:1.5.2'
 <dependency>
   <groupId>com.nulab-inc</groupId>
   <artifactId>zxcvbn</artifactId>
-  <version>1.5.2</version>
+  <version>1.6.0</version>
 </dependency>
 ```
 
@@ -152,11 +153,11 @@ strength.crackTimeSeconds
 strength.crackTimeDisplay
 
 # Integer from 0-4 (useful for implementing a strength bar)
-# 0 Weak        （guesses < ^ 3 10）
-# 1 Fair        （guesses <^ 6 10）
-# 2 Good        （guesses <^ 8 10）
-# 3 Strong      （guesses < 10 ^ 10）
-# 4 Very strong （guesses >= 10 ^ 10）
+# 0 Weak        （guesses < 10^3 + 5）
+# 1 Fair        （guesses < 10^6 + 5）
+# 2 Good        （guesses < 10^8 + 5）
+# 3 Strong      （guesses < 10^10 + 5）
+# 4 Very strong （guesses >= 10^10 + 5）
 strength.score
 
 # verbal feedback to help choose better passwords. set when score <= 2.
@@ -225,10 +226,11 @@ Supported languages by default:
 - Dutch ([nl](./src/main/resources/com/nulabinc/zxcvbn/messages_nl.properties))
 - German ([de](./src/main/resources/com/nulabinc/zxcvbn/messages_de.properties))
 - French ([fr](./src/main/resources/com/nulabinc/zxcvbn/messages_fr.properties))
-
+- Italian ([it](./src/main/resources/com/nulabinc/zxcvbn/messages_it.properties))
+ 
 ## Bugs and Feedback
 
-For bugs, questions and discussions please use the [Github Issues](https://github.com/nulab/zxcvbn4j/issues).
+For bugs, questions and discussions please use the [GitHub Issues](https://github.com/nulab/zxcvbn4j/issues).
 
 ## License
 
