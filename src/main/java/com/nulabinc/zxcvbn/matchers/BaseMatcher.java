@@ -1,11 +1,22 @@
 package com.nulabinc.zxcvbn.matchers;
 
+import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.Matcher;
 import com.nulabinc.zxcvbn.WipeableString;
 
 import java.util.*;
 
 public abstract class BaseMatcher implements Matcher {
+
+    private final Context context;
+
+    protected BaseMatcher(Context context) {
+        this.context = context;
+    }
+
+    protected Context getContext() {
+        return context;
+    }
 
     protected List<Match> sorted(List<Match> matches) {
         Collections.sort(matches, new Comparator<Match>() {

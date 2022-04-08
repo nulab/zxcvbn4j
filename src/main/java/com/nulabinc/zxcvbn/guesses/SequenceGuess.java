@@ -1,5 +1,6 @@
 package com.nulabinc.zxcvbn.guesses;
 
+import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.matchers.Match;
 
 import java.util.Arrays;
@@ -8,7 +9,11 @@ import java.util.regex.Pattern;
 
 public class SequenceGuess extends BaseGuess {
 
-    private final static List<Character> START_POINTS = Arrays.asList(new Character[]{'a', 'A', 'z', 'Z', '0', '1', '9'});
+    private final static List<Character> START_POINTS = Arrays.asList('a', 'A', 'z', 'Z', '0', '1', '9');
+
+    public SequenceGuess(final Context context) {
+        super(context);
+    }
 
     @Override
     public double exec(Match match) {
@@ -22,7 +27,7 @@ public class SequenceGuess extends BaseGuess {
             } else {
                 baseGuesses = 26;
             }
-        };
+        }
         if (!match.ascending) baseGuesses *= 2;
         return baseGuesses * match.tokenLength();
     }

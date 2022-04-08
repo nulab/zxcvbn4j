@@ -1,5 +1,6 @@
 package com.nulabinc.zxcvbn.matchers;
 
+import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.WipeableString;
 
 import java.util.ArrayList;
@@ -9,6 +10,10 @@ import java.util.regex.Pattern;
 public class SequenceMatcher extends BaseMatcher {
 
     private static final int MAX_DELTA = 5;
+
+    public SequenceMatcher(final Context context) {
+        super(context);
+    }
 
     private static Match update(CharSequence password, int i, int j, Integer delta) {
         Match match = null;

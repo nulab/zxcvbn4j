@@ -1,13 +1,22 @@
-package com.nulabinc.zxcvbn.matchers;
+package com.nulabinc.zxcvbn.io;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
-class ResourceLoader {
+public class ClasspathResource implements Resource {
 
-    InputStream getInputStream(String path) {
+    private final String path;
+
+    public ClasspathResource(final String path) {
+        this.path = path;
+    }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
         InputStream in = this.getResourceAsStreamWithFallback(path);
         if (in == null) {
-            throw new IllegalStateException("Could not get resource as stream");
+            throw new FileNotFoundException("Could not get resource as stream");
         }
         return in;
     }
@@ -15,12 +24,12 @@ class ResourceLoader {
     /**
      * This code base is spring-framework's ClassUtils#getDefaultClassLoader().
      * https://github.com/spring-projects/spring-framework/blob/dfb7ca733ad309b35040e0027fb7a2f10f3a196a/spring-core/src/main/java/org/springframework/util/ClassUtils.java#L173-L210
-     *
+     * <p>
      * First, return the InputStream to use: typically the thread context ClassLoader, if available;
      * Next, the ClassLoader that loaded the ResourceLoader class will be used as fallback.
      * Finally, if even the system ClassLoader could not access resource as stream, return null.
      */
-    public InputStream getResourceAsStreamWithFallback(String path) {
+    private InputStream getResourceAsStreamWithFallback(String path) {
         // 0. try loading the resource from the same artifact as this class
         {
             InputStream in = getClass().getResourceAsStream(path);
@@ -36,8 +45,7 @@ class ResourceLoader {
             if (in != null) {
                 return in;
             }
-        }
-        catch (Throwable ex) {
+        } catch (Throwable ex) {
             // Cannot access thread context ClassLoader - falling back...
         }
 
@@ -48,8 +56,7 @@ class ResourceLoader {
             if (in != null) {
                 return in;
             }
-        }
-        catch (Throwable ex) {
+        } catch (Throwable ex) {
             // Cannot access this class context ClassLoader - falling back...
         }
 
@@ -60,8 +67,7 @@ class ResourceLoader {
             if (in != null) {
                 return in;
             }
-        }
-        catch (Throwable ex) {
+        } catch (Throwable ex) {
             // Cannot access system ClassLoader - oh well, maybe the caller can live with null...
         }
 
@@ -76,8 +82,7 @@ class ResourceLoader {
                     return in;
                 }
             }
-        }
-        catch (Throwable ex) {
+        } catch (Throwable ex) {
             // Cannot access resource as stream
         }
         return null;

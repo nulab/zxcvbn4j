@@ -1,13 +1,18 @@
 package com.nulabinc.zxcvbn.guesses;
 
-import com.nulabinc.zxcvbn.matchers.Match;
+import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.matchers.Keyboard;
+import com.nulabinc.zxcvbn.matchers.Match;
 
 public class SpatialGuess extends BaseGuess {
 
+    public SpatialGuess(final Context context) {
+        super(context);
+    }
+
     @Override
     public double exec(Match match) {
-        Keyboard keyboard = Keyboard.of(match.graph);
+        Keyboard keyboard = this.getContext().getKeyboardMap().get(match.graph);
         int s = keyboard.getStartingPositions();
         double d = keyboard.getAverageDegree();
         double guesses = 0;
@@ -19,10 +24,10 @@ public class SpatialGuess extends BaseGuess {
                 guesses += nCk(i - 1, j - 1) * s * Math.pow(d, j);
             }
         }
-        if (match.shiftedCount != null && match.shiftedCount > 0) {
+        if (match.shiftedCount > 0) {
             int shiftedCount = match.shiftedCount;
             int unshiftedCount = match.tokenLength() - match.shiftedCount;
-            if (shiftedCount == 0 || unshiftedCount == 0) {
+            if (unshiftedCount == 0) {
                 guesses *= 2;
             } else {
                 int shiftedVariations = 0;

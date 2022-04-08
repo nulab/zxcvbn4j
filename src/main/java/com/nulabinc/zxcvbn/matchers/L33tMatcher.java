@@ -1,5 +1,6 @@
 package com.nulabinc.zxcvbn.matchers;
 
+import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.WipeableString;
 
 import java.util.ArrayList;
@@ -12,33 +13,28 @@ public class L33tMatcher extends BaseMatcher {
 
     private final Map<String, Map<String, Integer>> rankedDictionaries;
 
-    public L33tMatcher() {
-        this(new HashMap<String, Map<String, Integer>>());
+    public L33tMatcher(Context context, Map<String, Map<String, Integer>> rankedDictionaries) {
+        super(context);
+        this.rankedDictionaries = rankedDictionaries;
     }
 
-    public L33tMatcher(Map<String, Map<String, Integer>> rankedDictionaries) {
-        if (rankedDictionaries == null) {
-            this.rankedDictionaries = new HashMap<>();
-        } else {
-            this.rankedDictionaries = rankedDictionaries;
-        }
-    }
-
-    private static final Map<Character, List<Character>> L33T_TABLE = new HashMap<>();
+    private static final Map<Character, List<Character>> L33T_TABLE;
 
     static {
-        L33T_TABLE.put('a', Arrays.asList('4', '@'));
-        L33T_TABLE.put('b', Arrays.asList('8'));
-        L33T_TABLE.put('c', Arrays.asList('(', '{', '[', '<'));
-        L33T_TABLE.put('e', Arrays.asList('3'));
-        L33T_TABLE.put('g', Arrays.asList('6', '9'));
-        L33T_TABLE.put('i', Arrays.asList('1', '!', '|'));
-        L33T_TABLE.put('l', Arrays.asList('1', '|', '7'));
-        L33T_TABLE.put('o', Arrays.asList('0'));
-        L33T_TABLE.put('s', Arrays.asList('$', '5'));
-        L33T_TABLE.put('t', Arrays.asList('+', '7'));
-        L33T_TABLE.put('x', Arrays.asList('%'));
-        L33T_TABLE.put('z', Arrays.asList('2'));
+        Map<Character, List<Character>> l33tTable = new HashMap<>();
+        l33tTable.put('a', Arrays.asList('4', '@'));
+        l33tTable.put('b', Arrays.asList('8'));
+        l33tTable.put('c', Arrays.asList('(', '{', '[', '<'));
+        l33tTable.put('e', Arrays.asList('3'));
+        l33tTable.put('g', Arrays.asList('6', '9'));
+        l33tTable.put('i', Arrays.asList('1', '!', '|'));
+        l33tTable.put('l', Arrays.asList('1', '|', '7'));
+        l33tTable.put('o', Arrays.asList('0'));
+        l33tTable.put('s', Arrays.asList('$', '5'));
+        l33tTable.put('t', Arrays.asList('+', '7'));
+        l33tTable.put('x', Arrays.asList('%'));
+        l33tTable.put('z', Arrays.asList('2'));
+        L33T_TABLE = l33tTable;
     }
 
     public Map<Character, List<Character>> relevantL33tSubTable(CharSequence password) {
@@ -75,7 +71,7 @@ public class L33tMatcher extends BaseMatcher {
         for (Map<Character, Character> sub : l33tSubs) {
             if (sub.isEmpty()) break;
             CharSequence subbedPassword = translate(password, sub);
-            for (Match match : new DictionaryMatcher(rankedDictionaries).execute(subbedPassword)) {
+            for (Match match : new DictionaryMatcher(this.getContext(), rankedDictionaries).execute(subbedPassword)) {
                 WipeableString token = WipeableString.copy(password, match.i, match.j + 1);
                 WipeableString lower = WipeableString.lowerCase(token);
                 if (lower.equals(match.matchedWord)) {

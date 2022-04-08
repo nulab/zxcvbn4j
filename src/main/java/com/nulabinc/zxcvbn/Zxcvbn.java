@@ -2,13 +2,25 @@ package com.nulabinc.zxcvbn;
 
 import com.nulabinc.zxcvbn.matchers.Match;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class Zxcvbn {
 
+    private final Context context;
+
     public Zxcvbn() {
+        try {
+            this.context = new ZxcvbnBuilder().buildContext();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    Zxcvbn(Context context) {
+        this.context = context;
     }
 
     public Strength measure(CharSequence password) {
@@ -31,7 +43,8 @@ public class Zxcvbn {
         long start = time();
         Matching matching = createMatching(lowerSanitizedInputs);
         List<Match> matches = matching.omnimatch(password);
-        Strength strength = Scoring.mostGuessableMatchSequence(password, matches);
+        Scoring scoring = new Scoring(this.context);
+        Strength strength = scoring.mostGuessableMatchSequence(password, matches);
         strength.setCalcTime(time() - start);
         AttackTimes attackTimes = TimeEstimates.estimateAttackTimes(strength.getGuesses());
         strength.setCrackTimeSeconds(attackTimes.getCrackTimeSeconds());
@@ -42,7 +55,7 @@ public class Zxcvbn {
     }
 
     protected Matching createMatching(List<String> lowerSanitizedInputs) {
-        return new Matching(lowerSanitizedInputs);
+        return new Matching(this.context, lowerSanitizedInputs);
     }
 
     private long time() {

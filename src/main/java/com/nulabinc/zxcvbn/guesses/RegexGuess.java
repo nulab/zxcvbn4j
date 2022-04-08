@@ -1,12 +1,16 @@
 package com.nulabinc.zxcvbn.guesses;
 
+import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.WipeableString;
 import com.nulabinc.zxcvbn.matchers.Match;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class RegexGuess extends BaseGuess {
+
+    private static final Logger logger = Logger.getLogger(RegexGuess.class.getName());
 
     private static final Map<String, Integer> CHAR_CLASS_BASES = new HashMap<>();
     static {
@@ -16,6 +20,10 @@ public class RegexGuess extends BaseGuess {
         CHAR_CLASS_BASES.put("alphanumeric", 62);
         CHAR_CLASS_BASES.put("digits", 10);
         CHAR_CLASS_BASES.put("symbols", 33);
+    }
+
+    protected RegexGuess(final Context context) {
+        super(context);
     }
 
     @Override
@@ -30,12 +38,12 @@ public class RegexGuess extends BaseGuess {
         return 0;
     }
 
-    private static final int parseInt(CharSequence s) {
+    private static int parseInt(CharSequence s) {
         int result = 0;
         try {
             result = WipeableString.parseInt(s);
         } catch (NumberFormatException e) {
-            System.out.println(e.getStackTrace());
+            // ignore
         }
         return result;
     }
