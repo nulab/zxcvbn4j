@@ -1,10 +1,16 @@
 package com.nulabinc.zxcvbn;
 
-import com.nulabinc.zxcvbn.guesses.*;
+import com.nulabinc.zxcvbn.guesses.EstimateGuess;
 import com.nulabinc.zxcvbn.matchers.Match;
 import com.nulabinc.zxcvbn.matchers.MatchFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Scoring {
 

@@ -10,7 +10,8 @@ import com.nulabinc.zxcvbn.matchers.RepeatMatcher;
 import com.nulabinc.zxcvbn.matchers.ReverseDictionaryMatcher;
 import com.nulabinc.zxcvbn.matchers.SequenceMatcher;
 import com.nulabinc.zxcvbn.matchers.SpatialMatcher;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -154,7 +155,7 @@ public class MatchingTest {
         }
 
         @Test
-        public void testL33tMatching() throws IOException {
+        public void testL33tMatching() {
             Context context = new ZxcvbnBuilder().buildContext();
             String msg = "reduces l33t table to only the substitutions that a password might be employing";
             assertEquals(msg, expected.size(), new L33tMatcher(context, Collections.<String, Map<String, Integer>>emptyMap()).relevantL33tSubTable(password, testTable).size());
