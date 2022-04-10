@@ -3,9 +3,9 @@ package com.nulabinc.zxcvbn.matchers;
 import java.util.Arrays;
 import java.util.List;
 
-public class AlignedAdjacentAdjacentGraphBuilder extends Keyboard.AdjacentGraphBuilder {
+public class AlignedAdjacentGraphBuilder extends Keyboard.AdjacentGraphBuilder {
 
-    public AlignedAdjacentAdjacentGraphBuilder(final String layout) {
+    public AlignedAdjacentGraphBuilder(final String layout) {
         super(layout);
     }
 

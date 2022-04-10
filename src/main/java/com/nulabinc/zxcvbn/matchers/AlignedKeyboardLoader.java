@@ -10,7 +10,7 @@ public class AlignedKeyboardLoader extends KeyboardLoader {
 
     @Override
     protected Keyboard.AdjacentGraphBuilder buildAdjacentGraphBuilder(final String layout) {
-        return new AlignedAdjacentAdjacentGraphBuilder(layout);
+        return new AlignedAdjacentGraphBuilder(layout);
     }
 
 }
