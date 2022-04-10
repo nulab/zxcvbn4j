@@ -112,7 +112,7 @@ public class MatchingTest {
 
         @Test
         public void testDictionaryMatching() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             List<Match> actualMatches = new DictionaryMatcher(context, dictionaries).execute(password);
             assertMatches(message, Pattern.Dictionary, expectedMatches, actualMatches);
         }
@@ -155,8 +155,8 @@ public class MatchingTest {
         }
 
         @Test
-        public void testL33tMatching() {
-            Context context = new ZxcvbnBuilder().buildContext();
+        public void testL33tMatching() throws Exception {
+            Context context = StandardContext.build();
             String msg = "reduces l33t table to only the substitutions that a password might be employing";
             assertEquals(msg, expected.size(), new L33tMatcher(context, Collections.<String, Map<String, Integer>>emptyMap()).relevantL33tSubTable(password, testTable).size());
         }
@@ -193,7 +193,7 @@ public class MatchingTest {
 
         @Test
         public void testSpatialMatching() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             String msg = "doesn't match 1- and 2-character spatial patterns";
             assertEquals(msg, 0, new SpatialMatcher(context).execute(password).size());
         }
@@ -225,7 +225,7 @@ public class MatchingTest {
 
         @Test
         public void testSpatialMatching() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             List<Match> actualMatches = new SpatialMatcher(context, Collections.singletonMap(keyboard.getName(), keyboard)).execute(token);
             String msg = String.format("matches %s as a %s token", token, keyboard);
             assertMatches(msg, Pattern.Spatial, new ExpectedMatch[]{
@@ -268,7 +268,7 @@ public class MatchingTest {
 
         @Test
         public void testSequenceMatching() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             String msg = String.format("doesn't match length-%s sequences", password.length());
             assertEquals(msg, new SequenceMatcher(context).execute(password).size(), 0);
         }
@@ -295,7 +295,7 @@ public class MatchingTest {
 
         @Test
         public void testRepeatMatchingSimple() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             String msg = String.format("doesn't match length-%s repeat patterns", password.length());
             assertEquals(msg, new RepeatMatcher(context).execute(password).size(), size);
         }
@@ -325,7 +325,7 @@ public class MatchingTest {
 
         @Test
         public void testRepeatMatching() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             List<Match> actualMatches = new RepeatMatcher(context).execute(password);
             assertMatches("matches embedded repeat patterns", Pattern.Repeat, new ExpectedMatch[]{expectedMatch}, actualMatches);
         }
@@ -363,7 +363,7 @@ public class MatchingTest {
 
         @Test
         public void testDateMatching() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             List<Match> actualMatches = new DateMatcher(context).execute(password);
             assertMatches(message, Pattern.Date, new ExpectedMatch[]{expectedMatch}, actualMatches);
         }
@@ -407,7 +407,7 @@ public class MatchingTest {
 
         @Test
         public void testReverseDictionaryMatching() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             ReverseDictionaryMatcher reverseDictionaryMatcher = new ReverseDictionaryMatcher(context, new HashMap<String, Map<String, Integer>>() {{
                 put("d1", dictionary(
                         "123",
@@ -429,7 +429,7 @@ public class MatchingTest {
 
         @Test
         public void testSpatialMatching() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             final Keyboard keyboard = StandardKeyboards.QWERTY_LOADER.load();
             final String token = "6tfGHJ";
             List<Match> actualMatches = new SpatialMatcher(context, Collections.singletonMap(keyboard.getName(), keyboard))
@@ -443,7 +443,7 @@ public class MatchingTest {
 
         @Test
         public void testSequenceMatching() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             List<Match> actualMatches = new SequenceMatcher(context).execute("abcbabc");
             ExpectedMatch[] expectedMatches = new ExpectedMatch[]{
                     new ExpectedMatch("abc", 0, 2).ascending(true),
@@ -464,7 +464,7 @@ public class MatchingTest {
         }
 
         private void testRegexMatching(String year) throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             List<Match> actualMatches = new RegexMatcher(context).execute(year);
             assertMatches(
                     "matches " + year + " as a recent_year token",
@@ -475,7 +475,7 @@ public class MatchingTest {
 
         @Test
         public void testOmnimatch() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             assertEquals(0, new Matching(context, new ArrayList<String>()).omnimatch("").size());
             String password = "r0sebudmaelstrom11/20/91aaaa";
             List<Match> matches = new Matching(context, new ArrayList<String>()).omnimatch(password);

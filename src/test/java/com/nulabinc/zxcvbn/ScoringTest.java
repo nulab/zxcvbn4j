@@ -39,7 +39,7 @@ public class ScoringTest {
 
         @Test
         public void testNck() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             BaseGuess obj = new BaseGuess(context) {
                 @Override
                 public double exec(Match match) {
@@ -82,7 +82,7 @@ public class ScoringTest {
 
         @Test
         public void testRepeatGuesses() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             Scoring scoring = new Scoring(context);
             double baseGuesses = scoring.mostGuessableMatchSequence(
                     baseToken, new Matching(context, Collections.<String>emptyList()).omnimatch(baseToken)).getGuesses();
@@ -122,7 +122,7 @@ public class ScoringTest {
 
         @Test
         public void testSequenceGuesses() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             Match match = new Match.Builder(Pattern.Sequence, 0, 0, token).ascending(ascending).build();
             String msg = String.format("the sequence pattern '%s' has guesses of %s", token, expectedGuesses);
             assertEquals(msg, expectedGuesses, new SequenceGuess(context).exec(match), 0.0);
@@ -144,7 +144,7 @@ public class ScoringTest {
 
         @Test
         public void testDictionaryGuessesSameWithRank() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             Match match = new Match.Builder(Pattern.Dictionary, 0, 0, "aaaa").rank(32).build();
             String msg = "base guesses == the rank";
             assertEquals(msg, 32, new DictionaryGuess(context).exec(match), 0.0);
@@ -152,7 +152,7 @@ public class ScoringTest {
 
         @Test
         public void testDictionaryGuessesCapitalization() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             Match match = new Match.Builder(Pattern.Dictionary, 0, 0, "AAAaaa").rank(32).build();
             String msg = "extra guesses are added for capitalization";
             assertEquals(msg, 32 * new DictionaryGuess(context).uppercaseVariations(match), new DictionaryGuess(context).exec(match), 0.0);
@@ -160,7 +160,7 @@ public class ScoringTest {
 
         @Test
         public void testDictionaryGuessesReverse() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             Match match = new Match.Builder(Pattern.Dictionary, 0, 0, "aaa").reversed(true).rank(32).build();
             String msg = "guesses are doubled when word is reversed";
             assertEquals(msg, 32 * 2, new DictionaryGuess(context).exec(match), 0.0);
@@ -168,7 +168,7 @@ public class ScoringTest {
 
         @Test
         public void testDictionaryGuesses133t() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             Map<Character, Character> sub = new HashMap<>();
             sub.put('@', 'a');
             Match match = new Match.Builder(Pattern.Dictionary, 0, 0, "aaa@@@").sub(sub).l33t(true).rank(32).build();
@@ -178,7 +178,7 @@ public class ScoringTest {
 
         @Test
         public void testDictionaryGuessesMixed() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             Map<Character, Character> sub = new HashMap<>();
             sub.put('@', 'a');
             Match match = new Match.Builder(Pattern.Dictionary, 0, 0, "AaA@@@").sub(sub).l33t(true).rank(32).build();
@@ -201,7 +201,7 @@ public class ScoringTest {
 
         @Test
         public void testUppercaseVariants() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             DictionaryGuess dictionaryGuess = new DictionaryGuess(context);
             Method uppercaseVariationsMethod = DictionaryGuess.class.getDeclaredMethod("uppercaseVariations", Match.class);
             uppercaseVariationsMethod.setAccessible(true);
@@ -213,7 +213,7 @@ public class ScoringTest {
 
         @Parameterized.Parameters(name = "{0}")
         public static Collection<Object[]> data() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             BaseGuess baseGuess = new BaseGuess(context) {
                 @Override
                 public double exec(Match match) {
@@ -253,7 +253,7 @@ public class ScoringTest {
 
         @Test
         public void testL33tVariants() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             Match match = new Match.Builder(Pattern.Dictionary, 0, 0, word).sub(sub).l33t(!sub.isEmpty()).build();
             String msg = String.format("extra l33t guesses of %s is %s", word, variants);
             assertEquals(msg, variants, new DictionaryGuess(context).l33tVariations(match));
@@ -261,7 +261,7 @@ public class ScoringTest {
 
         @Parameterized.Parameters(name = "{0}")
         public static Collection<Object[]> data() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             BaseGuess baseGuess = new BaseGuess(context) {
                 @Override
                 public double exec(Match match) {
@@ -299,7 +299,7 @@ public class ScoringTest {
     public static class RestScoringTest {
         @Test
         public void testCalcGuessesPassword() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             Match match = new Match.Builder(Pattern.Dictionary, 0, 8, "password").guesses(1.0).build();
             String msg = "estimate_guesses returns cached guesses when available";
             assertEquals(msg, 1, new EstimateGuess(context, "password").exec(match), 0.0);
@@ -307,7 +307,7 @@ public class ScoringTest {
 
         @Test
         public void testCalcGuessesYear() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             Match match = MatchFactory.createDateMatch(0, 0, "1977", "/", 1977, 7, 14);
             String msg = "estimate_guesses delegates based on pattern";
             assertEquals(msg, new EstimateGuess(context, "1977").exec(match), new DateGuess(context).exec(match), 0.0);
@@ -315,7 +315,7 @@ public class ScoringTest {
 
         @Test
         public void testL33tVariants() throws Exception {
-            Context context = new ZxcvbnBuilder().buildContext();
+            Context context = StandardContext.build();
             Match match = MatchFactory.createDictionaryMatch(0, 0, "", "", 0, "");
             assertEquals("1 variant for non-l33t matches", 1.0, new DictionaryGuess(context).l33tVariations(match), 0.0);
         }

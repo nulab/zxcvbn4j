@@ -13,13 +13,14 @@ import static org.junit.Assert.assertNotNull;
 public class ZxcvbnBuilderTest {
 
     @Test
-    public void testBuild1() throws IOException {
+    public void testBuild1() {
         Zxcvbn zxcvbn = new ZxcvbnBuilder().build();
         assertNotNull(zxcvbn);
     }
 
     @Test
     public void testBuild2() throws IOException {
+        // This way is same as "new Zxcvbn();"
         Zxcvbn zxcvbn = new ZxcvbnBuilder()
                 .dictionaries(StandardDictionaries.loadAllDictionaries())
                 .keyboards(StandardKeyboards.loadAllKeyboards())
