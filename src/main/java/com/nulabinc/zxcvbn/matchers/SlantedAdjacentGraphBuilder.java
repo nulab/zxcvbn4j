@@ -27,7 +27,6 @@ public class SlantedAdjacentGraphBuilder extends Keyboard.AdjacentGraphBuilder {
     }
 
     @Override
-
     public boolean isSlanted() {
         return true;
     }
