@@ -6,11 +6,8 @@ import com.nulabinc.zxcvbn.matchers.Match;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class RegexGuess extends BaseGuess {
-
-    private static final Logger logger = Logger.getLogger(RegexGuess.class.getName());
 
     private static final Map<String, Integer> CHAR_CLASS_BASES = new HashMap<>();
     static {
