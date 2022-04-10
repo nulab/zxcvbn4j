@@ -18,7 +18,7 @@ public class ZxcvbnBuilder {
         return new Zxcvbn(buildContext());
     }
 
-    Context buildContext() throws IOException {
+    Context buildContext() {
         try {
             if (this.dictionaryMap.isEmpty() && this.keyboardMap.isEmpty()) {
                 for (Dictionary dictionary : StandardDictionaries.loadAllDictionaries()) {

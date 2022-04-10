@@ -2,7 +2,6 @@ package com.nulabinc.zxcvbn;
 
 import com.nulabinc.zxcvbn.matchers.Match;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,11 +11,7 @@ public class Zxcvbn {
     private final Context context;
 
     public Zxcvbn() {
-        try {
-            this.context = new ZxcvbnBuilder().buildContext();
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
+        this.context = new ZxcvbnBuilder().buildContext();
     }
 
     Zxcvbn(Context context) {
