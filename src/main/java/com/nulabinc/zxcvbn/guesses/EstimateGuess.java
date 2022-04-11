@@ -1,5 +1,6 @@
 package com.nulabinc.zxcvbn.guesses;
 
+import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.Guess;
 import com.nulabinc.zxcvbn.Scoring;
 import com.nulabinc.zxcvbn.matchers.Match;
@@ -8,7 +9,8 @@ public class EstimateGuess extends BaseGuess {
 
     private final CharSequence password;
 
-    public EstimateGuess(CharSequence password) {
+    public EstimateGuess(Context context, CharSequence password) {
+        super(context);
         this.password = password;
     }
 
@@ -21,13 +23,13 @@ public class EstimateGuess extends BaseGuess {
         }
         final Guess guess;
         switch (match.pattern) {
-            case Bruteforce: guess = new BruteforceGuess(); break;
-            case Dictionary: guess = new DictionaryGuess(); break;
-            case Spatial: guess = new SpatialGuess(); break;
-            case Repeat: guess = new RepeatGuess(); break;
-            case Sequence: guess = new SequenceGuess(); break;
-            case Regex: guess = new RegexGuess(); break;
-            case Date: guess = new DateGuess(); break;
+            case Bruteforce: guess = new BruteforceGuess(this.getContext()); break;
+            case Dictionary: guess = new DictionaryGuess(this.getContext()); break;
+            case Spatial: guess = new SpatialGuess(this.getContext()); break;
+            case Repeat: guess = new RepeatGuess(this.getContext()); break;
+            case Sequence: guess = new SequenceGuess(this.getContext()); break;
+            case Regex: guess = new RegexGuess(this.getContext()); break;
+            case Date: guess = new DateGuess(this.getContext()); break;
             default: guess = null; break;
         }
         double guesses = guess != null ? guess.exec(match) : 0;

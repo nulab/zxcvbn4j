@@ -1,5 +1,6 @@
 package com.nulabinc.zxcvbn.guesses;
 
+import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.WipeableString;
 import com.nulabinc.zxcvbn.matchers.Match;
 
@@ -18,6 +19,10 @@ public class RegexGuess extends BaseGuess {
         CHAR_CLASS_BASES.put("symbols", 33);
     }
 
+    protected RegexGuess(final Context context) {
+        super(context);
+    }
+
     @Override
     public double exec(Match match) {
         if (CHAR_CLASS_BASES.containsKey(match.regexName)) {
@@ -30,12 +35,12 @@ public class RegexGuess extends BaseGuess {
         return 0;
     }
 
-    private static final int parseInt(CharSequence s) {
+    private static int parseInt(CharSequence s) {
         int result = 0;
         try {
             result = WipeableString.parseInt(s);
         } catch (NumberFormatException e) {
-            System.out.println(e.getStackTrace());
+            // ignore
         }
         return result;
     }

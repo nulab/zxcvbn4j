@@ -1,5 +1,6 @@
 package com.nulabinc.zxcvbn.matchers;
 
+import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.Matching;
 import com.nulabinc.zxcvbn.Scoring;
 import com.nulabinc.zxcvbn.Strength;
@@ -10,6 +11,11 @@ import java.util.List;
 import java.util.regex.*;
 
 public class RepeatMatcher extends BaseMatcher {
+
+    public RepeatMatcher(final Context context) {
+        super(context);
+    }
+
     @Override
     public List<Match> execute(CharSequence password) {
         List<Match> matches = new ArrayList<>();
@@ -18,6 +24,7 @@ public class RepeatMatcher extends BaseMatcher {
         Pattern lazyAnchored = Pattern.compile("^(.+?)\\1+$");
         int passwordLength = password.length();
         int lastIndex = 0;
+        Scoring scoring = new Scoring(this.getContext());
         while(lastIndex < passwordLength) {
             java.util.regex.Matcher greedyMatch = greedy.matcher(password);
             java.util.regex.Matcher lazyMatch = lazy.matcher(password);
@@ -36,7 +43,7 @@ public class RepeatMatcher extends BaseMatcher {
             }
             int i = match.start(0);
             int j = match.start(0) + match.group(0).length() - 1;
-            Strength baseAnalysis = Scoring.mostGuessableMatchSequence(baseToken, new Matching(new ArrayList<String>()).omnimatch(baseToken));
+            Strength baseAnalysis = scoring.mostGuessableMatchSequence(baseToken, new Matching(this.getContext(), new ArrayList<String>()).omnimatch(baseToken));
             List<Match> baseMatches = baseAnalysis.getSequence();
             double baseGuesses = baseAnalysis.getGuesses();
             baseToken = new WipeableString(baseToken);

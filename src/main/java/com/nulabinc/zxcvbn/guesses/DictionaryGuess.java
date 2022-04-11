@@ -1,5 +1,6 @@
 package com.nulabinc.zxcvbn.guesses;
 
+import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.WipeableString;
 import com.nulabinc.zxcvbn.matchers.Match;
 import java.util.regex.Pattern;
@@ -12,6 +13,10 @@ public class DictionaryGuess extends BaseGuess {
     private final static Pattern END_UPPER = Pattern.compile("^[^A-Z]+[A-Z]$");
     public final static Pattern ALL_UPPER = Pattern.compile("^[^a-z]+$");
     private final static Pattern ALL_LOWER = Pattern.compile("^[^A-Z]+$");
+
+    public DictionaryGuess(final Context context) {
+        super(context);
+    }
 
     @Override
     public double exec(Match match) {

@@ -1,8 +1,13 @@
 package com.nulabinc.zxcvbn.guesses;
 
+import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.matchers.Match;
 
 public class DateGuess extends BaseGuess {
+
+    public DateGuess(final Context context) {
+        super(context);
+    }
 
     @Override
     public double exec(Match match) {

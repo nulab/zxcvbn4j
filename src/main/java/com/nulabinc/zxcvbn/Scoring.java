@@ -1,10 +1,16 @@
 package com.nulabinc.zxcvbn;
 
-import com.nulabinc.zxcvbn.guesses.*;
+import com.nulabinc.zxcvbn.guesses.EstimateGuess;
 import com.nulabinc.zxcvbn.matchers.Match;
 import com.nulabinc.zxcvbn.matchers.MatchFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Scoring {
 
@@ -14,15 +20,25 @@ public class Scoring {
 
     public static final long JS_NUMBER_MAX = 9007199254740991L;
 
+    private final Context context;
+
     public static double log10(double n) {
         return Math.log(n) / Math.log(10);
     }
 
-    public static Strength mostGuessableMatchSequence(CharSequence password, List<Match> matches) {
+    public Scoring(Context context) {
+        this.context = context;
+    }
+
+    protected Context getContext() {
+        return context;
+    }
+
+    public Strength mostGuessableMatchSequence(CharSequence password, List<Match> matches) {
         return mostGuessableMatchSequence(password, matches, false);
     }
 
-    public static Strength mostGuessableMatchSequence(CharSequence password, List<Match> matches, boolean excludeAdditive) {
+    public Strength mostGuessableMatchSequence(CharSequence password, List<Match> matches, boolean excludeAdditive) {
         final int n = password.length();
         final List<List<Match>> matchesByJ = new ArrayList<>();
         for (int i = 0; i < n; i++) {
@@ -64,9 +80,9 @@ public class Scoring {
         return strength;
     }
 
-    private static void update(CharSequence password, Match m, int l, Optimal optimal, boolean excludeAdditive) {
+    private void update(CharSequence password, Match m, int l, Optimal optimal, boolean excludeAdditive) {
         int k = m.j;
-        double pi = new EstimateGuess(password).exec(m);
+        double pi = new EstimateGuess(this.context, password).exec(m);
         if (l > 1) {
             pi *= optimal.pi.get(m.i - 1).get(l - 1);
         }
@@ -96,7 +112,7 @@ public class Scoring {
         optimal.pi.get(k).put(l, pi);
     }
 
-    private static void bruteforceUpdate(CharSequence password, int k, Optimal optimal, boolean excludeAdditive) {
+    private void bruteforceUpdate(CharSequence password, int k, Optimal optimal, boolean excludeAdditive) {
         Match m = makeBruteforceMatch(password, 0, k);
         update(password, m, 1, optimal, excludeAdditive);
         for (int i = 1; i <= k; i++) {
@@ -104,9 +120,7 @@ public class Scoring {
             for (Map.Entry<Integer, Match> entry : optimal.m.get(i - 1).entrySet()) {
                 int l = entry.getKey();
                 Match last_m = entry.getValue();
-                if (last_m.pattern == Pattern.Bruteforce) {
-                    continue;
-                } else {
+                if (last_m.pattern != Pattern.Bruteforce) {
                     update(password, m, l + 1, optimal, excludeAdditive);
                 }
             }
@@ -118,7 +132,7 @@ public class Scoring {
         List<Match> optimalMatchSequence = new ArrayList<>();
         int k = n - 1;
         if (0 <= k) {
-            Integer l = null;
+            int l = 0;
             Double g = Double.POSITIVE_INFINITY;
             for (Map.Entry<Integer, Double> candidate : optimal.g.get(k).entrySet()) {
                 if (candidate.getValue() < g) {

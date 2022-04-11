@@ -1,5 +1,6 @@
 package com.nulabinc.zxcvbn.matchers;
 
+import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.WipeableString;
 
 import java.util.ArrayList;
@@ -13,6 +14,10 @@ public class RegexMatcher extends BaseMatcher {
     private static final Map<String, String> REGEXEN = new HashMap<>();
     static {
         REGEXEN.put("recent_year", "19\\d\\d|200\\d|201\\d|202\\d");
+    }
+
+    public RegexMatcher(final Context context) {
+        super(context);
     }
 
     @Override

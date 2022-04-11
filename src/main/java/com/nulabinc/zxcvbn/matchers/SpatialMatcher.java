@@ -1,9 +1,11 @@
 package com.nulabinc.zxcvbn.matchers;
 
+import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.WipeableString;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -12,20 +14,21 @@ public class SpatialMatcher extends BaseMatcher {
 
     private final Pattern shiftedRx = Pattern.compile("[~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>?]");
 
-    private final List<Keyboard> keyboards;
+    private final Map<String, Keyboard> keyboards;
 
-    public SpatialMatcher(List<Keyboard> keyboards) {
-        this.keyboards = new ArrayList<>(keyboards);
+    public SpatialMatcher(Context context, Map<String, Keyboard> keyboardMap) {
+        super(context);
+        this.keyboards = new LinkedHashMap<>(keyboardMap);
     }
 
-    public SpatialMatcher() {
-        this(Keyboard.ALL_KEYBOARDS);
+    public SpatialMatcher(Context context) {
+        this(context, context.getKeyboardMap());
     }
 
     @Override
     public List<Match> execute(CharSequence password) {
         List<Match> matches = new ArrayList<>();
-        for (Keyboard keyboard : keyboards) {
+        for (Keyboard keyboard : this.keyboards.values()) {
             extend(matches, spatialMatchHelper(password, keyboard));
         }
         return this.sorted(matches);
@@ -46,15 +49,15 @@ public class SpatialMatcher extends BaseMatcher {
                 shiftedCount = 0;
             }
             final Map<Character, List<String>> graph = keyboard.getAdjacencyGraph();
-            while(true) {
-                Character prevChar = password.charAt(j-1);
+            while (true) {
+                Character prevChar = password.charAt(j - 1);
                 boolean found = false;
-                int foundDirection = -1;
+                int foundDirection;
                 int curDirection = -1;
                 List<String> adjacents = graph.containsKey(prevChar) ? graph.get(prevChar) : Collections.<String>emptyList();
                 if (j < password.length()) {
                     Character curChar = password.charAt(j);
-                    for(String adj: adjacents) {
+                    for (String adj : adjacents) {
                         curDirection += 1;
                         if (adj != null && adj.contains(String.valueOf(curChar))) {
                             found = true;

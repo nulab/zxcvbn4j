@@ -1,38 +1,11 @@
 package com.nulabinc.zxcvbn.matchers;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Keyboard {
-
-    private static final String RESOURCES_PACKAGE_PATH = "/com/nulabinc/zxcvbn/matchers/keyboards/";
-
-    private static final ResourceLoader RESOURCE_LOADER = new ResourceLoader();
-
-    public static final Keyboard QWERTY =
-            new Keyboard("qwerty", new SlantedAdjacentGraphBuilder(loadAsString("qwerty.txt")));
-
-    public static final Keyboard DVORAK =
-            new Keyboard("dvorak", new SlantedAdjacentGraphBuilder(loadAsString("dvorak.txt")));
-
-    public static final Keyboard JIS =
-            new Keyboard("jis", new SlantedAdjacentGraphBuilder(loadAsString("jis.txt")));
-
-    public static final Keyboard KEYPAD =
-            new Keyboard("keypad", new AlignedAdjacentAdjacentGraphBuilder(loadAsString("keypad.txt")));
-
-    public static final Keyboard MAC_KEYPAD =
-            new Keyboard("mac_keypad", new AlignedAdjacentAdjacentGraphBuilder(loadAsString("mac_keypad.txt")));
-
-    public static final List<Keyboard> ALL_KEYBOARDS = Arrays.asList(QWERTY, DVORAK, JIS, KEYPAD, MAC_KEYPAD);
 
     private final String name;
 
@@ -44,7 +17,7 @@ public class Keyboard {
 
     private final double averageDegree;
 
-    private Keyboard(final String name, final AdjacentGraphBuilder adjacentGraphBuilder) {
+    Keyboard(final String name, final AdjacentGraphBuilder adjacentGraphBuilder) {
         this.name = name;
         this.adjacencyGraph = adjacentGraphBuilder.build();
         this.slanted = adjacentGraphBuilder.isSlanted();
@@ -72,30 +45,6 @@ public class Keyboard {
         return average;
     }
 
-    private static String loadAsString(final String name) {
-        try (final InputStream input = RESOURCE_LOADER.getInputStream(RESOURCES_PACKAGE_PATH + name);
-             final BufferedReader reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8))) {
-            final StringBuilder sb = new StringBuilder(1024 * 4);
-            String str;
-            while ((str = reader.readLine()) != null) {
-                sb.append(str);
-                sb.append('\n');
-            }
-            return sb.toString();
-        } catch (final IOException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    public static Keyboard of(final String graph) {
-        for (Keyboard keyboard : ALL_KEYBOARDS) {
-            if (keyboard.getName().equals(graph)) {
-                return keyboard;
-            }
-        }
-        throw new IllegalArgumentException("Illegal graph " + graph);
-    }
-
     public String getName() {
         return name;
     }
@@ -116,7 +65,7 @@ public class Keyboard {
         return averageDegree;
     }
 
-    static abstract class AdjacentGraphBuilder {
+    public static abstract class AdjacentGraphBuilder {
 
         private static final SplitMatcher WHITESPACE_SPLIT_MATCHER = new SplitMatcher() {
             @Override
@@ -223,119 +172,52 @@ public class Keyboard {
         private interface SplitMatcher {
             boolean match(char c);
         }
-    }
 
-    static class SlantedAdjacentGraphBuilder extends AdjacentGraphBuilder {
+        static class Position {
 
-        public SlantedAdjacentGraphBuilder(final String layout) {
-            super(layout);
-        }
+            private final int x;
 
-        /**
-         * returns the six adjacent coordinates on a standard keyboard, where each row is slanted to the
-         * right from the last. adjacencies are clockwise, starting with key to the left, then two keys
-         * above, then right key, then two keys below. (that is, only near-diagonal keys are adjacent,
-         * so g's coordinate is adjacent to those of t,y,b,v, but not those of r,u,n,c.)
-         */
-        @Override
-        protected List<Position> getAdjacentCoords(final Position position) {
-            return Arrays.asList(
-                    Position.of(position.getX() - 1, position.getY()),
-                    Position.of(position.getX(), position.getY() - 1),
-                    Position.of(position.getX() + 1, position.getY() - 1),
-                    Position.of(position.getX() + 1, position.getY()),
-                    Position.of(position.getX(), position.getY() + 1),
-                    Position.of(position.getX() - 1, position.getY() + 1));
-        }
+            private final int y;
 
-        @Override
+            private Position(int x, int y) {
+                this.x = x;
+                this.y = y;
+            }
 
-        public boolean isSlanted() {
-            return true;
-        }
+            public static Position of(int x, int y) {
+                return new Position(x, y);
+            }
 
-        @Override
-        protected int calcSlant(int y) {
-            return y - 1;
-        }
-    }
+            public int getX() {
+                return x;
+            }
 
-    static class AlignedAdjacentAdjacentGraphBuilder extends AdjacentGraphBuilder {
+            public int getY() {
+                return y;
+            }
 
-        public AlignedAdjacentAdjacentGraphBuilder(final String layout) {
-            super(layout);
-        }
+            @Override
+            public int hashCode() {
+                int result = x;
+                result = 31 * result + y;
+                return result;
+            }
 
-        @Override
-        public boolean isSlanted() {
-            return false;
-        }
+            @Override
+            public boolean equals(Object o) {
+                if (this == o) return true;
+                if (!(o instanceof Position)) return false;
 
-        @Override
-        protected int calcSlant(int y) {
-            return 0;
-        }
+                final Position position = (Position) o;
 
-        /**
-         * returns the nine clockwise adjacent coordinates on a keypad, where each row is vert aligned.
-         */
-        @Override
-        protected List<Position> getAdjacentCoords(final Position position) {
-            return Arrays.asList(
-                    Position.of(position.getX() - 1, position.getY()),
-                    Position.of(position.getX() - 1, position.getY() - 1),
-                    Position.of(position.getX(), position.getY() - 1),
-                    Position.of(position.getX() + 1, position.getY() - 1),
-                    Position.of(position.getX() + 1, position.getY()),
-                    Position.of(position.getX() + 1, position.getY() + 1),
-                    Position.of(position.getX(), position.getY() + 1),
-                    Position.of(position.getX() - 1, position.getY() + 1));
+                return x == position.x && y == position.y;
+            }
+
+            @Override
+            public String toString() {
+                return "[" + x + "," + y + ']';
+            }
         }
     }
 
-    static class Position {
-
-        private final int x;
-
-        private final int y;
-
-        private Position(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public static Position of(int x, int y) {
-            return new Position(x, y);
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = x;
-            result = 31 * result + y;
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (!(o instanceof Position)) return false;
-
-            final Position position = (Position) o;
-
-            return x == position.x && y == position.y;
-        }
-
-        @Override
-        public String toString() {
-            return "[" + x + "," + y + ']';
-        }
-    }
 }

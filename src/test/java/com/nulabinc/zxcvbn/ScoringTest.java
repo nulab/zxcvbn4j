@@ -1,15 +1,24 @@
 package com.nulabinc.zxcvbn;
 
-import com.nulabinc.zxcvbn.guesses.*;
+import com.nulabinc.zxcvbn.guesses.BaseGuess;
+import com.nulabinc.zxcvbn.guesses.DateGuess;
+import com.nulabinc.zxcvbn.guesses.DictionaryGuess;
+import com.nulabinc.zxcvbn.guesses.EstimateGuess;
+import com.nulabinc.zxcvbn.guesses.RepeatGuess;
+import com.nulabinc.zxcvbn.guesses.SequenceGuess;
 import com.nulabinc.zxcvbn.matchers.Match;
 import com.nulabinc.zxcvbn.matchers.MatchFactory;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,9 +27,9 @@ public class ScoringTest {
 
     @RunWith(Parameterized.class)
     public static class NckTest {
-        private int n;
-        private int k;
-        private int expected;
+        private final int n;
+        private final int k;
+        private final int expected;
 
         public NckTest(int n, int k, int expected) {
             this.n = n;
@@ -30,7 +39,8 @@ public class ScoringTest {
 
         @Test
         public void testNck() throws Exception {
-            BaseGuess obj = new BaseGuess() {
+            Context context = StandardContext.build();
+            BaseGuess obj = new BaseGuess(context) {
                 @Override
                 public double exec(Match match) {
                     return 0;
@@ -60,9 +70,9 @@ public class ScoringTest {
 
     @RunWith(Parameterized.class)
     public static class RepeatGuessesTest {
-        private String token;
-        private String baseToken;
-        private int repeatCount;
+        private final String token;
+        private final String baseToken;
+        private final int repeatCount;
 
         public RepeatGuessesTest(String token, String baseToken, int repeatCount) {
             this.token = token;
@@ -72,8 +82,10 @@ public class ScoringTest {
 
         @Test
         public void testRepeatGuesses() throws Exception {
-            double baseGuesses = Scoring.mostGuessableMatchSequence(
-                    baseToken, new Matching().omnimatch(baseToken)).getGuesses();
+            Context context = StandardContext.build();
+            Scoring scoring = new Scoring(context);
+            double baseGuesses = scoring.mostGuessableMatchSequence(
+                    baseToken, new Matching(context, Collections.<String>emptyList()).omnimatch(baseToken)).getGuesses();
             Match match = new Match.Builder(Pattern.Repeat, 0, 0, token)
                     .baseToken(baseToken)
                     .baseGuesses(baseGuesses)
@@ -81,7 +93,7 @@ public class ScoringTest {
                     .build();
             double expectedGuesses = baseGuesses * repeatCount;
             String msg = String.format("the repeat pattern '%s' has guesses of %s", token, expectedGuesses);
-            assertEquals(msg, expectedGuesses, new RepeatGuess().exec(match), 0.0);
+            assertEquals(msg, expectedGuesses, new RepeatGuess(context).exec(match), 0.0);
         }
 
         @Parameterized.Parameters(name = "{0}")
@@ -98,9 +110,9 @@ public class ScoringTest {
 
     @RunWith(Parameterized.class)
     public static class SequenceGuessesTest {
-        private String token;
-        private boolean ascending;
-        private int expectedGuesses;
+        private final String token;
+        private final boolean ascending;
+        private final int expectedGuesses;
 
         public SequenceGuessesTest(String token, boolean ascending, int expectedGuesses) {
             this.token = token;
@@ -110,9 +122,10 @@ public class ScoringTest {
 
         @Test
         public void testSequenceGuesses() throws Exception {
+            Context context = StandardContext.build();
             Match match = new Match.Builder(Pattern.Sequence, 0, 0, token).ascending(ascending).build();
             String msg = String.format("the sequence pattern '%s' has guesses of %s", token, expectedGuesses);
-            assertEquals(msg, expectedGuesses, new SequenceGuess().exec(match), 0.0);
+            assertEquals(msg, expectedGuesses, new SequenceGuess(context).exec(match), 0.0);
         }
 
         @Parameterized.Parameters(name = "{0}")
@@ -131,50 +144,55 @@ public class ScoringTest {
 
         @Test
         public void testDictionaryGuessesSameWithRank() throws Exception {
+            Context context = StandardContext.build();
             Match match = new Match.Builder(Pattern.Dictionary, 0, 0, "aaaa").rank(32).build();
             String msg = "base guesses == the rank";
-            assertEquals(msg, 32, new DictionaryGuess().exec(match), 0.0);
+            assertEquals(msg, 32, new DictionaryGuess(context).exec(match), 0.0);
         }
 
         @Test
         public void testDictionaryGuessesCapitalization() throws Exception {
+            Context context = StandardContext.build();
             Match match = new Match.Builder(Pattern.Dictionary, 0, 0, "AAAaaa").rank(32).build();
             String msg = "extra guesses are added for capitalization";
-            assertEquals(msg, 32 * new DictionaryGuess().uppercaseVariations(match), new DictionaryGuess().exec(match), 0.0);
+            assertEquals(msg, 32 * new DictionaryGuess(context).uppercaseVariations(match), new DictionaryGuess(context).exec(match), 0.0);
         }
 
         @Test
         public void testDictionaryGuessesReverse() throws Exception {
+            Context context = StandardContext.build();
             Match match = new Match.Builder(Pattern.Dictionary, 0, 0, "aaa").reversed(true).rank(32).build();
             String msg = "guesses are doubled when word is reversed";
-            assertEquals(msg, 32 * 2, new DictionaryGuess().exec(match), 0.0);
+            assertEquals(msg, 32 * 2, new DictionaryGuess(context).exec(match), 0.0);
         }
 
         @Test
         public void testDictionaryGuesses133t() throws Exception {
+            Context context = StandardContext.build();
             Map<Character, Character> sub = new HashMap<>();
             sub.put('@', 'a');
             Match match = new Match.Builder(Pattern.Dictionary, 0, 0, "aaa@@@").sub(sub).l33t(true).rank(32).build();
             String msg = "extra guesses are added for common l33t substitutions";
-            assertEquals(msg, 32 * new DictionaryGuess().l33tVariations(match), new DictionaryGuess().exec(match), 0.0);
+            assertEquals(msg, 32 * new DictionaryGuess(context).l33tVariations(match), new DictionaryGuess(context).exec(match), 0.0);
         }
 
         @Test
         public void testDictionaryGuessesMixed() throws Exception {
+            Context context = StandardContext.build();
             Map<Character, Character> sub = new HashMap<>();
             sub.put('@', 'a');
             Match match = new Match.Builder(Pattern.Dictionary, 0, 0, "AaA@@@").sub(sub).l33t(true).rank(32).build();
             String msg = "extra guesses are added for both capitalization and common l33t substitutions";
-            int expected = 32 * new DictionaryGuess().l33tVariations(match) * new DictionaryGuess().uppercaseVariations(match);
-            assertEquals(msg, expected, new DictionaryGuess().exec(match), 0.0);
+            int expected = 32 * new DictionaryGuess(context).l33tVariations(match) * new DictionaryGuess(context).uppercaseVariations(match);
+            assertEquals(msg, expected, new DictionaryGuess(context).exec(match), 0.0);
         }
 
     }
 
     @RunWith(Parameterized.class)
     public static class UppercaseVariantsTest {
-        private String word;
-        private int variants;
+        private final String word;
+        private final int variants;
 
         public UppercaseVariantsTest(String word, int variants) {
             this.word = word;
@@ -183,7 +201,8 @@ public class ScoringTest {
 
         @Test
         public void testUppercaseVariants() throws Exception {
-            DictionaryGuess dictionaryGuess = new DictionaryGuess();
+            Context context = StandardContext.build();
+            DictionaryGuess dictionaryGuess = new DictionaryGuess(context);
             Method uppercaseVariationsMethod = DictionaryGuess.class.getDeclaredMethod("uppercaseVariations", Match.class);
             uppercaseVariationsMethod.setAccessible(true);
 
@@ -194,7 +213,8 @@ public class ScoringTest {
 
         @Parameterized.Parameters(name = "{0}")
         public static Collection<Object[]> data() throws Exception {
-            BaseGuess baseGuess = new BaseGuess() {
+            Context context = StandardContext.build();
+            BaseGuess baseGuess = new BaseGuess(context) {
                 @Override
                 public double exec(Match match) {
                     return 0;
@@ -221,9 +241,9 @@ public class ScoringTest {
 
     @RunWith(Parameterized.class)
     public static class L33tVariantsTest {
-        private String word;
-        private int variants;
-        private Map<Character, Character> sub;
+        private final String word;
+        private final int variants;
+        private final Map<Character, Character> sub;
 
         public L33tVariantsTest(String word, int variants, Map<Character, Character> sub) {
             this.word = word;
@@ -233,14 +253,16 @@ public class ScoringTest {
 
         @Test
         public void testL33tVariants() throws Exception {
+            Context context = StandardContext.build();
             Match match = new Match.Builder(Pattern.Dictionary, 0, 0, word).sub(sub).l33t(!sub.isEmpty()).build();
             String msg = String.format("extra l33t guesses of %s is %s", word, variants);
-            assertEquals(msg, variants, new DictionaryGuess().l33tVariations(match));
+            assertEquals(msg, variants, new DictionaryGuess(context).l33tVariations(match));
         }
 
         @Parameterized.Parameters(name = "{0}")
         public static Collection<Object[]> data() throws Exception {
-            BaseGuess baseGuess = new BaseGuess() {
+            Context context = StandardContext.build();
+            BaseGuess baseGuess = new BaseGuess(context) {
                 @Override
                 public double exec(Match match) {
                     return 0;
@@ -277,22 +299,25 @@ public class ScoringTest {
     public static class RestScoringTest {
         @Test
         public void testCalcGuessesPassword() throws Exception {
+            Context context = StandardContext.build();
             Match match = new Match.Builder(Pattern.Dictionary, 0, 8, "password").guesses(1.0).build();
             String msg = "estimate_guesses returns cached guesses when available";
-            assertEquals(msg, 1, new EstimateGuess("password").exec(match), 0.0);
+            assertEquals(msg, 1, new EstimateGuess(context, "password").exec(match), 0.0);
         }
 
         @Test
         public void testCalcGuessesYear() throws Exception {
+            Context context = StandardContext.build();
             Match match = MatchFactory.createDateMatch(0, 0, "1977", "/", 1977, 7, 14);
             String msg = "estimate_guesses delegates based on pattern";
-            assertEquals(msg, new EstimateGuess("1977").exec(match), new DateGuess().exec(match), 0.0);
+            assertEquals(msg, new EstimateGuess(context, "1977").exec(match), new DateGuess(context).exec(match), 0.0);
         }
 
         @Test
         public void testL33tVariants() throws Exception {
+            Context context = StandardContext.build();
             Match match = MatchFactory.createDictionaryMatch(0, 0, "", "", 0, "");
-            assertEquals("1 variant for non-l33t matches", 1.0, new DictionaryGuess().l33tVariations(match), 0.0);
+            assertEquals("1 variant for non-l33t matches", 1.0, new DictionaryGuess(context).l33tVariations(match), 0.0);
         }
     }
 }

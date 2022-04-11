@@ -1,8 +1,19 @@
 package com.nulabinc.zxcvbn.guesses;
 
+import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.Guess;
 
 public abstract class BaseGuess implements Guess {
+
+    private final Context context;
+
+    protected BaseGuess(Context context) {
+        this.context = context;
+    }
+
+    protected Context getContext() {
+        return context;
+    }
 
     protected static int nCk(int n, int k) {
         // http://blog.plover.com/math/choose.html
