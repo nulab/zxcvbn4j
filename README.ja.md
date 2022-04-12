@@ -3,9 +3,37 @@
 
 zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxcvbn](https://github.com/dropbox/zxcvbn)をJavaにポーティングしたものです。
 
-## 関連記事
+**関連記事:**
 
 - [真のパスワード強度を測定する5つのアルゴリズム](https://nulab-inc.com/ja/blog/nulab/password-strength/)
+
+## 目次
+
+* [更新](#更新)
+* [特別な機能](#特別な機能)
+  + [内部辞書とキーボードのカスタマイズ](#内部辞書とキーボードのカスタマイズ)
+  + [フィードバックメッセージのローカライズ](#フィードバックメッセージのローカライズ)
+  + [デフォルトで様々な言語をサポート](#デフォルトで様々な言語をサポート)
+  + [JISキーボードに対応](#JISキーボードに対応)
+  + [パスワードの引数はStringだけでなくCharSequenceも受付可能](#パスワードの引数はStringだけでなくCharSequenceも受付可能)
+* [インストール](#インストール)
+* [開発](#開発)
+* [使い方](#使い方)
+  + [基本](#基本)
+  + [強度の情報](#強度の情報)
+* [辞書とキーボードのカスタマイズ](#辞書とキーボードのカスタマイズ)
+  + [クラスパスから取得したリソースを使用する](#クラスパスから取得したリソースを使用する)
+  + [HTTPを介して取得したリソースを使用する](#HTTPを介して取得したリソースを使用する)
+  + [クラスパス以外のファイルのリソースを使用する](#クラスパス以外のファイルのリソースを使用する)
+  + [全てのデフォルトリソースを使用する](#全てのデフォルトリソースを使用する)
+  + [デフォルトリソースから選択して使用する](#デフォルトリソースから選択して使用する)
+* [フィードバックメッセージのローカライズ](#フィードバックメッセージのローカライズ)
+    - [リソースバンドルを指定してローカライズする](#リソースバンドルを指定してローカライズする)
+    - [リソースバンドルのセットを使ってローカライズする](#リソースバンドルのセットを使ってローカライズする)
+* [要件](#要件)
+* [このライブラリを使用](#このライブラリを使用)
+* [バグ報告やご意見](#バグ報告やご意見)
+* [ライセンス](#ライセンス)
 
 ## 更新
 
@@ -57,21 +85,43 @@ zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxc
 
 ## 特別な機能
 
-* 隣接したキー配列の照合処理にJISキーボードを対応。
-* フィードバックメッセージのローカライズに対応。
-* パスワードの引数はStringだけでなくCharSequenceも受付可能。
-  * これによりパスワードのフォーマットを柔軟に変更可能。
-  * センシティブな中間オブジェクトにも文字列を使用しない。
+### 内部辞書とキーボードのカスタマイズ
+
+* 測定アルゴリズムが使用する辞書とキーボードレイアウトをカスタマイズできます。
+
+### フィードバックメッセージのローカライズ
+
+* フィードバックメッセージを任意の言語にローカライズできます。
+
+### デフォルトで様々な言語をサポート
+
+測定結果のフィードバックメッセージに対応する言語
+
+- English ([default](./src/main/resources/com/nulabinc/zxcvbn/messages.properties))
+- Japanese ([ja](./src/main/resources/com/nulabinc/zxcvbn/messages_ja.properties))
+- Dutch ([nl](./src/main/resources/com/nulabinc/zxcvbn/messages_nl.properties))
+- German ([de](./src/main/resources/com/nulabinc/zxcvbn/messages_de.properties))
+- French ([fr](./src/main/resources/com/nulabinc/zxcvbn/messages_fr.properties))
+- Italian ([it](./src/main/resources/com/nulabinc/zxcvbn/messages_it.properties))
+
+### JISキーボードに対応
+
+* 隣接したキー配列の照合処理にJISキーボードを対応
+
+### パスワードの引数はStringだけでなくCharSequenceも受付可能
+
+* これによりパスワードのフォーマットを柔軟に変更可能。
+* センシティブな中間オブジェクトにも文字列を使用しない。
 
 ## インストール
 
-### gradle を利用する場合
+Gradle:
 
 ```
 compile 'com.nulab-inc:zxcvbn:1.6.0'
 ```
 
-### maven を利用する場合
+Maven:
 
 ```
 <dependency>
@@ -81,17 +131,19 @@ compile 'com.nulab-inc:zxcvbn:1.6.0'
 </dependency>
 ```
 
-## ビルド
+## 開発
 
-ビルド方法:
-
-```
-$ git clone git@github.com:nulab/zxcvbn4j.git
-$ cd zxcvbn4j/
-$ ./gradlew build
+``` bash
+$ git clone https://github.com/nulab/zxcvbn4j.git
+$ cd ./zxcvbn4j
+$ ./gradlew build    # build
+$ ./gradlew test     # test
 ```
 
 ## 使い方
+
+### 基本
+
 
 基本的な使い方です。Androidも同じようにご利用できます。
 
@@ -112,6 +164,8 @@ sanitizedInputs.add("typetalk");
 Zxcvbn zxcvbn = new Zxcvbn();
 Strength strength = zxcvbn.measure("This is password", sanitizedInputs);
 ```
+
+### 強度の情報
 
 返却する結果は、"Strength"インスタンスです。[zxcvbn](https://github.com/dropbox/zxcvbn) が返却する結果とほぼ同じものです。
 
@@ -164,9 +218,125 @@ strength.sequence
 strength.calc_time
 ```
 
+## 辞書とキーボードのカスタマイズ
+
+`ZxcvbnBuilder`を使って測定処理で使用する辞書とキーボードをカスタマイズできます。
+
+### クラスパスから取得したリソースを使用する
+
+クラスパス上の独自の辞書ファイルやキーボードファイルを`ClasspathResource`を使って取得できます。
+辞書ファイルは`DictionaryLoader`を使ってロードします。
+キーボードファイルは`SlantedKeyboardLoader`か`AlignedKeyboardLoader`を使ってロードします。
+
+``` java
+Zxcvbn zxcvbn = new ZxcvbnBuilder()
+        .dictionary(new DictionaryLoader("us_tv_and_film", new ClasspathResource("/com/nulabinc/zxcvbn/matchers/dictionarys/us_tv_and_film.txt")).load())
+        .keyboard(new SlantedKeyboardLoader("qwerty", new ClasspathResource("/com/nulabinc/zxcvbn/matchers/keyboards/qwerty.txt")).load())
+        .keyboard(new AlignedKeyboardLoader("keypad", new ClasspathResource("/com/nulabinc/zxcvbn/matchers/keyboards/keypad.txt")).load())
+        .build();
+```
+
+### HTTPを介して取得したリソースを使用する
+
+`Resource interface`を実装するとクラスパス以外の辞書・キーボードファイルも取得できます。
+以下のコードはHTTP(s)を使ってファイルを取得してロードしています。
+
+``` java
+URL dictionaryURL = new URL("https://example.com/foo/dictionary.txt");
+Resource myDictionaryResource = new MyResourceOverHTTP(dictionaryURL);
+
+URL keyboardURL = new URL("https://example.com/bar/keyboard.txt");
+Resource myKeyboardURLResource = new MyResourceOverHTTP(keyboardURL);
+
+Zxcvbn zxcvbn = new ZxcvbnBuilder()
+        .dictionary(new DictionaryLoader("my_dictionary", myDictionaryResource).load())
+        .keyboard(new SlantedKeyboardLoader("my_keyboard", myKeyboardURLResource).load())
+        .build();
+
+public class MyResourceOverHTTP implements Resource {
+
+    private URL url;
+
+    public MyResourceOverHTTP(URL url) {
+        this.url = url;
+    }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
+        HttpURLConnection conn = (HttpURLConnection) this.url.openConnection();
+        return conn.getInputStream();
+    }
+}
+```
+
+### クラスパス以外のファイルのリソースを使用する
+
+以下のコードはクラスパス以外の他のディレクトリのファイルを取得してロードしています。
+
+``` java
+File dictionaryFile = new File("/home/foo/dictionary.txt");
+Resource myDictionaryResource = new MyResourceFromFile(dictionaryFile);
+
+File keyboardFile = new File("/home/bar/keyboard.txt");
+Resource myKeyboardURLResource = new MyResourceFromFile(keyboardFile);
+
+Zxcvbn zxcvbn = new ZxcvbnBuilder()
+    .dictionary(new DictionaryLoader("my_dictionary", myDictionaryResource).load())
+    .keyboard(new SlantedKeyboardLoader("my_keyboard", myKeyboardURLResource).load())
+    .build();
+
+public class MyResourceFromFile implements Resource {
+
+    private File file;
+
+    public MyResourceFromFile(File file) {
+        this.file = file;
+    }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
+        return new FileInputStream(this.file);
+    }
+}
+```
+
+### 全てのデフォルトリソースを使用する
+
+StandardDictionariesを使ってデフォルトの辞書ファイルやキーボードをロードできます。
+`StandardDictionaries.loadAllDictionaries()`はデフォルトの全ての辞書ファイルをロードします。
+`StandardDictionaries.loadAllKeyboards()`はデフォルトの全てのキーボードファイルをロードします。
+
+``` java
+Zxcvbn zxcvbn = new Zxcvbn();
+```
+
+or
+
+``` java
+Zxcvbn zxcvbn = new ZxcvbnBuilder()
+    .dictionaries(StandardDictionaries.loadAllDictionaries())
+    .keyboards(StandardKeyboards.loadAllKeyboards())
+    .build();
+```
+
+### デフォルトリソースから選択して使用する
+
+デフォルトの辞書ファイルやキーボードから一部を選択してロードできます。
+
+``` java
+Zxcvbn zxcvbn = new ZxcvbnBuilder()
+    .dictionary(StandardDictionaries.ENGLISH_WIKIPEDIA_LOADER.load())
+    .dictionary(StandardDictionaries.PASSWORDS_LOADER.load())
+    .keyboard(StandardKeyboards.QWERTY_LOADER.load())
+    .keyboard(StandardKeyboards.DVORAK_LOADER.load())
+    .build();
+```
+
 ## フィードバックメッセージのローカライズ
 
 zxcvbn4jは英語で返却されるフィードバックメッセージを他の言語に変更可能です。
+
+#### リソースバンドルを指定してローカライズする
 
 ``` java
 // パスワード強度を測定して Strength を取得します。
@@ -187,30 +357,25 @@ String localizedWarning = localizedFeedback.getWarning();
 
 プロパティファイルに定義するキーとメッセージは、[messages.properties](https://github.com/nulab/zxcvbn4j/blob/master/src/main/resources/com/nulabinc/zxcvbn/messages.properties) を参考に作成してください。
 
-デフォルトでサポートしている言語:
-
-- English ([default](./src/main/resources/com/nulabinc/zxcvbn/messages.properties))
-- Japanese ([ja](./src/main/resources/com/nulabinc/zxcvbn/messages_ja.properties))
-- Dutch ([nl](./src/main/resources/com/nulabinc/zxcvbn/messages_nl.properties))
-- German ([de](./src/main/resources/com/nulabinc/zxcvbn/messages_de.properties))
-- French ([fr](./src/main/resources/com/nulabinc/zxcvbn/messages_fr.properties))
-- Italian ([it](./src/main/resources/com/nulabinc/zxcvbn/messages_it.properties))
-
-## バグ報告やご意見
-
-バグ報告, ご意見、ご質問等は [Github Issues](https://github.com/nulab/zxcvbn4j/issues) にお願い致します。
-
-## ライセンス
-
-MIT License
-
 * http://www.opensource.org/licenses/mit-license.php
+
+#### リソースバンドルのセットを使ってローカライズする
+
+``` java
+Strength strength = zxcvbn.measure(password);
+Feedback feedback = strength.getFeedback();
+
+Map<Locale, ResourceBundle> messages = new HashMap<>();
+messages.put(Locale.JAPANESE, ResourceBundle.getBundle("This is bundle name", Locale.JAPANESE));
+messages.put(Locale.ITALIAN, ResourceBundle.getBundle("This is bundle name", Locale.ITALIAN));
+Feedback replacedFeedback = feedback.replaceResourceBundle(messages);
+```
 
 ## 要件
 
 * Java 1.7以上
 
-## このライブラリの使用
+## このライブラリを使用
 
 - [Backlog](https://backlog.com/)
 - [Cacoo](https://cacoo.com/)
@@ -220,3 +385,11 @@ MIT License
 - And many Open Source Software
   - https://github.com/search?q=com.nulab-inc+zxcvbn&type=code
   - https://mvnrepository.com/artifact/com.nulab-inc/zxcvbn/usages
+
+## バグ報告やご意見
+
+バグ報告, ご意見、ご質問等は [Github Issues](https://github.com/nulab/zxcvbn4j/issues) にお願い致します。
+
+## ライセンス
+
+MIT License

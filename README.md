@@ -4,9 +4,37 @@
 This is a java port of [zxcvbn](https://github.com/dropbox/zxcvbn), which is a password strength estimator inspired by password crackers written on JavaScript.
 Through pattern matching and conservative estimation, it recognizes and weighs 30k common passwords, common names and surnames according to US census data, popular English words from Wikipedia and US television and movies, and other common patterns like dates, repeats (`aaa`), sequences (`abcd`), keyboard patterns (`qwertyuiop`), and l33t speak.
 
-## Related articles
+**Related articles:**
 
 - [Five Algorithms to Measure Real Password Strength](https://nulab-inc.com/blog/nulab/password-strength/)
+
+## Table Contents
+
+* [Update](#update)
+* [Special Features](#special-features)
+  + [Customize internal dictionaries and keyboards](#customize-internal-dictionaries-and-keyboards)
+  + [Localize feedback messages](#localize-feedback-messages)
+  + [JIS keyboard layout](#jis-keyboard-layout)
+  + [Support some languages by default](#support-some-languages-by-default)
+  + [Password args accept CharSequence as well as String](#password-args-accept-charsequence-as-well-as-string)
+* [Install](#install)
+* [Development](#development)
+* [Usage](#usage)
+  + [Basic](#basic)
+  + [Strength Properties](#strength-properties)
+  + [Customize internal dictionaries and keyboards](#customize-internal-dictionaries-and-keyboards-1)
+    - [Use resources on the classpath](#use-resources-on-the-classpath)
+    - [Use resources get via HTTP](#using-resources-get-via-http)
+    - [Use file resources other than classpath](#use-file-resources-other-than-classpath)
+    - [Use all default resources](#use-all-default-resources)
+    - [Select from and use default resources](#select-from-and-use-default-resources)
+  + [Localize feedback messages](#localize-feedback-messages-1)
+    - [Localize each feedback](#localize-each-feedback)
+    - [Localize each locale](#localize-each-locale)
+* [Requires Java](#requires-java)
+* [Using this library](#using-this-library)
+* [Bugs and Feedback](#bugs-and-feedback)
+* [License](#license)
 
 ## Update
 
@@ -58,21 +86,43 @@ The following version is a port of [zxcvbn 4.2.0](https://github.com/dropbox/zxc
 
 ## Special Features
 
+### Customize internal dictionaries and keyboards
+
+* Customize the dictionary and keyboard layout used by the measurement algorithm.
+
+### Localize feedback messages
+
+* The zxcvbn4j can be localized the english feedback message to other languages.
+
+### Support some languages by default
+
+- English ([default](./src/main/resources/com/nulabinc/zxcvbn/messages.properties))
+- Japanese ([ja](./src/main/resources/com/nulabinc/zxcvbn/messages_ja.properties))
+- Dutch ([nl](./src/main/resources/com/nulabinc/zxcvbn/messages_nl.properties))
+- German ([de](./src/main/resources/com/nulabinc/zxcvbn/messages_de.properties))
+- French ([fr](./src/main/resources/com/nulabinc/zxcvbn/messages_fr.properties))
+- Italian ([it](./src/main/resources/com/nulabinc/zxcvbn/messages_it.properties))
+
+### JIS keyboard layout
+
 * It includes JIS keyboard layout in spatial matching.
-* Localization feedback messages.
-* Password args accept CharSequence as well as String.
-  * This gives a lot more flexibility in what format the password can be in.
-  * Also attempts to avoid using Strings for any sensitive intermediate objects.
+
+### Password args accept CharSequence as well as String
+
+* This gives a lot more flexibility in what format the password can be in.
+* Also attempts to avoid using Strings for any sensitive intermediate objects.
 
 ## Install
 
-### gradle
+https://mvnrepository.com/artifact/com.nulab-inc/zxcvbn/1.6.0
+
+Gradle:
 
 ```
 compile 'com.nulab-inc:zxcvbn:1.6.0'
 ```
 
-### maven
+Maven:
 
 ```
 <dependency>
@@ -82,19 +132,20 @@ compile 'com.nulab-inc:zxcvbn:1.6.0'
 </dependency>
 ```
 
-## Build
+## Development
 
-To build:
-
-```
-$ git clone git@github.com:nulab/zxcvbn4j.git
-$ cd zxcvbn4j/
-$ ./gradlew build
+``` bash
+$ git clone https://github.com/nulab/zxcvbn4j.git
+$ cd ./zxcvbn4j
+$ ./gradlew build    # build
+$ ./gradlew test     # test
 ```
 
 ## Usage
 
-Basic Usage. This is also available Android.
+### Basic
+
+This is also available Android.
 
 ``` java
 Zxcvbn zxcvbn = new Zxcvbn();
@@ -113,6 +164,8 @@ sanitizedInputs.add("typetalk");
 Zxcvbn zxcvbn = new Zxcvbn();
 Strength strength = zxcvbn.measure("This is password", sanitizedInputs);
 ```
+
+### Strength Properties
 
 The return result is "Strength". It's almost the same as [zxcvbn](https://github.com/dropbox/zxcvbn).
 
@@ -179,9 +232,125 @@ strength.sequence
 strength.calc_time
 ```
 
-## Localization feedback messages
+### Customize internal dictionaries and keyboards
 
-The zxcvbn4j can be localized localize the english feedback message to other languages.
+`Zxcvbn` can build with `ZxcvbnBuilder`.
+`ZxcvbnBuilder` can customize dictionaries and keyboards used in measurements.
+
+#### Use resources on the classpath
+
+`ClasspathResource` can get your own dictionary and keyboard file on the classpath.
+`DictionaryLoader` load dictionary file.
+`SlantedKeyboardLoader` and `AlignedKeyboardLoader` load keyboard file.
+
+``` java
+Zxcvbn zxcvbn = new ZxcvbnBuilder()
+        .dictionary(new DictionaryLoader("us_tv_and_film", new ClasspathResource("/com/nulabinc/zxcvbn/matchers/dictionarys/us_tv_and_film.txt")).load())
+        .keyboard(new SlantedKeyboardLoader("qwerty", new ClasspathResource("/com/nulabinc/zxcvbn/matchers/keyboards/qwerty.txt")).load())
+        .keyboard(new AlignedKeyboardLoader("keypad", new ClasspathResource("/com/nulabinc/zxcvbn/matchers/keyboards/keypad.txt")).load())
+        .build();
+```
+
+#### Use resources get via HTTP
+
+To use dictionary and keyboard files other than the classpath, implement the `Resource interface`.
+This code is an example of getting and loading a file via HTTP(s).
+
+``` java
+URL dictionaryURL = new URL("https://example.com/foo/dictionary.txt");
+Resource myDictionaryResource = new MyResourceOverHTTP(dictionaryURL);
+
+URL keyboardURL = new URL("https://example.com/bar/keyboard.txt");
+Resource myKeyboardURLResource = new MyResourceOverHTTP(keyboardURL);
+
+Zxcvbn zxcvbn = new ZxcvbnBuilder()
+        .dictionary(new DictionaryLoader("my_dictionary", myDictionaryResource).load())
+        .keyboard(new SlantedKeyboardLoader("my_keyboard", myKeyboardURLResource).load())
+        .build();
+
+public class MyResourceOverHTTP implements Resource {
+
+    private URL url;
+
+    public MyResourceOverHTTP(URL url) {
+        this.url = url;
+    }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
+        HttpURLConnection conn = (HttpURLConnection) this.url.openConnection();
+        return conn.getInputStream();
+    }
+}
+```
+
+#### Use file resources other than classpath
+
+This code is an example of using files in other directories than the classpath.
+
+``` java
+File dictionaryFile = new File("/home/foo/dictionary.txt");
+Resource myDictionaryResource = new MyResourceFromFile(dictionaryFile);
+
+File keyboardFile = new File("/home/bar/keyboard.txt");
+Resource myKeyboardURLResource = new MyResourceFromFile(keyboardFile);
+
+Zxcvbn zxcvbn = new ZxcvbnBuilder()
+    .dictionary(new DictionaryLoader("my_dictionary", myDictionaryResource).load())
+    .keyboard(new SlantedKeyboardLoader("my_keyboard", myKeyboardURLResource).load())
+    .build();
+
+public class MyResourceFromFile implements Resource {
+
+    private File file;
+
+    public MyResourceFromFile(File file) {
+        this.file = file;
+    }
+
+    @Override
+    public InputStream getInputStream() throws IOException {
+        return new FileInputStream(this.file);
+    }
+}
+```
+
+#### Use all default resources
+
+`StandardDictionaries.loadAllDictionaries()` loads all default dictionary files.
+`StandardDictionaries.loadAllKeyboards()` loads all default keyboard files.
+
+``` java
+Zxcvbn zxcvbn = new Zxcvbn();
+```
+
+or
+
+``` java
+Zxcvbn zxcvbn = new ZxcvbnBuilder()
+    .dictionaries(StandardDictionaries.loadAllDictionaries())
+    .keyboards(StandardKeyboards.loadAllKeyboards())
+    .build();
+```
+
+#### Select from and use default resources
+
+The following code selects some from the default dictionary files and keyboards.
+
+``` java
+Zxcvbn zxcvbn = new ZxcvbnBuilder()
+    .dictionary(StandardDictionaries.ENGLISH_WIKIPEDIA_LOADER.load())
+    .dictionary(StandardDictionaries.PASSWORDS_LOADER.load())
+    .keyboard(StandardKeyboards.QWERTY_LOADER.load())
+    .keyboard(StandardKeyboards.DVORAK_LOADER.load())
+    .build();
+```
+
+### Localize feedback messages
+
+The zxcvbn4j can be localized the english feedback message to other languages.
+
+#### Localize each feedback
 
 ``` java
 // Get the Strength instance.
@@ -202,24 +371,17 @@ String localizedWarning = localizedFeedback.getWarning();
 
 Defined Key and the message in the properties file. Reference the [messages.properties](https://github.com/nulab/zxcvbn4j/blob/master/src/main/resources/com/nulabinc/zxcvbn/messages.properties).
 
-Supported languages by default:
+#### Localize each locale
 
-- English ([default](./src/main/resources/com/nulabinc/zxcvbn/messages.properties))
-- Japanese ([ja](./src/main/resources/com/nulabinc/zxcvbn/messages_ja.properties))
-- Dutch ([nl](./src/main/resources/com/nulabinc/zxcvbn/messages_nl.properties))
-- German ([de](./src/main/resources/com/nulabinc/zxcvbn/messages_de.properties))
-- French ([fr](./src/main/resources/com/nulabinc/zxcvbn/messages_fr.properties))
-- Italian ([it](./src/main/resources/com/nulabinc/zxcvbn/messages_it.properties))
- 
-## Bugs and Feedback
+``` java
+Strength strength = zxcvbn.measure(password);
+Feedback feedback = strength.getFeedback();
 
-For bugs, questions and discussions please use the [GitHub Issues](https://github.com/nulab/zxcvbn4j/issues).
-
-## License
-
-MIT License
-
-* http://www.opensource.org/licenses/mit-license.php
+Map<Locale, ResourceBundle> messages = new HashMap<>();
+messages.put(Locale.JAPANESE, ResourceBundle.getBundle("This is bundle name", Locale.JAPANESE));
+messages.put(Locale.ITALIAN, ResourceBundle.getBundle("This is bundle name", Locale.ITALIAN));
+Feedback replacedFeedback = feedback.replaceResourceBundle(messages);
+```
 
 ## Requires Java
 
@@ -235,3 +397,13 @@ MIT License
 - And many Open Source Software
   - https://github.com/search?q=com.nulab-inc+zxcvbn&type=code
   - https://mvnrepository.com/artifact/com.nulab-inc/zxcvbn/usages
+
+## Bugs and Feedback
+
+For bugs, questions and discussions please use the [GitHub Issues](https://github.com/nulab/zxcvbn4j/issues).
+
+## License
+
+MIT License
+
+* http://www.opensource.org/licenses/mit-license.php
