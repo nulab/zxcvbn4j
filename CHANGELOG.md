@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.7.0](https://github.com/nulab/zxcvbn4j/compare/1.6.0...1.7.0) (2022-04-13)
+
+* fix typo in the package name of the resource file (#125) [#126](https://github.com/nulab/zxcvbn4j/pull/126) ([vvatanabe](https://github.com/vvatanabe))
+* Allow users to use their own keyboard layouts and dictionaries [#124](https://github.com/nulab/zxcvbn4j/pull/124) ([yasuyuki-baba](https://github.com/yasuyuki-baba))
+
 ## [1.6.0](https://github.com/nulab/zxcvbn4j/compare/1.5.2...1.6.0) (2022-04-05)
 
 * Change the position of the defining signing (#121) [#123](https://github.com/nulab/zxcvbn4j/pull/123) ([vvatanabe](https://github.com/vvatanabe))
