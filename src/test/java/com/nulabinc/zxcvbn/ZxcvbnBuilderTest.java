@@ -42,7 +42,7 @@ public class ZxcvbnBuilderTest {
     @Test
     public void testBuild4() throws IOException {
         Zxcvbn zxcvbn = new ZxcvbnBuilder()
-                .dictionary(new DictionaryLoader("us_tv_and_film", new ClasspathResource("/com/nulabinc/zxcvbn/matchers/dictionarys/us_tv_and_film.txt")).load())
+                .dictionary(new DictionaryLoader("us_tv_and_film", new ClasspathResource("/com/nulabinc/zxcvbn/matchers/dictionaries/us_tv_and_film.txt")).load())
                 .keyboard(new SlantedKeyboardLoader("qwerty", new ClasspathResource("/com/nulabinc/zxcvbn/matchers/keyboards/qwerty.txt")).load())
                 .keyboard(new AlignedKeyboardLoader("keypad", new ClasspathResource("/com/nulabinc/zxcvbn/matchers/keyboards/keypad.txt")).load())
                 .build();

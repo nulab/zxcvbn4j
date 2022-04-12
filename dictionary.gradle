@@ -6,7 +6,7 @@ class DictionaryTask extends DefaultTask {
 
     String src = "./data/"
 
-    String dest = "./src/main/resources/com/nulabinc/zxcvbn/matchers/dictionarys/"
+    String dest = "./src/main/resources/com/nulabinc/zxcvbn/matchers/dictionaries/"
 
     String ext = ".txt"
 

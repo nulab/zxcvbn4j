@@ -10,7 +10,7 @@ import java.util.List;
 
 public class StandardDictionaries {
 
-    private static final String BASE_PATH = "/com/nulabinc/zxcvbn/matchers/dictionarys/";
+    private static final String BASE_PATH = "/com/nulabinc/zxcvbn/matchers/dictionaries/";
 
     public static final String US_TV_AND_FILM = "us_tv_and_film";
 
