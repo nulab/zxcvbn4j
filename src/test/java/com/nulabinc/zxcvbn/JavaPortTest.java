@@ -10,22 +10,20 @@ import javax.script.ScriptEngine;
 import java.util.Arrays;
 import java.util.Map;
 
-import static com.nulabinc.zxcvbn.ApproachComparisonTest.initScriptEngine;
-
 @RunWith(Parameterized.class)
 public class JavaPortTest {
     private static ScriptEngine engine;
-    private String password;
+    private final String password;
     private final Zxcvbn zxcvbn;
 
     public JavaPortTest(String password) {
         this.password = password;
-        zxcvbn = new Zxcvbn();
+        this.zxcvbn = new Zxcvbn();
     }
 
     @BeforeClass
     public static void initEngine() {
-        engine = initScriptEngine();
+        engine = new JSScriptEngineBuilder().build();
     }
 
     @Test
