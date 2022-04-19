@@ -1,22 +1,24 @@
 package com.nulabinc.zxcvbn;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.io.*;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.*;
-
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import static java.nio.CharBuffer.wrap;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.fail;
 
 /**
  * These tests compare the output from different approaches for calculating password strength.
@@ -34,7 +36,7 @@ public class ApproachComparisonTest {
 
     private static ScriptEngine engine;
 
-    private CharSequence password;
+    private final CharSequence password;
 
     private Strength charSequenceStrength;
     private Strength stringStrength;
@@ -54,7 +56,7 @@ public class ApproachComparisonTest {
 
         stringStrength = zxcvbn.measure(password.toString());
 
-        stringInputsStrength = zxcvbn.measure(password, Collections.EMPTY_LIST);
+        stringInputsStrength = zxcvbn.measure(password, Collections.<String>emptyList());
 
         jsStrength = invokeJsVersion(password);
     }
@@ -172,7 +174,7 @@ public class ApproachComparisonTest {
         }
     }
 
-    class JavaScriptStrength {
+    static class JavaScriptStrength {
         private final Map<String, Object> values;
 
         public JavaScriptStrength(Map<String, Object> values) {
@@ -198,31 +200,15 @@ public class ApproachComparisonTest {
     public JavaScriptStrength invokeJsVersion(CharSequence password) {
         engine.put("pwd",password.toString());
         try {
-            return new JavaScriptStrength(( Map<String, Object>) engine.eval("zxcvbn(pwd);"));
+            return new JavaScriptStrength((Map<String, Object>) engine.eval("zxcvbn(pwd);"));
         } catch (ScriptException e) {
-            System.err.println("Error invoking JavaScript version for password "+password);
+            fail("Error invoking JavaScript version for password " + password);
             return null;
         }
     }
 
     @BeforeClass
     public static void beforeClass() {
-        engine = initScriptEngine();
+        engine = new JSScriptEngineBuilder().build();
     }
-
-    public static ScriptEngine initScriptEngine() {
-        ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine engine = manager.getEngineByName("JavaScript");
-
-        try {
-            //using the 4.4.1 release
-            URL script = JavaPortTest.class.getClassLoader().getResource("zxcvbn.js");
-            engine.eval(new FileReader(new File(script.toURI())));
-        } catch (URISyntaxException | FileNotFoundException | ScriptException e) {
-            throw new RuntimeException("Cannot instantiate Javascript Engine", e);
-        }
-
-        return engine;
-    }
-
 }
