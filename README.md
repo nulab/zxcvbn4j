@@ -140,6 +140,7 @@ $ git clone https://github.com/nulab/zxcvbn4j.git
 $ cd ./zxcvbn4j
 $ ./gradlew build    # build
 $ ./gradlew test     # test
+$ ./gradlew jmh      # benchmark
 ```
 
 ## Usage
