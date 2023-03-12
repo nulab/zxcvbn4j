@@ -103,6 +103,7 @@ The following version is a port of [zxcvbn 4.2.0](https://github.com/dropbox/zxc
 - German ([de](./src/main/resources/com/nulabinc/zxcvbn/messages_de.properties))
 - French ([fr](./src/main/resources/com/nulabinc/zxcvbn/messages_fr.properties))
 - Italian ([it](./src/main/resources/com/nulabinc/zxcvbn/messages_it.properties))
+- Spanish ([es](./src/main/resources/com/nulabinc/zxcvbn/messages_es.properties))
 
 ### JIS keyboard layout
 
