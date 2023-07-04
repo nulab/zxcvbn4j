@@ -8,7 +8,7 @@ plugins {
 }
 
 group = 'com.nulab-inc'
-version = '1.7.0'
+version = '1.8.0'
 archivesBaseName = 'zxcvbn'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7

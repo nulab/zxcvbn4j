@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.8.0](https://github.com/nulab/zxcvbn4j/compare/1.7.0...1.8.0) (2023-04-29)
+
+* Added feedback messages translated into Spanish [#135](https://github.com/nulab/zxcvbn4j/pull/135) ([manchilop](https://github.com/manchilop))
+* Switch the JavaScript engine used for testing from Nashorn to GraalJS [#128](https://github.com/nulab/zxcvbn4j/pull/128) ([yasuyuki-baba](https://github.com/yasuyuki-baba))
+* JMH-based set of benchmarks [#127](https://github.com/nulab/zxcvbn4j/pull/127) ([yasuyuki-baba](https://github.com/yasuyuki-baba))
+
 ## [1.7.0](https://github.com/nulab/zxcvbn4j/compare/1.6.0...1.7.0) (2022-04-13)
 
 * fix typo in the package name of the resource file (#125) [#126](https://github.com/nulab/zxcvbn4j/pull/126) ([vvatanabe](https://github.com/vvatanabe))
