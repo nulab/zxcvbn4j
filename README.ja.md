@@ -39,6 +39,7 @@ zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxc
 
 以下のバージョンは[zxcvbn 4.4.2](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.2)をポーティング
 
+* 2023/07/04 1.8.0 リリース.
 * 2022/04/13 1.7.0 リリース.
 * 2022/04/05 1.6.0 リリース.
 * 2021/06/08 1.5.2 リリース.
@@ -116,12 +117,12 @@ zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxc
 
 ## インストール
 
-https://mvnrepository.com/artifact/com.nulab-inc/zxcvbn/1.7.0
+https://mvnrepository.com/artifact/com.nulab-inc/zxcvbn/1.8.0
 
 Gradle:
 
 ```
-compile 'com.nulab-inc:zxcvbn:1.7.0'
+compile 'com.nulab-inc:zxcvbn:1.8.0'
 ```
 
 Maven:
@@ -130,7 +131,7 @@ Maven:
 <dependency>
   <groupId>com.nulab-inc</groupId>
   <artifactId>zxcvbn</artifactId>
-  <version>1.7.0</version>
+  <version>1.8.0</version>
 </dependency>
 ```
 
