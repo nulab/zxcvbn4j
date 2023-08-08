@@ -7,59 +7,110 @@ import com.nulabinc.zxcvbn.Strength;
 import com.nulabinc.zxcvbn.WipeableString;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.*;
+import java.util.regex.Pattern;
 
 public class RepeatMatcher extends BaseMatcher {
 
-  public RepeatMatcher(final Context context) {
-    super(context);
-  }
+    private static final Pattern GREEDY_PATTERN = Pattern.compile("(.+)\\1+");
+    private static final Pattern LAZY_PATTERN = Pattern.compile("(.+?)\\1+");
+    private static final Pattern LAZY_ANCHORED_PATTERN = Pattern.compile("^(.+?)\\1+$");
 
-  @Override
-  public List<Match> execute(CharSequence password) {
-    List<Match> matches = new ArrayList<>();
-    Pattern greedy = Pattern.compile("(.+)\\1+");
-    Pattern lazy = Pattern.compile("(.+?)\\1+");
-    Pattern lazyAnchored = Pattern.compile("^(.+?)\\1+$");
-    int passwordLength = password.length();
-    int lastIndex = 0;
-    Scoring scoring = new Scoring(this.getContext());
-    while (lastIndex < passwordLength) {
-      java.util.regex.Matcher greedyMatch = greedy.matcher(password);
-      java.util.regex.Matcher lazyMatch = lazy.matcher(password);
-      greedyMatch.region(lastIndex, passwordLength);
-      lazyMatch.region(lastIndex, passwordLength);
-      if (!greedyMatch.find()) break;
-      java.util.regex.Matcher match;
-      CharSequence baseToken;
-      if (greedyMatch.group(0).length() > (lazyMatch.find() ? lazyMatch.group(0).length() : 0)) {
-        match = greedyMatch;
-        Matcher matcher = lazyAnchored.matcher(match.group(0));
-        baseToken = matcher.find() ? matcher.group(1) : match.group(0);
-      } else {
-        match = lazyMatch;
-        baseToken = match.group(1);
-      }
-      int i = match.start(0);
-      int j = match.start(0) + match.group(0).length() - 1;
-      Strength baseAnalysis =
-          scoring.mostGuessableMatchSequence(
-              baseToken,
-              new Matching(this.getContext(), new ArrayList<String>()).omnimatch(baseToken));
-      List<Match> baseMatches = baseAnalysis.getSequence();
-      double baseGuesses = baseAnalysis.getGuesses();
-      baseToken = new WipeableString(baseToken);
-      matches.add(
-          MatchFactory.createRepeatMatch(
-              i,
-              j,
-              match.group(0),
-              baseToken,
-              baseGuesses,
-              baseMatches,
-              match.group(0).length() / baseToken.length()));
-      lastIndex = j + 1;
+    private final Scoring scoring;
+    private final Matching matching;
+
+    public RepeatMatcher(final Context context) {
+        super(context);
+        this.scoring = new Scoring(context);
+        this.matching = new Matching(context, new ArrayList<String>());
     }
-    return matches;
-  }
+
+    @Override
+    public List<Match> execute(CharSequence password) {
+        List<Match> matches = new ArrayList<>();
+        int passwordLength = password.length();
+        int lastIndex = 0;
+
+        while (lastIndex < passwordLength) {
+            java.util.regex.Matcher greedyMatcher =
+                    createRegionMatcher(GREEDY_PATTERN, password, lastIndex, passwordLength);
+            java.util.regex.Matcher lazyMatcher =
+                    createRegionMatcher(LAZY_PATTERN, password, lastIndex, passwordLength);
+
+            if (!greedyMatcher.find()) {
+                break;
+            }
+
+            ChosenMatch chosenMatch = chooseMatch(greedyMatcher, lazyMatcher);
+            Match repeatMatch =
+                    createRepeatMatch(
+                            chosenMatch.baseToken, chosenMatch.matchResult, chosenMatch.start, chosenMatch.end);
+            matches.add(repeatMatch);
+            lastIndex = chosenMatch.end + 1;
+        }
+
+        return matches;
+    }
+
+    private java.util.regex.Matcher createRegionMatcher(
+            Pattern pattern, CharSequence password, int start, int end) {
+        java.util.regex.Matcher matcher = pattern.matcher(password);
+        matcher.region(start, end);
+        return matcher;
+    }
+
+    private ChosenMatch chooseMatch(
+            java.util.regex.Matcher greedyMatcher, java.util.regex.Matcher lazyMatcher) {
+
+        String greedyMatchResult = greedyMatcher.group(0);
+        String lazyMatchResult = lazyMatcher.find() ? lazyMatcher.group(0) : "";
+        boolean isGreedyLonger = greedyMatchResult.length() > lazyMatchResult.length();
+
+        String matchResult;
+        CharSequence baseToken;
+        int start;
+        int end;
+
+        if (isGreedyLonger) {
+            matchResult = greedyMatchResult;
+            baseToken = deriveBaseTokenFromGreedyMatchResult(greedyMatchResult);
+            start = greedyMatcher.start(0);
+            end = start + greedyMatchResult.length() - 1;
+        } else {
+            matchResult = lazyMatchResult;
+            baseToken = lazyMatcher.group(1);
+            start = lazyMatcher.start(0);
+            end = start + lazyMatchResult.length() - 1;
+        }
+        return new ChosenMatch(matchResult, baseToken, start, end);
+    }
+
+    private CharSequence deriveBaseTokenFromGreedyMatchResult(String greedyMatchResult) {
+        java.util.regex.Matcher lazyAnchoredMatcher = LAZY_ANCHORED_PATTERN.matcher(greedyMatchResult);
+        return lazyAnchoredMatcher.find() ? lazyAnchoredMatcher.group(1) : greedyMatchResult;
+    }
+
+    private Match createRepeatMatch(CharSequence baseToken, String matchResult, int start, int end) {
+        List<Match> omnimatch = matching.omnimatch(baseToken);
+        Strength baseAnalysis = scoring.mostGuessableMatchSequence(baseToken, omnimatch);
+        List<Match> baseMatches = baseAnalysis.getSequence();
+        double baseGuesses = baseAnalysis.getGuesses();
+        CharSequence wipeableBaseToken = new WipeableString(baseToken);
+        int repeatCount = matchResult.length() / wipeableBaseToken.length();
+        return MatchFactory.createRepeatMatch(
+                start, end, matchResult, wipeableBaseToken, baseGuesses, baseMatches, repeatCount);
+    }
+
+    private static class ChosenMatch {
+        final String matchResult;
+        final CharSequence baseToken;
+        final int start;
+        final int end;
+
+        public ChosenMatch(String matchResult, CharSequence baseToken, int start, int end) {
+            this.matchResult = matchResult;
+            this.baseToken = baseToken;
+            this.start = start;
+            this.end = end;
+        }
+    }
 }
