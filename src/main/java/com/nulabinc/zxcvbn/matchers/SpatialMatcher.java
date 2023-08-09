@@ -11,8 +11,10 @@ import java.util.regex.Pattern;
 
 public class SpatialMatcher extends BaseMatcher {
 
-  private final Pattern shiftedRx =
+  private static final Pattern SHIFTED_RX =
       Pattern.compile("[~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:\"ZXCVBNM<>?]");
+
+  private static final List<String> EMPTY_ADJACENTS = Collections.emptyList();
 
   private final Map<String, Keyboard> keyboards;
 
@@ -29,68 +31,84 @@ public class SpatialMatcher extends BaseMatcher {
   public List<Match> execute(CharSequence password) {
     List<Match> matches = new ArrayList<>();
     for (Keyboard keyboard : this.keyboards.values()) {
-      extend(matches, spatialMatchHelper(password, keyboard));
+      matches.addAll(findSpatialMatchesInKeyboard(password, keyboard));
     }
     return this.sorted(matches);
   }
 
-  private List<Match> spatialMatchHelper(CharSequence password, Keyboard keyboard) {
+  private List<Match> findSpatialMatchesInKeyboard(CharSequence password, Keyboard keyboard) {
     List<Match> matches = new ArrayList<>();
-    int i = 0;
-    while (i < password.length() - 1) {
-      int j = i + 1;
-      int lastDirection = 0;
-      int turns = 0;
-      int shiftedCount;
-      if (keyboard.isSlanted() && shiftedRx.matcher(String.valueOf(password.charAt(i))).find()) {
-        shiftedCount = 1;
-      } else {
-        shiftedCount = 0;
-      }
-      final Map<Character, List<String>> graph = keyboard.getAdjacencyGraph();
-      while (true) {
-        Character prevChar = password.charAt(j - 1);
-        boolean found = false;
-        int foundDirection;
-        int curDirection = -1;
-        List<String> adjacents =
-            graph.containsKey(prevChar) ? graph.get(prevChar) : Collections.<String>emptyList();
-        if (j < password.length()) {
-          Character curChar = password.charAt(j);
-          for (String adj : adjacents) {
-            curDirection += 1;
-            if (adj != null && adj.contains(String.valueOf(curChar))) {
-              found = true;
-              foundDirection = curDirection;
-              if (adj.indexOf(String.valueOf(curChar)) == 1) {
-                shiftedCount += 1;
-              }
-              if (lastDirection != foundDirection) {
-                turns += 1;
-                lastDirection = foundDirection;
-              }
-              break;
-            }
-          }
+    int curCharIndex = 0;
+    while (curCharIndex < password.length() - 1) {
+      curCharIndex = processSpatialMatch(password, keyboard, matches, curCharIndex);
+    }
+    return matches;
+  }
+
+  private int processSpatialMatch(
+      CharSequence password, Keyboard keyboard, List<Match> matches, int curCharIndex) {
+    int nextCharIndex = curCharIndex + 1;
+    int lastDirection = 0;
+    int turns = 0;
+    int shiftedCount = calculateShiftedCount(keyboard, password.charAt(curCharIndex));
+    final Map<Character, List<String>> graph = keyboard.getAdjacencyGraph();
+    while (true) {
+      char prevChar = password.charAt(nextCharIndex - 1);
+      List<String> adjacents = graph.containsKey(prevChar) ? graph.get(prevChar) : EMPTY_ADJACENTS;
+      AdjacentSearchResult result = findAdjacent(password, nextCharIndex, adjacents);
+      if (result.found) {
+        nextCharIndex++;
+        shiftedCount += result.shiftedCount;
+        if (lastDirection != result.foundDirection) {
+          turns++;
+          lastDirection = result.foundDirection;
         }
-        if (found) {
-          j += 1;
-        } else {
-          if (j - i > 2) {
-            matches.add(
-                MatchFactory.createSpatialMatch(
-                    i,
-                    j - 1,
-                    WipeableString.copy(password, i, j),
-                    keyboard.getName(),
-                    turns,
-                    shiftedCount));
-          }
-          i = j;
-          break;
+      } else {
+        if (nextCharIndex - curCharIndex > 2) {
+          matches.add(
+              MatchFactory.createSpatialMatch(
+                  curCharIndex,
+                  nextCharIndex - 1,
+                  WipeableString.copy(password, curCharIndex, nextCharIndex),
+                  keyboard.getName(),
+                  turns,
+                  shiftedCount));
+        }
+        return nextCharIndex;
+      }
+    }
+  }
+
+  private int calculateShiftedCount(Keyboard keyboard, char charAt) {
+    return (keyboard.isSlanted() && SHIFTED_RX.matcher(String.valueOf(charAt)).find()) ? 1 : 0;
+  }
+
+  private static class AdjacentSearchResult {
+    boolean found;
+    int foundDirection;
+    int shiftedCount;
+
+    AdjacentSearchResult(boolean found, int foundDirection, int shiftedCount) {
+      this.found = found;
+      this.foundDirection = foundDirection;
+      this.shiftedCount = shiftedCount;
+    }
+  }
+
+  private AdjacentSearchResult findAdjacent(
+      CharSequence password, int curCharIndex, List<String> adjacents) {
+    int curDirection = -1;
+    if (curCharIndex < password.length()) {
+      char curChar = password.charAt(curCharIndex);
+      String curString = String.valueOf(curChar);
+      for (String adj : adjacents) {
+        curDirection++;
+        int foundAdjacentIndex = adj != null ? adj.indexOf(curString) : -1;
+        if (foundAdjacentIndex != -1) {
+          return new AdjacentSearchResult(true, curDirection, foundAdjacentIndex == 1 ? 1 : 0);
         }
       }
     }
-    return matches;
+    return new AdjacentSearchResult(false, 0, 0);
   }
 }

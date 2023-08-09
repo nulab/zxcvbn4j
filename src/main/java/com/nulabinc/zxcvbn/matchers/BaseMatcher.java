@@ -48,9 +48,4 @@ public abstract class BaseMatcher implements Matcher {
         return result;
     }
 
-    protected List<Match> extend(List<Match> lst, List<Match> lst2) {
-        lst.addAll(lst2);
-        return lst;
-    }
-
 }
