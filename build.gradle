@@ -5,6 +5,7 @@ plugins {
     id 'jacoco'
     id 'com.github.kt3k.coveralls' version '2.12.0'
     id "me.champeau.jmh" version "0.6.6"
+    id "com.github.spotbugs" version "5.1.2"
 }
 
 group = 'com.nulab-inc'
@@ -29,6 +30,19 @@ dependencies {
     jmh group: 'org.openjdk.jmh', name: 'jmh-core', version: '1.34'
     jmh group: 'org.openjdk.jmh', name: 'jmh-generator-annprocess', version: '1.34'
     jmh group: 'org.ow2.asm', name: 'asm', version: '9.3'
+}
+
+spotbugs {
+    ignoreFailures = false
+    effort = 'max'
+    reportLevel = 'high'
+}
+
+spotbugsMain {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
 }
 
 task compileModuleInfoJava(type: JavaCompile, dependsOn: compileJava) {

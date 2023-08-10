@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class Zxcvbn {
 
@@ -35,7 +36,7 @@ public class Zxcvbn {
         if (sanitizedInputs != null && !sanitizedInputs.isEmpty()) {
             lowerSanitizedInputs = new ArrayList<>(sanitizedInputs.size());
             for (String sanitizedInput : sanitizedInputs) {
-                lowerSanitizedInputs.add(sanitizedInput.toLowerCase());
+                lowerSanitizedInputs.add(sanitizedInput.toLowerCase(Locale.getDefault()));
             }
         } else {
             lowerSanitizedInputs = Collections.emptyList();

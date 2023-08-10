@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ClasspathResource implements Resource {
+public final class ClasspathResource implements Resource {
 
     private final String path;
 

@@ -4,6 +4,7 @@ import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.Matcher;
 import com.nulabinc.zxcvbn.WipeableString;
 
+import java.io.Serializable;
 import java.util.*;
 
 public abstract class BaseMatcher implements Matcher {
@@ -19,17 +20,7 @@ public abstract class BaseMatcher implements Matcher {
     }
 
     protected List<Match> sorted(List<Match> matches) {
-        Collections.sort(matches, new Comparator<Match>() {
-            @Override
-            public int compare(Match o1, Match o2) {
-                int c = o1.i - o2.i;
-                if (c != 0) {
-                    return c;
-                } else {
-                    return (o1.j - o2.j);
-                }
-            }
-        });
+        Collections.sort(matches, new MatchComparator());
         return matches;
     }
 
@@ -46,6 +37,20 @@ public abstract class BaseMatcher implements Matcher {
         WipeableString result = new WipeableString(sb);
         WipeableString.wipeIfPossible(sb);
         return result;
+    }
+
+    private static class MatchComparator implements Comparator<Match>, Serializable {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public int compare(Match o1, Match o2) {
+            int c = o1.i - o2.i;
+            if (c != 0) {
+                return c;
+            } else {
+                return (o1.j - o2.j);
+            }
+        }
     }
 
 }
