@@ -2,6 +2,7 @@ package com.nulabinc.zxcvbn;
 
 import com.nulabinc.zxcvbn.matchers.Match;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Strength {
@@ -17,6 +18,7 @@ public class Strength {
     private long calcTime;
 
     public Strength() {
+        this.sequence = new ArrayList<>();
     }
 
     public CharSequence getPassword() {

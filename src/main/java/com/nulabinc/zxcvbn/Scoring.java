@@ -4,6 +4,7 @@ import com.nulabinc.zxcvbn.guesses.EstimateGuess;
 import com.nulabinc.zxcvbn.matchers.Match;
 import com.nulabinc.zxcvbn.matchers.MatchFactory;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -48,12 +49,7 @@ public class Scoring {
             matchesByJ.get(m.j).add(m);
         }
         for(List<Match> lst : matchesByJ) {
-            Collections.sort(lst, new Comparator<Match>() {
-                @Override
-                public int compare(Match m1, Match m2) {
-                    return m1.i - m2.i;
-                }
-            });
+            Collections.sort(lst, new MatchComparator());
         }
         final Optimal optimal = new Optimal(n);
         for (int k = 0; k < n; k++) {
@@ -160,6 +156,15 @@ public class Scoring {
         long f = 1;
         for (int i = 2; i <= n; i++) f *= i;
         return f;
+    }
+
+    private static class MatchComparator implements Comparator<Match>, Serializable {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public int compare(Match m1, Match m2) {
+            return m1.i - m2.i;
+        }
     }
 
     private static class Optimal {

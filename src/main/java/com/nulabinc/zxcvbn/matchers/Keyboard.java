@@ -120,7 +120,7 @@ public class Keyboard {
             final int xUnit = tokenSize + 1;
 
             for (String token : tokens) {
-                assert token.length() == tokenSize : String.format("token [%s] length mismatch:\n%s", token, layout);
+                assert token.length() == tokenSize : String.format("token [%s] length mismatch:%n%s", token, layout);
             }
 
             int y = 1;
@@ -131,7 +131,7 @@ public class Keyboard {
                     int index = line.indexOf(token) - slant;
                     int x = index / xUnit;
                     final int remainder = index % xUnit;
-                    assert remainder == 0 : String.format("unexpected x offset [%d] for %s in:\n%s", x, token, layout);
+                    assert remainder == 0 : String.format("unexpected x offset [%d] for %s in:%n%s", x, token, layout);
                     positionTable.put(Position.of(x, y), token);
                 }
 
