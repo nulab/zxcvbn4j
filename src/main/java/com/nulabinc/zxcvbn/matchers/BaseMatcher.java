@@ -24,21 +24,6 @@ public abstract class BaseMatcher implements Matcher {
         return matches;
     }
 
-    protected CharSequence translate(CharSequence string, Map<Character, Character> chrMap) {
-        List<Character> characters = new ArrayList<>();
-        for (int n = 0; n < string.length(); n++) {
-            char chr = string.charAt(n);
-            characters.add(chrMap.containsKey(chr) ? chrMap.get(chr) : chr);
-        }
-        StringBuilder sb = new StringBuilder();
-        for (char c: characters) {
-            sb.append(c);
-        }
-        WipeableString result = new WipeableString(sb);
-        WipeableString.wipeIfPossible(sb);
-        return result;
-    }
-
     private static class MatchComparator implements Comparator<Match>, Serializable {
         private static final long serialVersionUID = 1L;
 
