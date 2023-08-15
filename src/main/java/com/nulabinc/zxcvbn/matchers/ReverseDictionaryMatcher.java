@@ -25,13 +25,14 @@ public class ReverseDictionaryMatcher extends BaseMatcher {
   public List<Match> execute(CharSequence password) {
     CharSequence reversedPassword = WipeableString.reversed(password);
     List<Match> matches = new ArrayList<>();
-    for (Match match :
-        new DictionaryMatcher(this.getContext(), this.rankedDictionaries)
-            .execute(reversedPassword)) {
+    DictionaryMatcher dictionaryMatcher = new DictionaryMatcher(getContext(), rankedDictionaries);
+    for (Match match : dictionaryMatcher.execute(reversedPassword)) {
+      int reversedStartIndex = password.length() - 1 - match.j;
+      int reversedEndIndex = password.length() - 1 - match.i;
       matches.add(
           MatchFactory.createReversedDictionaryMatch(
-              password.length() - 1 - match.j,
-              password.length() - 1 - match.i,
+              reversedStartIndex,
+              reversedEndIndex,
               WipeableString.reversed(match.token),
               match.matchedWord,
               match.rank,
