@@ -49,7 +49,6 @@ public class Match {
     this.dictionaryName = builder.dictionaryName;
     this.reversed = builder.reversed;
     this.l33t = builder.l33t;
-    if (builder.sub == null) builder.sub = new HashMap<>();
     this.sub = builder.sub;
     this.subDisplay = builder.subDisplay;
     this.sequenceName = builder.sequenceName;
@@ -59,7 +58,6 @@ public class Match {
     this.regexMatch = builder.regexMatch;
     this.baseToken = builder.baseToken;
     this.baseGuesses = builder.baseGuesses;
-    if (builder.baseMatches == null) builder.baseMatches = new ArrayList<>();
     this.baseMatches = builder.baseMatches;
     this.repeatCount = builder.repeatCount;
     this.graph = builder.graph;
@@ -144,7 +142,7 @@ public class Match {
     }
 
     public Builder sub(Map<Character, Character> sub) {
-      this.sub = sub;
+      this.sub = sub == null ? new HashMap<Character, Character>() : sub;
       return this;
     }
 
@@ -189,7 +187,7 @@ public class Match {
     }
 
     public Builder baseMatches(List<Match> baseMatches) {
-      this.baseMatches = baseMatches;
+      this.baseMatches = baseMatches == null ? new ArrayList<Match>() : baseMatches;
       return this;
     }
 
