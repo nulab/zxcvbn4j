@@ -9,30 +9,29 @@ import java.util.Map;
 
 public class OmnibusMatcher extends BaseMatcher {
 
-  private final Map<String, Map<String, Integer>> dictionaryMap;
+  private final List<Matcher> matchers = new ArrayList<>();
 
   public OmnibusMatcher(Context context, Map<String, Map<String, Integer>> dictionaries) {
     super(context);
     if (dictionaries == null) {
-      this.dictionaryMap = new HashMap<>();
-    } else {
-      this.dictionaryMap = dictionaries;
+      dictionaries = new HashMap<>();
     }
+    matchers.add(new DictionaryMatcher(getContext(), dictionaries));
+    matchers.add(new ReverseDictionaryMatcher(getContext(), dictionaries));
+    matchers.add(new L33tMatcher(getContext(), dictionaries));
+    matchers.add(new SpatialMatcher(getContext()));
+    matchers.add(new RepeatMatcher(getContext()));
+    matchers.add(new SequenceMatcher(getContext()));
+    matchers.add(new RegexMatcher(getContext()));
+    matchers.add(new DateMatcher(getContext()));
   }
 
   @Override
   public List<Match> execute(CharSequence password) {
-    List<Matcher> matchers = new ArrayList<>();
-    matchers.add(new DictionaryMatcher(this.getContext(), dictionaryMap));
-    matchers.add(new ReverseDictionaryMatcher(this.getContext(), dictionaryMap));
-    matchers.add(new L33tMatcher(this.getContext(), dictionaryMap));
-    matchers.add(new SpatialMatcher(this.getContext()));
-    matchers.add(new RepeatMatcher(this.getContext()));
-    matchers.add(new SequenceMatcher(this.getContext()));
-    matchers.add(new RegexMatcher(this.getContext()));
-    matchers.add(new DateMatcher(this.getContext()));
     List<Match> matches = new ArrayList<>();
-    for (Matcher matcher : matchers) matches.addAll(matcher.execute(password));
-    return this.sorted(matches);
+    for (Matcher matcher : matchers) {
+      matches.addAll(matcher.execute(password));
+    }
+    return sorted(matches);
   }
 }
