@@ -27,7 +27,7 @@ public class SpatialGuess extends BaseGuess {
         if (match.shiftedCount > 0) {
             int shiftedCount = match.shiftedCount;
             int unshiftedCount = match.tokenLength() - match.shiftedCount;
-            if (unshiftedCount == 0) {
+            if (shiftedCount == 0 || unshiftedCount == 0) {
                 guesses *= 2;
             } else {
                 int shiftedVariations = 0;

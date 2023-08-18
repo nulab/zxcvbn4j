@@ -40,7 +40,8 @@ public class JavaPortTest {
         } else {
             jsScore = (int) score;
         }
-        int javaScore = zxcvbn.measure(password).getScore();
+        Strength strength = zxcvbn.measure(password);
+        int javaScore = strength.getScore();
         Assert.assertEquals("Password score difference for " + password, jsScore, javaScore);
     }
 
@@ -85,6 +86,10 @@ public class JavaPortTest {
                 {"61526611441"},
                 {"0078690420729"},
                 {"zhang198822"},
+                {"Sigma@123"},
+                {"password@123"},
+                {"lkjhgfdsa"},
+                {"hGFd"},
                 //the following password fails in version 4.4.1
                 //https://github.com/dropbox/zxcvbn/issues/174
 //                {"Rh&pW%EXT=/Z1lzouG.wU_+2MT+FG4sm+&jqN?L25jDtjW3EQuppfvD_30Vo3K=SX4=z3-U2gVf7A0oSM5oWegRa_sV$-GLI3LzCo&@!h@$v#OkoN#@-eS8Y&W$pGmmVXc#XHAv?n$M+_wQx1FAB_*iaZE1_9ZV.cwn-d@+90B8z0bVOKc63lV9QntW0kryN7Y#rjv@0+Bd8hc-3WW_Yn%z5/DE?R*UeiKgR#$/F8kA9I!Ib*GDa.x0T7UWCCxDV&ithebyz$=7vW6TdmlmL%WZxmA7K%*Rg1035UO%WOTIgiMs4AjpmL1"}

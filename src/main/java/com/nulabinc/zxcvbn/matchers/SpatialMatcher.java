@@ -48,7 +48,7 @@ public class SpatialMatcher extends BaseMatcher {
   private int processSpatialMatch(
       CharSequence password, Keyboard keyboard, List<Match> matches, int curCharIndex) {
     int nextCharIndex = curCharIndex + 1;
-    int lastDirection = 0;
+    Integer lastDirection = null;
     int turns = 0;
     int shiftedCount = calculateShiftedCount(keyboard, password.charAt(curCharIndex));
     final Map<Character, List<String>> graph = keyboard.getAdjacencyGraph();
@@ -59,7 +59,9 @@ public class SpatialMatcher extends BaseMatcher {
       if (result.found) {
         nextCharIndex++;
         shiftedCount += result.shiftedCount;
-        if (lastDirection != result.foundDirection) {
+        if (lastDirection == null || lastDirection != result.foundDirection) {
+          // adding a turn is correct even in the initial case when last_direction is null:
+          // every spatial pattern starts with a turn.
           turns++;
           lastDirection = result.foundDirection;
         }
