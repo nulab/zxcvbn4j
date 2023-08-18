@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.8.1](https://github.com/nulab/zxcvbn4j/compare/1.8.0...1.8.1) (2023-08-18)
+
+* fix: improved SpatialMatcher decision logic (#84) (#129) [#147](https://github.com/nulab/zxcvbn4j/pull/147) ([vvatanabe](https://github.com/vvatanabe))
+* refactor: refactoring matchers.ReverseDictionaryMatcher [#146](https://github.com/nulab/zxcvbn4j/pull/146) ([vvatanabe](https://github.com/vvatanabe))
+* style: format code in matchers.RepeatMatcher [#145](https://github.com/nulab/zxcvbn4j/pull/145) ([vvatanabe](https://github.com/vvatanabe))
+* refactor: refactoring matchers.DateMatcher [#144](https://github.com/nulab/zxcvbn4j/pull/144) ([vvatanabe](https://github.com/vvatanabe))
+* refactor: refactoring matchers.RegexMatcher [#143](https://github.com/nulab/zxcvbn4j/pull/143) ([vvatanabe](https://github.com/vvatanabe))
+* refactor: refactoring matchers.DictionaryMatcher [#142](https://github.com/nulab/zxcvbn4j/pull/142) ([vvatanabe](https://github.com/vvatanabe))
+* refactor: refactoring matchers.L33tMatcher [#141](https://github.com/nulab/zxcvbn4j/pull/141) ([vvatanabe](https://github.com/vvatanabe))
+* refactor: refactoring matchers.SequenceMatcher [#140](https://github.com/nulab/zxcvbn4j/pull/140) ([vvatanabe](https://github.com/vvatanabe))
+* fix: fix the warnings from SpotBugs [#139](https://github.com/nulab/zxcvbn4j/pull/139) ([vvatanabe](https://github.com/vvatanabe))
+* refactor: refactoring matchers.SpatialMatcher [#138](https://github.com/nulab/zxcvbn4j/pull/138) ([vvatanabe](https://github.com/vvatanabe))
+* refactor: refactoring matchers.RepeatMatcher [#137](https://github.com/nulab/zxcvbn4j/pull/137) ([vvatanabe](https://github.com/vvatanabe))
+
 ## [1.8.0](https://github.com/nulab/zxcvbn4j/compare/1.7.0...1.8.0) (2023-04-29)
 
 * Added feedback messages translated into Spanish [#135](https://github.com/nulab/zxcvbn4j/pull/135) ([manchilop](https://github.com/manchilop))

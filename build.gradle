@@ -9,7 +9,7 @@ plugins {
 }
 
 group = 'com.nulab-inc'
-version = '1.8.0'
+version = '1.8.1'
 archivesBaseName = 'zxcvbn'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
@@ -36,6 +36,10 @@ spotbugs {
     ignoreFailures = false
     effort = 'max'
     reportLevel = 'high'
+}
+
+spotbugsTest {
+    enabled = false
 }
 
 spotbugsMain {
