@@ -1,103 +1,60 @@
 
 # zxcvbn4j [![Build](https://github.com/nulab/zxcvbn4j/actions/workflows/build.yml/badge.svg)](https://github.com/nulab/zxcvbn4j/actions/workflows/build.yml) [![Coverage Status](https://coveralls.io/repos/nulab/zxcvbn4j/badge.svg?branch=master&service=github)](https://coveralls.io/github/nulab/zxcvbn4j?branch=master) [![Maven Central](https://img.shields.io/maven-central/v/com.nulab-inc/zxcvbn.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.nulab-inc%22%20AND%20a:%22zxcvbn%22)
 
-This is a java port of [zxcvbn](https://github.com/dropbox/zxcvbn), which is a password strength estimator inspired by password crackers written on JavaScript.
-Through pattern matching and conservative estimation, it recognizes and weighs 30k common passwords, common names and surnames according to US census data, popular English words from Wikipedia and US television and movies, and other common patterns like dates, repeats (`aaa`), sequences (`abcd`), keyboard patterns (`qwertyuiop`), and l33t speak.
+This is a Java version of [zxcvbn](https://github.com/dropbox/zxcvbn), a password strength estimator originally written in JavaScript and inspired by password cracking tools. It uses pattern matching and conservative estimation to assess the strength of passwords. It can identify and evaluate the strength of over 30,000 common passwords, as well as common names and surnames based on US census data. It also recognizes popular English words from Wikipedia, US television shows, and movies. Additionally, it can detect other common password patterns such as dates, repeated characters (`aaa`), sequences (`abcd`), keyboard patterns (`qwertyuiop`), and l33t speak.
 
 **Related articles:**
 
 - [Five Algorithms to Measure Real Password Strength](https://nulab-inc.com/blog/nulab/password-strength/)
 
-## Table Contents
+## Table of Contents
 
-* [Update](#update)
+* [Mapping Original to Ported Versions](#mapping-original-to-ported-versions)
 * [Special Features](#special-features)
-  + [Customize internal dictionaries and keyboards](#customize-internal-dictionaries-and-keyboards)
-  + [Localize feedback messages](#localize-feedback-messages)
-  + [JIS keyboard layout](#jis-keyboard-layout)
-  + [Support some languages by default](#support-some-languages-by-default)
-  + [Password args accept CharSequence as well as String](#password-args-accept-charsequence-as-well-as-string)
+  * [Customize Internal Dictionaries and Keyboards](#customize-internal-dictionaries-and-keyboards)
+  * [Localize Feedback Messages](#localize-feedback-messages)
+  * [Default Language Support](#default-language-support)
+  * [JIS Keyboard Layout Support](#jis-keyboard-layout-support)
+  * [Accepting Passwords as CharSequence or String](#accepting-passwords-as-charsequence-or-string)
 * [Install](#install)
 * [Development](#development)
 * [Usage](#usage)
-  + [Basic](#basic)
-  + [Strength Properties](#strength-properties)
-  + [Customize internal dictionaries and keyboards](#customize-internal-dictionaries-and-keyboards-1)
-    - [Use resources on the classpath](#use-resources-on-the-classpath)
-    - [Use resources get via HTTP](#using-resources-get-via-http)
-    - [Use file resources other than classpath](#use-file-resources-other-than-classpath)
-    - [Use all default resources](#use-all-default-resources)
-    - [Select from and use default resources](#select-from-and-use-default-resources)
-  + [Localize feedback messages](#localize-feedback-messages-1)
-    - [Localize each feedback](#localize-each-feedback)
-    - [Localize each locale](#localize-each-locale)
+  * [Basic](#basic)
+  * [Strength Properties](#strength-properties)
+  * [Customize internal dictionaries and keyboards](#customize-internal-dictionaries-and-keyboards-1)
+    * [Use resources on the classpath](#use-resources-on-the-classpath)
+    * [Use resources get via HTTP](#use-resources-get-via-http)
+    * [Use file resources other than classpath](#use-file-resources-other-than-classpath)
+    * [Use all default resources](#use-all-default-resources)
+    * [Select from and use default resources](#select-from-and-use-default-resources)
+  * [Localize feedback messages](#localize-feedback-messages-1)
+    * [Localize each feedback](#localize-each-feedback)
+    * [Localize each locale](#localize-each-locale)
 * [Requires Java](#requires-java)
 * [Using this library](#using-this-library)
 * [Bugs and Feedback](#bugs-and-feedback)
 * [License](#license)
 
-## Update
+## Mapping Original to Ported Versions
 
-The following version is a port of [zxcvbn 4.4.2](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.2)
-
-* 2023/08/18 1.8.1 released.
-* 2023/07/04 1.8.0 released.
-* 2022/04/13 1.7.0 released.
-* 2022/04/05 1.6.0 released.
-* 2021/06/08 1.5.2 released.
-* 2021/06/05 1.5.1 released.
-* 2021/04/26 1.5.0 released.
-* 2021/03/22 1.4.1 released.
-* 2021/02/19 1.4.0 released.
-* 2021/02/09 1.3.6 released.
-* 2021/02/02 1.3.5 released.
-* 2021/01/26 1.3.4 released.
-* 2021/01/21 1.3.3 released.
-* 2021/01/19 1.3.2 released.
-* 2020/10/28 1.3.1 released.
-* 2019/10/19 1.3.0 released.
-* 2019/07/23 1.2.7 released.
-* 2019/07/16 1.2.6 released.
-* 2018/03/30 1.2.5 released.
-* 2018/02/27 1.2.4 released.
-* 2017/03/27 1.2.3 released.
-
-The following version is a port of [zxcvbn 4.4.1](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.1)
-
-* 2016/12/07 1.2.2 released.
-* 2016/12/03 1.2.1 released.
-
-The following version is a port of [zxcvbn 4.4.0](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.0)
-
-* 2016/10/29 1.2.0 released.
-
-The following version is a port of [zxcvbn 4.3.0](https://github.com/dropbox/zxcvbn/releases/tag/4.3.0)
-
-* 2016/10/01 1.1.6 released.
-* 2016/09/27 1.1.5 released.
-* 2016/07/08 1.1.4 released.
-* 2016/05/27 1.1.3 released.
-* 2016/05/25 1.1.2 released.
-* 2016/03/19 1.1.1 released.
-* 2016/03/06 1.1.0 released.
-
-The following version is a port of [zxcvbn 4.2.0](https://github.com/dropbox/zxcvbn/releases/tag/4.2.0)
-
-* 2016/01/28 1.0.2 released.
-* 2016/01/27 1.0.1 released.
-* 2015/12/24 1.0.0 released.
+| Ported Version | Original [zxcvbn](https://github.com/dropbox/zxcvbn/releases) Version |
+|----------------|-----------------------------------------------------------------------|
+| 1.2.3 - latest | [4.4.2](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.2)        |
+| 1.2.1 - 1.2.2  | [4.4.1](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.1)        |
+| 1.1.0 - 1.2.0  | [4.4.0](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.0)        |
+| 1.0.0 - 1.0.2  | [4.2.0](https://github.com/dropbox/zxcvbn/releases/tag/4.2.0)         |
 
 ## Special Features
 
-### Customize internal dictionaries and keyboards
+### Customize Internal Dictionaries and Keyboards
 
-* Customize the dictionary and keyboard layout used by the measurement algorithm.
+* You can customize the dictionary and keyboard layout used by the measurement algorithm to better suit your specific needs.
 
-### Localize feedback messages
+### Localize Feedback Messages
 
-* The zxcvbn4j can be localized the english feedback message to other languages.
+* zxcvbn4j allows you to localize the default English feedback messages into other languages.
 
-### Support some languages by default
+### Default Language Support
 
 - English ([default](./src/main/resources/com/nulabinc/zxcvbn/messages.properties))
 - Japanese ([ja](./src/main/resources/com/nulabinc/zxcvbn/messages_ja.properties))
@@ -107,18 +64,18 @@ The following version is a port of [zxcvbn 4.2.0](https://github.com/dropbox/zxc
 - Italian ([it](./src/main/resources/com/nulabinc/zxcvbn/messages_it.properties))
 - Spanish ([es](./src/main/resources/com/nulabinc/zxcvbn/messages_es.properties))
 
-### JIS keyboard layout
+### JIS Keyboard Layout Support
 
-* It includes JIS keyboard layout in spatial matching.
+* zxcvbn4j includes support for the JIS keyboard layout in spatial matching.
 
-### Password args accept CharSequence as well as String
+### Accepting Passwords as CharSequence or String
 
-* This gives a lot more flexibility in what format the password can be in.
-* Also attempts to avoid using Strings for any sensitive intermediate objects.
+* This feature provides greater flexibility in the format of the password input.
+* It also aims to avoid using Strings for any sensitive intermediate objects, enhancing security.
 
 ## Install
 
-https://mvnrepository.com/artifact/com.nulab-inc/zxcvbn/1.8.1
+https://central.sonatype.com/artifact/com.nulab-inc/zxcvbn/1.8.1
 
 Gradle:
 
