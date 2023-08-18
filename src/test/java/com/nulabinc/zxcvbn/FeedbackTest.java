@@ -134,9 +134,9 @@ public class FeedbackTest {
                         Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
                         Feedback.SPATIAL_SUGGESTIONS_USE_LONGER_KEYBOARD_PATTERN
                 }},
-                {"lkjhgfdsa", Feedback.SPATIAL_WARNING_SHORT_KEYBOARD_PATTERNS, new String[]{
+                {"lkjhgfdsa", Feedback.DICTIONARY_WARNING_PASSWORDS_SIMILAR, new String[]{
                         Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
-                        Feedback.SPATIAL_SUGGESTIONS_USE_LONGER_KEYBOARD_PATTERN
+                        Feedback.DICTIONARY_SUGGESTIONS_REVERSED
                 }},
                 {"justshort", "", new String[]{
                         Feedback.EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD
