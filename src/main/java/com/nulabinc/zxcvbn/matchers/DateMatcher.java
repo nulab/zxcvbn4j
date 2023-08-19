@@ -33,7 +33,8 @@ public class DateMatcher extends BaseMatcher {
   private static final int[][][] DATE_SPLITS = new int[9][][];
   private static final Pattern MAYBE_DATE_NO_SEPARATOR = Pattern.compile("^\\d{4,8}$");
   private static final Pattern MAYBE_DATE_WITH_SEPARATOR =
-      Pattern.compile("^"
+      Pattern.compile(
+          "^"
               +
               // day, month, year
               "(\\d{1,4})"

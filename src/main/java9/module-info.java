@@ -1,4 +1,4 @@
 module com.nulabinc.zxcvbn {
-    exports com.nulabinc.zxcvbn;
-    exports com.nulabinc.zxcvbn.matchers;
+  exports com.nulabinc.zxcvbn;
+  exports com.nulabinc.zxcvbn.matchers;
 }
