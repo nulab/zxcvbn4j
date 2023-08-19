@@ -4,13 +4,12 @@ import com.nulabinc.zxcvbn.io.Resource;
 
 public class AlignedKeyboardLoader extends KeyboardLoader {
 
-    public AlignedKeyboardLoader(final String name, final Resource inputStreamSource) {
-        super(name, inputStreamSource);
-    }
+  public AlignedKeyboardLoader(final String name, final Resource inputStreamSource) {
+    super(name, inputStreamSource);
+  }
 
-    @Override
-    protected Keyboard.AdjacentGraphBuilder buildAdjacentGraphBuilder(final String layout) {
-        return new AlignedAdjacentGraphBuilder(layout);
-    }
-
+  @Override
+  protected Keyboard.AdjacentGraphBuilder buildAdjacentGraphBuilder(final String layout) {
+    return new AlignedAdjacentGraphBuilder(layout);
+  }
 }

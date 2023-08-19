@@ -5,12 +5,12 @@ import com.nulabinc.zxcvbn.matchers.Match;
 
 public class RepeatGuess extends BaseGuess {
 
-    public RepeatGuess(final Context context) {
-        super(context);
-    }
+  public RepeatGuess(final Context context) {
+    super(context);
+  }
 
-    @Override
-    public double exec(Match match) {
-        return match.baseGuesses * match.repeatCount;
-    }
+  @Override
+  public double exec(Match match) {
+    return match.baseGuesses * match.repeatCount;
+  }
 }
