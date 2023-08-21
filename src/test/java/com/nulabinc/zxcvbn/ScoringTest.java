@@ -398,4 +398,52 @@ public class ScoringTest {
           0.0);
     }
   }
+
+  @RunWith(Parameterized.class)
+  public static class DateGuessTest {
+
+    private final String token;
+    private final int i;
+    private final int j;
+    private final String separator;
+    private final int year;
+    private final int month;
+    private final int day;
+    private final double expectedGuesses;
+
+    public DateGuessTest(
+        String token,
+        int i,
+        int j,
+        String separator,
+        int year,
+        int month,
+        int day,
+        double expectedGuesses) {
+      this.token = token;
+      this.i = i;
+      this.j = j;
+      this.separator = separator;
+      this.year = year;
+      this.month = month;
+      this.day = day;
+      this.expectedGuesses = expectedGuesses;
+    }
+
+    @Test
+    public void testDateGuess() throws Exception {
+      Context context = StandardContext.build();
+      Match match = MatchFactory.createDateMatch(i, j, token, separator, year, month, day);
+      String msg = String.format("the date pattern '%s' has guesses of %s", token, expectedGuesses);
+      assertEquals(msg, expectedGuesses, new DateGuess(context).exec(match), 0.0);
+    }
+
+    @Parameterized.Parameters(name = "{0}")
+    public static Collection<Object[]> data() {
+      return Arrays.asList(
+          new Object[][] {
+            {"23525", 0, 4, "", 2025, 5, 23, 7300.0},
+          });
+    }
+  }
 }
