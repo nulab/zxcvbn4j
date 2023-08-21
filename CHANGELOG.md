@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.2](https://github.com/nulab/zxcvbn4j/compare/1.8.1...1.8.2) (2023-08-21)
+
+* fix: fix the discrepancy in password guesses between zxcvbn and zxcvbn4j [#151](https://github.com/nulab/zxcvbn4j/pull/151) ([vvatanabe](https://github.com/vvatanabe))
+* style: format all with google-java-format [#150](https://github.com/nulab/zxcvbn4j/pull/150) ([vvatanabe](https://github.com/vvatanabe))
+* refactor: refactoring matchers.Match [#149](https://github.com/nulab/zxcvbn4j/pull/149) ([vvatanabe](https://github.com/vvatanabe))
+* refactor: refactoring matchers.OmnibusMatcher [#148](https://github.com/nulab/zxcvbn4j/pull/148) ([vvatanabe](https://github.com/vvatanabe))
+
 ## [1.8.1](https://github.com/nulab/zxcvbn4j/compare/1.8.0...1.8.1) (2023-08-18)
 
 * fix: improved SpatialMatcher decision logic (#84) (#129) [#147](https://github.com/nulab/zxcvbn4j/pull/147) ([vvatanabe](https://github.com/vvatanabe))

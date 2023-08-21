@@ -37,54 +37,12 @@ zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxc
 
 ## 更新
 
-以下のバージョンは[zxcvbn 4.4.2](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.2)をポーティング
-
-* 2023/08/18 1.8.1 リリース.
-* 2023/07/04 1.8.0 リリース.
-* 2022/04/13 1.7.0 リリース.
-* 2022/04/05 1.6.0 リリース.
-* 2021/06/08 1.5.2 リリース.
-* 2021/06/05 1.5.1 リリース.
-* 2021/04/26 1.5.0 リリース.
-* 2021/03/22 1.4.1 リリース.
-* 2021/02/19 1.4.0 リリース.
-* 2021/02/09 1.3.6 リリース.
-* 2021/02/02 1.3.5 リリース.
-* 2021/01/26 1.3.4 リリース.
-* 2021/01/19 1.3.3 リリース.
-* 2021/01/19 1.3.2 リリース.
-* 2020/10/28 1.3.1 リリース.
-* 2019/10/19 1.3.0 リリース.
-* 2019/07/23 1.2.7 リリース.
-* 2019/07/16 1.2.6 リリース.
-* 2018/03/30 1.2.5 リリース.
-* 2018/02/27 1.2.4 リリース.
-* 2017/03/27 1.2.3 リリース.
-
-以下のバージョンは[zxcvbn 4.4.1](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.1)をポーティング
-
-* 2016/12/07 1.2.2 リリース.
-* 2016/12/03 1.2.1 リリース.
-
-以下のバージョンは[zxcvbn 4.4.0](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.0)をポーティング
-
-* 2016/10/29 1.2.0 リリース.
-
-以下のバージョンは[zxcvbn 4.3.0](https://github.com/dropbox/zxcvbn/releases/tag/4.3.0)をポーティング
-
-* 2016/10/01 1.1.6 リリース.
-* 2016/09/27 1.1.5 リリース.
-* 2016/07/08 1.1.4 リリース.
-* 2016/05/27 1.1.3 リリース.
-* 2016/05/25 1.1.2 リリース.
-* 2016/03/19 1.1.1 リリース.
-* 2016/03/06 1.1.0 リリース.
-
-以下のバージョンは[zxcvbn 4.2.0](https://github.com/dropbox/zxcvbn/releases/tag/4.2.0)をポーティング
-
-* 2016/01/28 1.0.2 リリース.
-* 2016/01/27 1.0.1 リリース.
-* 2015/12/24 1.0.0 リリース.
+| Ported Version | Original [zxcvbn](https://github.com/dropbox/zxcvbn/releases) Version |
+|----------------|-----------------------------------------------------------------------|
+| 1.2.3 - latest | [4.4.2](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.2)        |
+| 1.2.1 - 1.2.2  | [4.4.1](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.1)        |
+| 1.1.0 - 1.2.0  | [4.4.0](https://github.com/dropbox/zxcvbn/releases/tag/v4.4.0)        |
+| 1.0.0 - 1.0.2  | [4.2.0](https://github.com/dropbox/zxcvbn/releases/tag/4.2.0)         |
 
 ## 特別な機能
 
@@ -118,12 +76,12 @@ zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxc
 
 ## インストール
 
-https://mvnrepository.com/artifact/com.nulab-inc/zxcvbn/1.8.1
+https://mvnrepository.com/artifact/com.nulab-inc/zxcvbn/1.8.2
 
 Gradle:
 
 ```
-compile 'com.nulab-inc:zxcvbn:1.8.1'
+compile 'com.nulab-inc:zxcvbn:1.8.2'
 ```
 
 Maven:
@@ -132,7 +90,7 @@ Maven:
 <dependency>
   <groupId>com.nulab-inc</groupId>
   <artifactId>zxcvbn</artifactId>
-  <version>1.8.1</version>
+  <version>1.8.2</version>
 </dependency>
 ```
 
