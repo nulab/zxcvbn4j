@@ -259,12 +259,13 @@ public class DateMatcher extends BaseMatcher {
     if (over31 >= 2 || over12 == 3 || under1 >= 2) {
       return null;
     }
-    Map<Integer, int[]> possibleYearSplits = new HashMap<>();
-    possibleYearSplits.put(ints[2], Arrays.copyOfRange(ints, 0, 1 + 1));
-    possibleYearSplits.put(ints[0], Arrays.copyOfRange(ints, 1, 2 + 1));
-    for (Map.Entry<Integer, int[]> possibleYearSplitRef : possibleYearSplits.entrySet()) {
-      int y = possibleYearSplitRef.getKey();
-      int[] rest = possibleYearSplitRef.getValue();
+    int[][] possibleYearSplits = {
+      {ints[2], ints[0], ints[1]},
+      {ints[0], ints[1], ints[2]}
+    };
+    for (int[] split : possibleYearSplits) {
+      int y = split[0];
+      int[] rest = new int[] {split[1], split[2]};
       if (DATE_MIN_YEAR <= y && y <= DATE_MAX_YEAR) {
         Dm dm = mapIntsToDm(rest);
         if (dm != null) {
@@ -274,12 +275,11 @@ public class DateMatcher extends BaseMatcher {
         }
       }
     }
-    for (Map.Entry<Integer, int[]> possibleYearSplitRef : possibleYearSplits.entrySet()) {
-      int y = possibleYearSplitRef.getKey();
-      int[] rest = possibleYearSplitRef.getValue();
+    for (int[] split : possibleYearSplits) {
+      int[] rest = new int[] {split[1], split[2]};
       Dm dm = mapIntsToDm(rest);
       if (dm != null) {
-        y = twoToFourDigitYear(y);
+        int y = twoToFourDigitYear(split[0]);
         return new Dmy(dm.day, dm.month, y);
       }
     }

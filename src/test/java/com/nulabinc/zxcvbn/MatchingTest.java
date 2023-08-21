@@ -437,6 +437,13 @@ public class MatchingTest {
             new ExpectedMatch("111504").separator("").year(2004).month(11).day(15)
           });
 
+      data.add(
+          new Object[] {
+            "23525",
+            "matches as 23/5/2025, not 25/5/2023",
+            new ExpectedMatch("23525").separator("").year(2025).month(5).day(23)
+          });
+
       return data;
     }
   }

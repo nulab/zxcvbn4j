@@ -92,6 +92,8 @@ public class JavaPortTest {
           {"password@123"},
           {"lkjhgfdsa"},
           {"hGFd"},
+          {"2352523452bd dhf"},
+          {"23525"},
           // the following password fails in version 4.4.1
           // https://github.com/dropbox/zxcvbn/issues/174
           //
