@@ -13,30 +13,45 @@ public class SpatialGuess extends BaseGuess {
   @Override
   public double exec(Match match) {
     Keyboard keyboard = this.getContext().getKeyboardMap().get(match.graph);
-    int s = keyboard.getStartingPositions();
-    double d = keyboard.getAverageDegree();
+    int startingPositions = keyboard.getStartingPositions();
+    double averageDegree = keyboard.getAverageDegree();
+
+    double totalGuesses = calculateBaseGuesses(match, startingPositions, averageDegree);
+    totalGuesses *= calculateShiftedVariations(match);
+
+    return totalGuesses;
+  }
+
+  private double calculateBaseGuesses(Match match, int startingPositions, double averageDegree) {
     double guesses = 0;
-    int l = match.tokenLength();
-    int t = match.turns;
-    for (int i = 2; i <= l; i++) {
-      int possibleTurns = Math.min(t, i - 1);
+    int tokenLength = match.tokenLength();
+    int turns = match.turns;
+
+    for (int i = 2; i <= tokenLength; i++) {
+      int possibleTurns = Math.min(turns, i - 1);
       for (int j = 1; j <= possibleTurns; j++) {
-        guesses += nCk(i - 1, j - 1) * s * Math.pow(d, j);
-      }
-    }
-    if (match.shiftedCount > 0) {
-      int shiftedCount = match.shiftedCount;
-      int unshiftedCount = match.tokenLength() - match.shiftedCount;
-      if (shiftedCount == 0 || unshiftedCount == 0) {
-        guesses *= 2;
-      } else {
-        int shiftedVariations = 0;
-        for (int i = 1; i <= Math.min(shiftedCount, unshiftedCount); i++) {
-          shiftedVariations += nCk(shiftedCount + unshiftedCount, i);
-        }
-        guesses *= shiftedVariations;
+        guesses += nCk(i - 1, j - 1) * startingPositions * Math.pow(averageDegree, j);
       }
     }
     return guesses;
+  }
+
+  private double calculateShiftedVariations(Match match) {
+    int shiftedCount = match.shiftedCount;
+    if (shiftedCount == 0) {
+      return 1;
+    }
+
+    int unshiftedCount = match.tokenLength() - shiftedCount;
+    if (unshiftedCount == 0) {
+      return 2;
+    }
+
+    int shiftedVariations = 0;
+    int minCount = Math.min(shiftedCount, unshiftedCount);
+    for (int i = 1; i <= minCount; i++) {
+      shiftedVariations += nCk(shiftedCount + unshiftedCount, i);
+    }
+    return shiftedVariations;
   }
 }
