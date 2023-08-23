@@ -19,6 +19,8 @@ public class RegexGuess extends BaseGuess {
     CHAR_CLASS_BASES.put("symbols", 33);
   }
 
+  private static final String RECENT_YEAR = "recent_year";
+
   protected RegexGuess(final Context context) {
     super(context);
   }
@@ -26,22 +28,28 @@ public class RegexGuess extends BaseGuess {
   @Override
   public double exec(Match match) {
     if (CHAR_CLASS_BASES.containsKey(match.regexName)) {
-      return Math.pow(CHAR_CLASS_BASES.get(match.regexName), match.tokenLength());
-    } else if ("recent_year".equals(match.regexName)) {
-      double yearSpace = Math.abs(parseInt(match.token) - REFERENCE_YEAR);
-      yearSpace = Math.max(yearSpace, MIN_YEAR_SPACE);
-      return yearSpace;
+      return calculateCharClassGuesses(match);
+    }
+    if (RECENT_YEAR.equals(match.regexName)) {
+      return calculateYearSpace(match.token);
     }
     return 0;
   }
 
+  private double calculateCharClassGuesses(Match match) {
+    return Math.pow(CHAR_CLASS_BASES.get(match.regexName), match.tokenLength());
+  }
+
+  private double calculateYearSpace(CharSequence token) {
+    double yearSpace = Math.abs(parseInt(token) - REFERENCE_YEAR);
+    return Math.max(yearSpace, MIN_YEAR_SPACE);
+  }
+
   private static int parseInt(CharSequence s) {
-    int result = 0;
     try {
-      result = WipeableString.parseInt(s);
+      return WipeableString.parseInt(s);
     } catch (NumberFormatException e) {
-      // ignore
+      return 0;
     }
-    return result;
   }
 }
