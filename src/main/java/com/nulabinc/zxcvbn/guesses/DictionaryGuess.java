@@ -27,45 +27,61 @@ public class DictionaryGuess extends BaseGuess {
   }
 
   public int uppercaseVariations(Match match) {
-    CharSequence word = match.token;
-    WipeableString lowercaseWord = WipeableString.lowerCase(word);
-    if (ALL_LOWER.matcher(word).find(0) || lowercaseWord.equals(word)) return 1;
-    for (Pattern pattern : new Pattern[] {START_UPPER, END_UPPER, ALL_UPPER})
-      if (pattern.matcher(word).find()) return 2;
-    int u = 0;
-    int l = 0;
-    for (int n = 0; n < word.length(); n++) {
-      l += Character.isLowerCase(word.charAt(n)) ? 1 : 0;
-      u += Character.isUpperCase(word.charAt(n)) ? 1 : 0;
+    CharSequence token = match.token;
+    WipeableString lowercaseToken = WipeableString.lowerCase(token);
+    if (ALL_LOWER.matcher(token).find(0) || lowercaseToken.equals(token)) {
+      return 1;
+    }
+    if (START_UPPER.matcher(token).find()
+        || END_UPPER.matcher(token).find()
+        || ALL_UPPER.matcher(token).find()) {
+      return 2;
+    }
+
+    int upperCount = 0;
+    int lowerCount = 0;
+    for (int i = 0; i < token.length(); i++) {
+      lowerCount += Character.isLowerCase(token.charAt(i)) ? 1 : 0;
+      upperCount += Character.isUpperCase(token.charAt(i)) ? 1 : 0;
     }
     int variations = 0;
-    for (int i = 1; i <= Math.min(u, l); i++) variations += nCk(u + l, i);
-    lowercaseWord.wipe();
+    for (int i = 1; i <= Math.min(upperCount, lowerCount); i++) {
+      variations += nCk(upperCount + lowerCount, i);
+    }
+    lowercaseToken.wipe();
     return variations;
   }
 
   public int l33tVariations(Match match) {
-    if (!match.l33t) return 1;
-    int variations = 1;
-    for (Map.Entry<Character, Character> subRef : match.sub.entrySet()) {
-      Character subbed = subRef.getKey();
-      Character unsubbed = subRef.getValue();
-      int s = 0;
-      int u = 0;
-      WipeableString lower = WipeableString.lowerCase(match.token);
-      for (char chr : lower.charArray()) {
-        if (chr == subbed) s++;
-        if (chr == unsubbed) u++;
+    if (!match.l33t) {
+      return 1;
+    }
+    int totalVariations = 1;
+    WipeableString lowercaseToken = WipeableString.lowerCase(match.token);
+    for (Map.Entry<Character, Character> substitution : match.sub.entrySet()) {
+      Character substitutedChar = substitution.getKey();
+      Character originalChar = substitution.getValue();
+      int substitutedCount = 0;
+      int originalCount = 0;
+      for (char currentChar : lowercaseToken.charArray()) {
+        if (currentChar == substitutedChar) {
+          substitutedCount++;
+        }
+        if (currentChar == originalChar) {
+          originalCount++;
+        }
       }
-      if (s == 0 || u == 0) {
-        variations *= 2;
+      if (substitutedCount == 0 || originalCount == 0) {
+        totalVariations *= 2;
       } else {
-        int p = Math.min(u, s);
-        int possibilities = 0;
-        for (int i = 1; i <= p; i++) possibilities += nCk(u + s, i);
-        variations *= possibilities;
+        int minCount = Math.min(originalCount, substitutedCount);
+        int possibleCombinations = 0;
+        for (int i = 1; i <= minCount; i++) {
+          possibleCombinations += nCk(originalCount + substitutedCount, i);
+        }
+        totalVariations *= possibleCombinations;
       }
     }
-    return variations;
+    return totalVariations;
   }
 }
