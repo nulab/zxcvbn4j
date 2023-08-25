@@ -3,7 +3,9 @@ package com.nulabinc.zxcvbn.matchers;
 import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.Matcher;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public abstract class BaseMatcher implements Matcher {
 

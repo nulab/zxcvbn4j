@@ -152,7 +152,8 @@ public class WipeableString implements CharSequence {
 
     int result = 0;
     boolean negative = false;
-    int i = 0, len = s.length();
+    int i = 0;
+    int len = s.length();
     int limit = -Integer.MAX_VALUE;
     int multmin;
     int digit;
@@ -163,11 +164,12 @@ public class WipeableString implements CharSequence {
         if (firstChar == '-') {
           negative = true;
           limit = Integer.MIN_VALUE;
-        } else if (firstChar != '+')
+        } else if (firstChar != '+') {
           throw new NumberFormatException("For input string: \"" + s + "\"");
-
-        if (len == 1) // Cannot have lone "+" or "-"
-        throw new NumberFormatException("For input string: \"" + s + "\"");
+        }
+        if (len == 1) { // Cannot have lone "+" or "-"
+          throw new NumberFormatException("For input string: \"" + s + "\"");
+        }
         i++;
       }
       multmin = limit / radix;
@@ -202,7 +204,7 @@ public class WipeableString implements CharSequence {
     // Reproduce the same hash as String
     int h = hash;
     if (h == 0 && content.length > 0) {
-      char val[] = content;
+      char[] val = content;
 
       for (int i = 0; i < content.length; i++) {
         h = 31 * h + val[i];
@@ -243,7 +245,9 @@ public class WipeableString implements CharSequence {
    * not readOnly)
    */
   public static void wipeIfPossible(CharSequence text) {
-    if (text == null) return;
+    if (text == null) {
+      return;
+    }
     if (text instanceof WipeableString) {
       ((WipeableString) text).wipe();
     } else if (text instanceof StringBuilder) {
