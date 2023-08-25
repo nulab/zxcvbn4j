@@ -1,9 +1,7 @@
 package com.nulabinc.zxcvbn;
 
-import com.nulabinc.zxcvbn.guesses.DictionaryGuess;
 import com.nulabinc.zxcvbn.matchers.Match;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -68,7 +66,7 @@ public class Feedback {
   private final String warning;
   private final String[] suggestions;
 
-  private Feedback(String warning, String... suggestions) {
+  Feedback(String warning, String... suggestions) {
     this.warning = warning;
     this.suggestions = suggestions;
   }
@@ -101,10 +99,11 @@ public class Feedback {
   protected ResourceBundle resolveResourceBundle(Locale locale) {
     try {
       return ResourceBundle.getBundle(DEFAULT_BUNDLE_NAME, locale, CONTROL);
-    } catch (MissingResourceException e) {
+    } catch (MissingResourceException | UnsupportedOperationException e) {
+      // MissingResourceException:
       // Fix for issue of Android refs: https://github.com/nulab/zxcvbn4j/issues/21
-      return ResourceBundle.getBundle(DEFAULT_BUNDLE_NAME, locale);
-    } catch (UnsupportedOperationException e) {
+      //
+      // UnsupportedOperationException:
       // Fix for issue of JDK 9 refs: https://github.com/nulab/zxcvbn4j/issues/45
       // ResourceBundle.Control is not supported in named modules.
       // See https://docs.oracle.com/javase/9/docs/api/java/util/ResourceBundle.html#bundleprovider
@@ -127,113 +126,26 @@ public class Feedback {
 
   static Feedback getFeedback(int score, List<Match> sequence) {
     if (sequence.size() == 0) {
-      return getFeedbackWithoutWarnings(
+      return FeedbackFactory.getFeedbackWithoutWarnings(
           DEFAULT_SUGGESTIONS_USE_FEW_WORDS, DEFAULT_SUGGESTIONS_NO_NEED_SYMBOLS);
     }
     if (score > 2) {
-      return getEmptyFeedback();
+      return FeedbackFactory.getEmptyFeedback();
     }
     Match longestMatch = sequence.get(0);
     if (sequence.size() > 1) {
       for (Match match : sequence.subList(1, sequence.size())) {
-        if (match.tokenLength() > longestMatch.tokenLength()) longestMatch = match;
-      }
-    }
-
-    return getMatchFeedback(longestMatch, sequence.size() == 1);
-  }
-
-  private static Feedback getFeedbackWithoutWarnings(String... suggestions) {
-    return new Feedback(null, suggestions);
-  }
-
-  private static Feedback getEmptyFeedback() {
-    return new Feedback(null);
-  }
-
-  private static Feedback getMatchFeedback(Match match, boolean isSoleMatch) {
-    switch (match.pattern) {
-      case Dictionary:
-        return getDictionaryMatchFeedback(match, isSoleMatch);
-      case Spatial:
-        return new Feedback(
-            match.turns == 1
-                ? SPATIAL_WARNING_STRAIGHT_ROWS_OF_KEYS
-                : SPATIAL_WARNING_SHORT_KEYBOARD_PATTERNS,
-            EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
-            SPATIAL_SUGGESTIONS_USE_LONGER_KEYBOARD_PATTERN);
-      case Repeat:
-        return new Feedback(
-            match.baseToken.length() == 1 ? REPEAT_WARNING_LIKE_AAA : REPEAT_WARNING_LIKE_ABCABCABC,
-            EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
-            REPEAT_SUGGESTIONS_AVOID_REPEATED_WORDS);
-      case Sequence:
-        return new Feedback(
-            SEQUENCE_WARNING_LIKE_ABCOR6543,
-            EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
-            SEQUENCE_SUGGESTIONS_AVOID_SEQUENCES);
-      case Regex:
-        return new Feedback(
-            "recent_year".equals(match.regexName) ? REGEX_WARNING_RECENT_YEARS : null,
-            EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD,
-            REGEX_SUGGESTIONS_AVOID_RECENT_YEARS);
-      case Date:
-        return new Feedback(
-            DATE_WARNING_DATES, EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD, DATE_SUGGESTIONS_AVOID_DATES);
-      default:
-        return getFeedbackWithoutWarnings(EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD);
-    }
-  }
-
-  private static Feedback getDictionaryMatchFeedback(Match match, boolean isSoleMatch) {
-    String warning = null;
-    if ("passwords".equals(match.dictionaryName)) {
-      if (isSoleMatch && !match.l33t && !match.reversed) {
-        if (match.rank <= 10) {
-          warning = DICTIONARY_WARNING_PASSWORDS_TOP10;
-        } else if (match.rank <= 100) {
-          warning = DICTIONARY_WARNING_PASSWORDS_TOP100;
-        } else {
-          warning = DICTIONARY_WARNING_PASSWORDS_VERY_COMMON;
+        if (match.tokenLength() > longestMatch.tokenLength()) {
+          longestMatch = match;
         }
-      } else if (match.guessesLog10 <= 4) {
-        warning = DICTIONARY_WARNING_PASSWORDS_SIMILAR;
-      }
-    } else if ("english_wikipedia".equals(match.dictionaryName)) {
-      if (isSoleMatch) {
-        warning = DICTIONARY_WARNING_ENGLISH_WIKIPEDIA_ITSELF;
-      }
-    } else if (Arrays.asList(new String[] {"surnames", "male_names", "female_names"})
-        .contains(match.dictionaryName)) {
-      if (isSoleMatch) {
-        warning = DICTIONARY_WARNING_ETC_NAMES_THEMSELVES;
-      } else {
-        warning = DICTIONARY_WARNING_ETC_NAMES_COMMON;
       }
     }
-
-    List<String> suggestions = new ArrayList<>();
-    suggestions.add(EXTRA_SUGGESTIONS_ADD_ANOTHER_WORD);
-
-    CharSequence word = match.token;
-    WipeableString lower = WipeableString.lowerCase(word);
-    if (DictionaryGuess.START_UPPER.matcher(word).find()) {
-      suggestions.add(DICTIONARY_SUGGESTIONS_CAPITALIZATION);
-    } else if (DictionaryGuess.ALL_UPPER.matcher(word).find() && !lower.equals(word)) {
-      suggestions.add(DICTIONARY_SUGGESTIONS_ALL_UPPERCASE);
-    }
-    if (match.reversed && match.tokenLength() >= 4) {
-      suggestions.add(DICTIONARY_SUGGESTIONS_REVERSED);
-    }
-    if (match.l33t) {
-      suggestions.add(DICTIONARY_SUGGESTIONS_L33T);
-    }
-    lower.wipe();
-    return new Feedback(warning, suggestions.toArray(new String[suggestions.size()]));
+    boolean isSoleMatch = sequence.size() == 1;
+    return FeedbackFactory.createMatchFeedback(longestMatch, isSoleMatch);
   }
 
   private static class ResourceBundleFeedback extends Feedback {
-    private ResourceBundle messages;
+    private final ResourceBundle messages;
 
     private ResourceBundleFeedback(ResourceBundle messages, String warning, String... suggestions) {
       super(warning, suggestions);
@@ -258,13 +170,12 @@ public class Feedback {
     @Override
     protected ResourceBundle resolveResourceBundle(Locale locale) {
       try {
-        if (messages.containsKey(locale)) {
-          return messages.get(locale);
+        ResourceBundle resource = messages.get(locale);
+        if (resource != null) {
+          return resource;
         }
         return ResourceBundle.getBundle(DEFAULT_BUNDLE_NAME, locale, CONTROL);
-      } catch (MissingResourceException e) {
-        return ResourceBundle.getBundle(DEFAULT_BUNDLE_NAME, locale);
-      } catch (UnsupportedOperationException e) {
+      } catch (MissingResourceException | UnsupportedOperationException e) {
         return ResourceBundle.getBundle(DEFAULT_BUNDLE_NAME, locale);
       }
     }
