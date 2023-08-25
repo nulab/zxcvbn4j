@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionXpathFilter Experimental Configuration 1.2//EN"
+        "https://checkstyle.org/dtds/suppressions_1_2_xpath_experimental.dtd">
+
+<suppressions>
+    <suppress-xpath files="Keyboard\.java" checks="MemberName" query="//VARIABLE_DEF/IDENT[@text='x']"/>
+    <suppress-xpath files="Keyboard\.java" checks="MemberName" query="//VARIABLE_DEF/IDENT[@text='y']"/>
+    <suppress-xpath files="Match\.java" checks="MemberName" query="//VARIABLE_DEF/IDENT[@text='i']"/>
+    <suppress-xpath files="Match\.java" checks="MemberName" query="//VARIABLE_DEF/IDENT[@text='j']"/>
+</suppressions>

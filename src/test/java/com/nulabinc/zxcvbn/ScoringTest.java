@@ -46,7 +46,8 @@ public class ScoringTest {
               return 0;
             }
           };
-      Method method = BaseGuess.class.getDeclaredMethod("nCk", int.class, int.class);
+      Method method =
+          BaseGuess.class.getDeclaredMethod("calculateBinomialCoefficient", int.class, int.class);
       method.setAccessible(true);
 
       String msg = String.format("nCk(%s, %s) == %s", n, k, expected);
@@ -257,7 +258,8 @@ public class ScoringTest {
               return 0;
             }
           };
-      Method method = BaseGuess.class.getDeclaredMethod("nCk", int.class, int.class);
+      Method method =
+          BaseGuess.class.getDeclaredMethod("calculateBinomialCoefficient", int.class, int.class);
       method.setAccessible(true);
       return Arrays.asList(
           new Object[][] {
@@ -313,7 +315,8 @@ public class ScoringTest {
               return 0;
             }
           };
-      Method method = BaseGuess.class.getDeclaredMethod("nCk", int.class, int.class);
+      Method method =
+          BaseGuess.class.getDeclaredMethod("calculateBinomialCoefficient", int.class, int.class);
       method.setAccessible(true);
 
       return Arrays.asList(

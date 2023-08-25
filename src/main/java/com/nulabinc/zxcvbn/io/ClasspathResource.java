@@ -30,18 +30,16 @@ public final class ClasspathResource implements Resource {
    * Finally, if even the system ClassLoader could not access resource as stream, return null.
    */
   private InputStream getResourceAsStreamWithFallback(String path) {
-    // 0. try loading the resource from the same artifact as this class
-    {
-      InputStream in = getClass().getResourceAsStream(path);
-      if (in != null) {
-        return in;
-      }
-    } // no exceptions thrown
+    // Try loading the resource from the same artifact as this class
+    InputStream in = getClass().getResourceAsStream(path);
+    if (in != null) {
+      return in;
+    }
 
     // 1. try to get resource with thread context ClassLoader
     try {
       ClassLoader cl = Thread.currentThread().getContextClassLoader();
-      InputStream in = this.getResourceAsStream(cl, path);
+      in = this.getResourceAsStream(cl, path);
       if (in != null) {
         return in;
       }
@@ -52,7 +50,7 @@ public final class ClasspathResource implements Resource {
     // 2. try to get resource with this class context ClassLoader
     try {
       ClassLoader cl = this.getClass().getClassLoader();
-      InputStream in = this.getResourceAsStream(cl, path);
+      in = this.getResourceAsStream(cl, path);
       if (in != null) {
         return in;
       }
@@ -63,7 +61,7 @@ public final class ClasspathResource implements Resource {
     // 3. try to get resource with this class context ClassLoader
     try {
       ClassLoader cl = ClassLoader.getSystemClassLoader();
-      InputStream in = this.getResourceAsStream(cl, path);
+      in = this.getResourceAsStream(cl, path);
       if (in != null) {
         return in;
       }

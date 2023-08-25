@@ -3,8 +3,10 @@ package com.nulabinc.zxcvbn.matchers;
 import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.Scoring;
 import com.nulabinc.zxcvbn.WipeableString;
-import java.util.*;
-import java.util.regex.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /*
  * a "date" is recognized as:

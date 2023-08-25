@@ -46,7 +46,7 @@ public class DictionaryGuess extends BaseGuess {
     }
     int variations = 0;
     for (int i = 1; i <= Math.min(upperCount, lowerCount); i++) {
-      variations += nCk(upperCount + lowerCount, i);
+      variations += calculateBinomialCoefficient(upperCount + lowerCount, i);
     }
     lowercaseToken.wipe();
     return variations;
@@ -77,7 +77,7 @@ public class DictionaryGuess extends BaseGuess {
         int minCount = Math.min(originalCount, substitutedCount);
         int possibleCombinations = 0;
         for (int i = 1; i <= minCount; i++) {
-          possibleCombinations += nCk(originalCount + substitutedCount, i);
+          possibleCombinations += calculateBinomialCoefficient(originalCount + substitutedCount, i);
         }
         totalVariations *= possibleCombinations;
       }

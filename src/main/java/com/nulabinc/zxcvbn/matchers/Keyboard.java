@@ -148,7 +148,8 @@ public class Keyboard {
     private static List<String> split(final String str, final SplitMatcher splitMatcher) {
       final int len = str.length();
       final List<String> list = new ArrayList<>();
-      int i = 0, start = 0;
+      int i = 0;
+      int start = 0;
       boolean match = false;
       while (i < len) {
         if (splitMatcher.match(str.charAt(i))) {
@@ -208,8 +209,12 @@ public class Keyboard {
 
       @Override
       public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Position)) return false;
+        if (this == o) {
+          return true;
+        }
+        if (!(o instanceof Position)) {
+          return false;
+        }
 
         final Position position = (Position) o;
 

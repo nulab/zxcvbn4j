@@ -30,7 +30,10 @@ public class SpatialGuess extends BaseGuess {
     for (int i = 2; i <= tokenLength; i++) {
       int possibleTurns = Math.min(turns, i - 1);
       for (int j = 1; j <= possibleTurns; j++) {
-        guesses += nCk(i - 1, j - 1) * startingPositions * Math.pow(averageDegree, j);
+        guesses +=
+            calculateBinomialCoefficient(i - 1, j - 1)
+                * startingPositions
+                * Math.pow(averageDegree, j);
       }
     }
     return guesses;
@@ -50,7 +53,7 @@ public class SpatialGuess extends BaseGuess {
     int shiftedVariations = 0;
     int minCount = Math.min(shiftedCount, unshiftedCount);
     for (int i = 1; i <= minCount; i++) {
-      shiftedVariations += nCk(shiftedCount + unshiftedCount, i);
+      shiftedVariations += calculateBinomialCoefficient(shiftedCount + unshiftedCount, i);
     }
     return shiftedVariations;
   }

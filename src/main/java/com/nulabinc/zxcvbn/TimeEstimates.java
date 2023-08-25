@@ -45,7 +45,8 @@ public class TimeEstimates {
     }
     if (guesses < 1e10 + DELTA) {
       return 3;
-    } else return 4;
+    }
+    return 4;
   }
 
   public static String displayTime(final double seconds) {
