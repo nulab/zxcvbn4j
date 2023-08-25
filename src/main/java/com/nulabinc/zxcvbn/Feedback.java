@@ -99,10 +99,11 @@ public class Feedback {
   protected ResourceBundle resolveResourceBundle(Locale locale) {
     try {
       return ResourceBundle.getBundle(DEFAULT_BUNDLE_NAME, locale, CONTROL);
-    } catch (MissingResourceException e) {
+    } catch (MissingResourceException | UnsupportedOperationException e) {
+      // MissingResourceException:
       // Fix for issue of Android refs: https://github.com/nulab/zxcvbn4j/issues/21
-      return ResourceBundle.getBundle(DEFAULT_BUNDLE_NAME, locale);
-    } catch (UnsupportedOperationException e) {
+      //
+      // UnsupportedOperationException:
       // Fix for issue of JDK 9 refs: https://github.com/nulab/zxcvbn4j/issues/45
       // ResourceBundle.Control is not supported in named modules.
       // See https://docs.oracle.com/javase/9/docs/api/java/util/ResourceBundle.html#bundleprovider
@@ -139,8 +140,8 @@ public class Feedback {
         }
       }
     }
-
-    return FeedbackFactory.createMatchFeedback(longestMatch, sequence.size() == 1);
+    boolean isSoleMatch = sequence.size() == 1;
+    return FeedbackFactory.createMatchFeedback(longestMatch, isSoleMatch);
   }
 
   private static class ResourceBundleFeedback extends Feedback {
