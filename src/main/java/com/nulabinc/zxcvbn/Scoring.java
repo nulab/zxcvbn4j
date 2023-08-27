@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,44 +29,19 @@ public class Scoring {
     this.context = context;
   }
 
-  protected Context getContext() {
-    return context;
-  }
-
   public Strength mostGuessableMatchSequence(CharSequence password, List<Match> matches) {
     return mostGuessableMatchSequence(password, matches, false);
   }
 
   public Strength mostGuessableMatchSequence(
       CharSequence password, List<Match> matches, boolean excludeAdditive) {
-    final int n = password.length();
-    final List<List<Match>> matchesByJ = new ArrayList<>();
-    for (int i = 0; i < n; i++) {
-      matchesByJ.add(new ArrayList<Match>());
-    }
-    for (Match m : matches) {
-      matchesByJ.get(m.j).add(m);
-    }
-    for (List<Match> lst : matchesByJ) {
-      Collections.sort(lst, new MatchComparator());
-    }
-    final Optimal optimal = new Optimal(n);
-    for (int k = 0; k < n; k++) {
-      for (Match m : matchesByJ.get(k)) {
-        if (m.i > 0) {
-          for (Map.Entry<Integer, Match> entry : optimal.matches.get(m.i - 1).entrySet()) {
-            int l = entry.getKey();
-            update(password, m, l + 1, optimal, excludeAdditive);
-          }
-        } else {
-          update(password, m, 1, optimal, excludeAdditive);
-        }
-      }
-      bruteforceUpdate(password, k, optimal, excludeAdditive);
-    }
-    List<Match> optimalMatchSequence = unwind(n, optimal);
-    Integer optimalL = optimalMatchSequence.size();
-    double guesses = password.length() == 0 ? 1 : optimal.guesses.get(n - 1).get(optimalL);
+    List<List<Match>> matchesByEndPosition = groupMatchesByEndPosition(password.length(), matches);
+    Optimal optimal = computeOptimal(context, password, matchesByEndPosition, excludeAdditive);
+    List<Match> optimalMatchSequence = unwindOptimal(password.length(), optimal);
+    double guesses =
+        password.length() == 0
+            ? 1
+            : optimal.getOverallMetric(password.length() - 1, optimalMatchSequence.size());
     Strength strength = new Strength();
     strength.setPassword(password);
     strength.setGuesses(guesses);
@@ -76,75 +50,156 @@ public class Scoring {
     return strength;
   }
 
-  private void update(
-      CharSequence password, Match m, int l, Optimal optimal, boolean excludeAdditive) {
-    double pi = new EstimateGuess(this.context, password).exec(m);
-    if (l > 1) {
-      pi *= optimal.pi.get(m.i - 1).get(l - 1);
+  private static List<List<Match>> groupMatchesByEndPosition(int length, List<Match> matches) {
+    final List<List<Match>> matchesByEndPosition = new ArrayList<>();
+    for (int i = 0; i < length; i++) {
+      matchesByEndPosition.add(new ArrayList<Match>());
     }
-    if (Double.isInfinite(pi)) {
-      pi = Double.MAX_VALUE;
+    for (Match match : matches) {
+      matchesByEndPosition.get(match.j).add(match);
     }
-    double g = factorial(l) * pi;
-    if (Double.isInfinite(g)) {
-      g = Double.MAX_VALUE;
+    for (List<Match> lst : matchesByEndPosition) {
+      Collections.sort(lst, new MatchStartPositionComparator());
     }
-    if (!excludeAdditive) {
-      g += Math.pow(MIN_GUESSES_BEFORE_GROWING_SEQUENCE, l - 1);
-      if (Double.isInfinite(g)) {
-        g = Double.MAX_VALUE;
+    return matchesByEndPosition;
+  }
+
+  private static Optimal computeOptimal(
+      Context context,
+      CharSequence password,
+      List<List<Match>> matchesByEndPosition,
+      boolean excludeAdditive) {
+    int length = password.length();
+    Optimal optimal = new Optimal(length);
+    for (int k = 0; k < length; k++) {
+      for (Match m : matchesByEndPosition.get(k)) {
+        if (m.i > 0) {
+          for (Map.Entry<Integer, Match> entry : optimal.getBestMatchesAt(m.i - 1).entrySet()) {
+            int l = entry.getKey();
+            updateOptimal(context, password, m, l + 1, optimal, excludeAdditive);
+          }
+        } else {
+          updateOptimal(context, password, m, 1, optimal, excludeAdditive);
+        }
       }
+      updateBruteforceMatches(context, password, k, optimal, excludeAdditive);
     }
-    int k = m.j;
-    for (Map.Entry<Integer, Double> competing : optimal.guesses.get(k).entrySet()) {
+    return optimal;
+  }
+
+  private static void updateOptimal(
+      Context context,
+      CharSequence password,
+      Match match,
+      int l,
+      Optimal optimal,
+      boolean excludeAdditive) {
+
+    double guesses = calculateGuesses(context, password, match, l, optimal);
+    double metrics = calculateMetrics(l, guesses, excludeAdditive);
+
+    if (shouldUpdateMetrics(match, l, metrics, optimal)) {
+      optimal.putToBestMatches(match.j, l, match);
+      optimal.putToTotalGuesses(match.j, l, guesses);
+      optimal.putToOverallMetrics(match.j, l, metrics);
+    }
+  }
+
+  private static double calculateGuesses(
+      Context context, CharSequence password, Match match, int l, Optimal optimal) {
+    double guesses = new EstimateGuess(context, password).exec(match);
+    if (l > 1) {
+      guesses *= optimal.getTotalGuess(match.i - 1, l - 1);
+    }
+    return handleInfinity(guesses);
+  }
+
+  private static double calculateMetrics(int l, double guesses, boolean excludeAdditive) {
+    double metrics = factorial(l) * guesses;
+    metrics = handleInfinity(metrics);
+
+    if (!excludeAdditive) {
+      metrics += Math.pow(MIN_GUESSES_BEFORE_GROWING_SEQUENCE, l - 1);
+      metrics = handleInfinity(metrics);
+    }
+
+    return metrics;
+  }
+
+  private static double handleInfinity(double value) {
+    return Double.isInfinite(value) ? Double.MAX_VALUE : value;
+  }
+
+  private static boolean shouldUpdateMetrics(Match match, int l, double metrics, Optimal optimal) {
+    Map<Integer, Double> overallMetrics = optimal.getOverallMetricsAt(match.j);
+    for (Map.Entry<Integer, Double> competing : overallMetrics.entrySet()) {
       if (competing.getKey() > l) {
         continue;
       }
-      if (competing.getValue() <= g) {
-        return;
+      if (competing.getValue() <= metrics) {
+        return false;
       }
     }
-    optimal.guesses.get(k).put(l, g);
-    optimal.matches.get(k).put(l, m);
-    optimal.pi.get(k).put(l, pi);
+    return true;
   }
 
-  private void bruteforceUpdate(
-      CharSequence password, int k, Optimal optimal, boolean excludeAdditive) {
-    Match m = makeBruteforceMatch(password, 0, k);
-    update(password, m, 1, optimal, excludeAdditive);
-    for (int i = 1; i <= k; i++) {
-      m = makeBruteforceMatch(password, i, k);
-      for (Map.Entry<Integer, Match> entry : optimal.matches.get(i - 1).entrySet()) {
-        int l = entry.getKey();
+  private static void updateBruteforceMatches(
+      Context context,
+      CharSequence password,
+      int endIndex,
+      Optimal optimal,
+      boolean excludeAdditive) {
+
+    Match match = makeBruteforceMatch(password, 0, endIndex);
+    updateOptimal(context, password, match, 1, optimal, excludeAdditive);
+
+    for (int startIndex = 1; startIndex <= endIndex; startIndex++) {
+      match = makeBruteforceMatch(password, startIndex, endIndex);
+      Map<Integer, Match> previousBestMatches = optimal.getBestMatchesAt(startIndex - 1);
+
+      for (Map.Entry<Integer, Match> entry : previousBestMatches.entrySet()) {
+        int matchLength = entry.getKey();
         Match lastMatch = entry.getValue();
         if (lastMatch.pattern != Pattern.Bruteforce) {
-          update(password, m, l + 1, optimal, excludeAdditive);
+          updateOptimal(context, password, match, matchLength + 1, optimal, excludeAdditive);
         }
       }
     }
   }
 
-  private static List<Match> unwind(int n, Optimal optimal) {
+  private static List<Match> unwindOptimal(int passwordLength, Optimal optimal) {
     List<Match> optimalMatchSequence = new ArrayList<>();
-    int k = n - 1;
-    if (0 <= k) {
-      int l = 0;
-      Double g = Double.POSITIVE_INFINITY;
-      for (Map.Entry<Integer, Double> candidate : optimal.guesses.get(k).entrySet()) {
-        if (candidate.getValue() < g) {
-          l = candidate.getKey();
-          g = candidate.getValue();
-        }
-      }
-      while (k >= 0) {
-        Match m = optimal.matches.get(k).get(l);
-        optimalMatchSequence.add(0, m);
-        k = m.i - 1;
-        l--;
-      }
+    if (passwordLength <= 0) {
+      return optimalMatchSequence;
+    }
+
+    int lastIndex = passwordLength - 1;
+    Map<Integer, Double> metricsForLastIndex = optimal.getOverallMetricsAt(lastIndex);
+
+    int optimalLength = getOptimalMatchLength(metricsForLastIndex);
+
+    while (lastIndex >= 0) {
+      Match currentMatch = optimal.getBestMatch(lastIndex, optimalLength);
+      optimalMatchSequence.add(0, currentMatch);
+      lastIndex = currentMatch.i - 1;
+      optimalLength--;
     }
     return optimalMatchSequence;
+  }
+
+  private static int getOptimalMatchLength(Map<Integer, Double> metrics) {
+    int optimalLength = 0;
+    Double minMetric = Double.POSITIVE_INFINITY;
+
+    for (Map.Entry<Integer, Double> candidate : metrics.entrySet()) {
+      Double currentMetric = candidate.getValue();
+      if (currentMetric < minMetric) {
+        optimalLength = candidate.getKey();
+        minMetric = currentMetric;
+      }
+    }
+
+    return optimalLength;
   }
 
   private static Match makeBruteforceMatch(CharSequence password, int i, int j) {
@@ -165,29 +220,12 @@ public class Scoring {
     return f;
   }
 
-  private static class MatchComparator implements Comparator<Match>, Serializable {
+  private static class MatchStartPositionComparator implements Comparator<Match>, Serializable {
     private static final long serialVersionUID = 1L;
 
     @Override
     public int compare(Match m1, Match m2) {
       return m1.i - m2.i;
-    }
-  }
-
-  private static class Optimal {
-
-    public final List<Map<Integer, Match>> matches = new ArrayList<>();
-
-    public final List<Map<Integer, Double>> pi = new ArrayList<>();
-
-    public final List<Map<Integer, Double>> guesses = new ArrayList<>();
-
-    public Optimal(int n) {
-      for (int i = 0; i < n; i++) {
-        matches.add(new HashMap<Integer, Match>());
-        pi.add(new HashMap<Integer, Double>());
-        guesses.add(new HashMap<Integer, Double>());
-      }
     }
   }
 }
