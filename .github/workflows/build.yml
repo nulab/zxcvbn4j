@@ -32,6 +32,6 @@ jobs:
       - name: Run gradle
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: jacocoTestReport coveralls publishToMavenLocal
+          arguments: jacocoTestReport coveralls verGJF checkstyleMain spotbugsMain publishToMavenLocal
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
