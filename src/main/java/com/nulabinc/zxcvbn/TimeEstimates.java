@@ -79,8 +79,8 @@ public class TimeEstimates {
   }
 
   private static double divide(double dividend, double divisor) {
-    BigDecimal dividendDecimal = new BigDecimal(dividend);
-    BigDecimal divisorDecimal = new BigDecimal(divisor);
+    BigDecimal dividendDecimal = BigDecimal.valueOf(dividend);
+    BigDecimal divisorDecimal = BigDecimal.valueOf(divisor);
     return dividendDecimal.divide(divisorDecimal, RoundingMode.HALF_DOWN).doubleValue();
   }
 }
