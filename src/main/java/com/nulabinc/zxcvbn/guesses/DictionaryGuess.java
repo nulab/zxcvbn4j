@@ -23,7 +23,7 @@ public class DictionaryGuess extends BaseGuess {
     int uppercaseVariations = uppercaseVariations(match);
     int l33tVariations = l33tVariations(match);
     int reversedVariations = match.reversed ? 2 : 1;
-    return match.rank * uppercaseVariations * l33tVariations * reversedVariations;
+    return (double) match.rank * uppercaseVariations * l33tVariations * reversedVariations;
   }
 
   public int uppercaseVariations(Match match) {
