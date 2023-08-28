@@ -13,24 +13,24 @@ import java.util.Map;
 public class L33tMatcher extends BaseMatcher {
 
   private final Map<String, Map<String, Integer>> rankedDictionaries;
-  private static final Map<Character, List<Character>> L33T_TABLE =
-      Collections.unmodifiableMap(
-          new HashMap<Character, List<Character>>() {
-            {
-              put('a', Arrays.asList('4', '@'));
-              put('b', Collections.singletonList('8'));
-              put('c', Arrays.asList('(', '{', '[', '<'));
-              put('e', Collections.singletonList('3'));
-              put('g', Arrays.asList('6', '9'));
-              put('i', Arrays.asList('1', '!', '|'));
-              put('l', Arrays.asList('1', '|', '7'));
-              put('o', Collections.singletonList('0'));
-              put('s', Arrays.asList('$', '5'));
-              put('t', Arrays.asList('+', '7'));
-              put('x', Collections.singletonList('%'));
-              put('z', Collections.singletonList('2'));
-            }
-          });
+  private static final Map<Character, List<Character>> L33T_TABLE;
+
+  static {
+    Map<Character, List<Character>> table = new HashMap<>();
+    table.put('a', Arrays.asList('4', '@'));
+    table.put('b', Collections.singletonList('8'));
+    table.put('c', Arrays.asList('(', '{', '[', '<'));
+    table.put('e', Collections.singletonList('3'));
+    table.put('g', Arrays.asList('6', '9'));
+    table.put('i', Arrays.asList('1', '!', '|'));
+    table.put('l', Arrays.asList('1', '|', '7'));
+    table.put('o', Collections.singletonList('0'));
+    table.put('s', Arrays.asList('$', '5'));
+    table.put('t', Arrays.asList('+', '7'));
+    table.put('x', Collections.singletonList('%'));
+    table.put('z', Collections.singletonList('2'));
+    L33T_TABLE = Collections.unmodifiableMap(table);
+  }
 
   public L33tMatcher(Context context, Map<String, Map<String, Integer>> rankedDictionaries) {
     super(context);
