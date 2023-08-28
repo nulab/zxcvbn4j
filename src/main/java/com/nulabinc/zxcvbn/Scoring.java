@@ -119,7 +119,7 @@ public class Scoring {
     metrics = handleInfinity(metrics);
 
     if (!excludeAdditive) {
-      metrics += Math.pow(MIN_GUESSES_BEFORE_GROWING_SEQUENCE, l - 1);
+      metrics += Math.pow(MIN_GUESSES_BEFORE_GROWING_SEQUENCE, (double) l - 1);
       metrics = handleInfinity(metrics);
     }
 
