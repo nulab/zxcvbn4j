@@ -17,6 +17,10 @@ public class TimeEstimates {
   private static final double YEAR = MONTH * 12;
   private static final double CENTURY = YEAR * 100;
 
+  private TimeEstimates() {
+    throw new IllegalStateException("TimeEstimates should not be instantiated");
+  }
+
   public static AttackTimes estimateAttackTimes(double guesses) {
     AttackTimes.CrackTimeSeconds crackTimeSeconds =
         new AttackTimes.CrackTimeSeconds(
