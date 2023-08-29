@@ -8,6 +8,10 @@ import java.util.Map;
 
 class StandardContext {
 
+  private StandardContext() {
+    throw new IllegalStateException("StandardContext should not be instantiated");
+  }
+
   static Context build() throws IOException {
     Map<String, Dictionary> dictionaryMap = new LinkedHashMap<>();
     for (Dictionary dictionary : StandardDictionaries.loadAllDictionaries()) {
