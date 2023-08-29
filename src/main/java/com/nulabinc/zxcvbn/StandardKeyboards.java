@@ -11,7 +11,7 @@ import java.util.List;
 
 public class StandardKeyboards {
 
-  @SuppressWarnings("squid:S1075")
+  @SuppressWarnings("java:S1075")
   private static final String RESOURCES_PACKAGE_PATH = "/com/nulabinc/zxcvbn/matchers/keyboards/";
 
   public static final String QWERTY = "qwerty";

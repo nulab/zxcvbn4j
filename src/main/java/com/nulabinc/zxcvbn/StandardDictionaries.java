@@ -9,7 +9,7 @@ import java.util.List;
 
 public class StandardDictionaries {
 
-  @SuppressWarnings("squid:S1075")
+  @SuppressWarnings("java:S1075")
   private static final String BASE_PATH = "/com/nulabinc/zxcvbn/matchers/dictionaries/";
 
   public static final String US_TV_AND_FILM = "us_tv_and_film";
