@@ -3,6 +3,7 @@ package com.nulabinc.zxcvbn.guesses;
 import com.nulabinc.zxcvbn.Context;
 import com.nulabinc.zxcvbn.WipeableString;
 import com.nulabinc.zxcvbn.matchers.Match;
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -59,29 +60,46 @@ public class DictionaryGuess extends BaseGuess {
     int totalVariations = 1;
     WipeableString lowercaseToken = WipeableString.lowerCase(match.token);
     for (Map.Entry<Character, Character> substitution : match.sub.entrySet()) {
-      Character substitutedChar = substitution.getKey();
-      Character originalChar = substitution.getValue();
-      int substitutedCount = 0;
-      int originalCount = 0;
-      for (char currentChar : lowercaseToken.charArray()) {
-        if (currentChar == substitutedChar) {
-          substitutedCount++;
-        }
-        if (currentChar == originalChar) {
-          originalCount++;
-        }
-      }
-      if (substitutedCount == 0 || originalCount == 0) {
-        totalVariations *= 2;
-      } else {
-        int minCount = Math.min(originalCount, substitutedCount);
-        int possibleCombinations = 0;
-        for (int i = 1; i <= minCount; i++) {
-          possibleCombinations += calculateBinomialCoefficient(originalCount + substitutedCount, i);
-        }
-        totalVariations *= possibleCombinations;
-      }
+      totalVariations *= calculateSubstitutionVariation(substitution, lowercaseToken);
     }
     return totalVariations;
+  }
+
+  private static int calculateSubstitutionVariation(
+      Map.Entry<Character, Character> substitution, WipeableString token) {
+    Character substitutedChar = substitution.getKey();
+    Character originalChar = substitution.getValue();
+    AbstractMap.SimpleImmutableEntry<Integer, Integer> counts =
+        countCharOccurrences(token, substitutedChar, originalChar);
+    int substitutedCount = counts.getKey();
+    int originalCount = counts.getValue();
+    if (substitutedCount == 0 || originalCount == 0) {
+      return 2;
+    }
+    return calculatePossibleCombinations(originalCount, substitutedCount);
+  }
+
+  private static AbstractMap.SimpleImmutableEntry<Integer, Integer> countCharOccurrences(
+      WipeableString str, char char1, char char2) {
+    int count1 = 0;
+    int count2 = 0;
+    for (char currentChar : str.charArray()) {
+      if (currentChar == char1) {
+        count1++;
+      }
+      if (currentChar == char2) {
+        count2++;
+      }
+    }
+    return new AbstractMap.SimpleImmutableEntry<>(count1, count2);
+  }
+
+  private static int calculatePossibleCombinations(int originalCount, int substitutedCount) {
+    int minCount = Math.min(originalCount, substitutedCount);
+    int possibleCombinations = 0;
+    for (int i = 1; i <= minCount; i++) {
+      possibleCombinations += calculateBinomialCoefficient(originalCount + substitutedCount, i);
+    }
+    return possibleCombinations;
   }
 }
