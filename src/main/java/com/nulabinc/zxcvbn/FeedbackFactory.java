@@ -11,6 +11,10 @@ class FeedbackFactory {
   private static final List<String> NAME_DICTIONARIES =
       Arrays.asList("surnames", "male_names", "female_names");
 
+  private FeedbackFactory() {
+    throw new IllegalStateException("FeedbackFactory should not be instantiated");
+  }
+
   static Feedback getFeedbackWithoutWarnings(String... suggestions) {
     return new Feedback(null, suggestions);
   }

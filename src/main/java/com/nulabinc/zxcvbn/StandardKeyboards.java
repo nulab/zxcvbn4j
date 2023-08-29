@@ -11,6 +11,7 @@ import java.util.List;
 
 public class StandardKeyboards {
 
+  @SuppressWarnings("squid:S1075")
   private static final String RESOURCES_PACKAGE_PATH = "/com/nulabinc/zxcvbn/matchers/keyboards/";
 
   public static final String QWERTY = "qwerty";
@@ -22,6 +23,10 @@ public class StandardKeyboards {
   public static final String KEYPAD = "keypad";
 
   public static final String MAC_KEYPAD = "mac_keypad";
+
+  private StandardKeyboards() {
+    throw new IllegalStateException("StandardKeyboards should not be instantiated");
+  }
 
   public static final KeyboardLoader QWERTY_LOADER =
       new SlantedKeyboardLoader(

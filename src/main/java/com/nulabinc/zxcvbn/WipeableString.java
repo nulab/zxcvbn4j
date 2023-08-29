@@ -52,7 +52,10 @@ public class WipeableString implements CharSequence {
 
   /** Returns a new wipeable string with the specified content forced into lower case. */
   public static WipeableString lowerCase(CharSequence source) {
-    assert source != null;
+    if (source == null) {
+      throw new IllegalArgumentException("source is null");
+    }
+
     char[] chars = new char[source.length()];
     for (int n = 0; n < source.length(); n++) {
       chars[n] = Character.toLowerCase(source.charAt(n));
@@ -65,7 +68,9 @@ public class WipeableString implements CharSequence {
    * reversed.
    */
   public static WipeableString reversed(CharSequence source) {
-    assert source != null;
+    if (source == null) {
+      throw new IllegalArgumentException("source is null");
+    }
     int length = source.length();
     char[] chars = new char[length];
     for (int n = 0; n < source.length(); n++) {
@@ -135,6 +140,7 @@ public class WipeableString implements CharSequence {
   }
 
   /** A version of Integer.parse(String) that accepts CharSequence as parameter. */
+  @SuppressWarnings("squid:S3776")
   public static int parseInt(CharSequence s, int radix) throws NumberFormatException {
     if (s == null) {
       throw new NumberFormatException("null");
@@ -165,10 +171,10 @@ public class WipeableString implements CharSequence {
           negative = true;
           limit = Integer.MIN_VALUE;
         } else if (firstChar != '+') {
-          throw new NumberFormatException("For input string: \"" + s + "\"");
+          throw numberFormatException(s);
         }
         if (len == 1) { // Cannot have lone "+" or "-"
-          throw new NumberFormatException("For input string: \"" + s + "\"");
+          throw numberFormatException(s);
         }
         i++;
       }
@@ -177,21 +183,25 @@ public class WipeableString implements CharSequence {
         // Accumulating negatively avoids surprises near MAX_VALUE
         digit = Character.digit(s.charAt(i++), radix);
         if (digit < 0) {
-          throw new NumberFormatException("For input string: \"" + s + "\"");
+          throw numberFormatException(s);
         }
         if (result < multmin) {
-          throw new NumberFormatException("For input string: \"" + s + "\"");
+          throw numberFormatException(s);
         }
         result *= radix;
         if (result < limit + digit) {
-          throw new NumberFormatException("For input string: \"" + s + "\"");
+          throw numberFormatException(s);
         }
         result -= digit;
       }
     } else {
-      throw new NumberFormatException("For input string: \"" + s + "\"");
+      throw numberFormatException(s);
     }
     return negative ? result : -result;
+  }
+
+  private static NumberFormatException numberFormatException(CharSequence s) {
+    return new NumberFormatException("For input string: \"" + s + "\"");
   }
 
   @Override
@@ -260,11 +270,9 @@ public class WipeableString implements CharSequence {
         ((StringBuffer) text).setCharAt(n, ' ');
       }
       ((StringBuffer) text).setLength(0);
-    } else if (text instanceof CharBuffer) {
-      if (!((CharBuffer) text).isReadOnly()) {
-        for (int n = 0; n < text.length(); n++) {
-          ((CharBuffer) text).put(n, ' ');
-        }
+    } else if (text instanceof CharBuffer && !((CharBuffer) text).isReadOnly()) {
+      for (int n = 0; n < text.length(); n++) {
+        ((CharBuffer) text).put(n, ' ');
       }
     }
   }

@@ -125,7 +125,7 @@ public class Feedback {
   }
 
   static Feedback getFeedback(int score, List<Match> sequence) {
-    if (sequence.size() == 0) {
+    if (sequence.isEmpty()) {
       return FeedbackFactory.getFeedbackWithoutWarnings(
           DEFAULT_SUGGESTIONS_USE_FEW_WORDS, DEFAULT_SUGGESTIONS_NO_NEED_SYMBOLS);
     }

@@ -5,13 +5,13 @@ import com.nulabinc.zxcvbn.Guess;
 import com.nulabinc.zxcvbn.Pattern;
 import com.nulabinc.zxcvbn.Scoring;
 import com.nulabinc.zxcvbn.matchers.Match;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 public class EstimateGuess extends BaseGuess {
 
   private final CharSequence password;
-  private final Map<Pattern, Guess> patternGuessMap = new HashMap<>();
+  private final Map<Pattern, Guess> patternGuessMap = new EnumMap<>(Pattern.class);
 
   public EstimateGuess(Context context, CharSequence password) {
     super(context);
