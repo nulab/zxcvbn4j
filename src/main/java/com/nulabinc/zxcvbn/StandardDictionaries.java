@@ -9,6 +9,7 @@ import java.util.List;
 
 public class StandardDictionaries {
 
+  @SuppressWarnings("squid:S1075")
   private static final String BASE_PATH = "/com/nulabinc/zxcvbn/matchers/dictionaries/";
 
   public static final String US_TV_AND_FILM = "us_tv_and_film";
@@ -41,6 +42,10 @@ public class StandardDictionaries {
 
   public static final DictionaryLoader FEMALE_NAMES_LOADER =
       new DictionaryLoader(FEMALE_NAMES, new ClasspathResource(BASE_PATH + "female_names.txt"));
+
+  private StandardDictionaries() {
+    throw new IllegalStateException("StandardDictionaries should not be instantiated");
+  }
 
   private static final DictionaryLoader[] ALL_LOADERS = {
     US_TV_AND_FILM_LOADER,
