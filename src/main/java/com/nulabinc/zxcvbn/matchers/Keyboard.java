@@ -85,7 +85,7 @@ public class Keyboard {
 
     private final String layout;
 
-    public AdjacentGraphBuilder(final String layout) {
+    protected AdjacentGraphBuilder(final String layout) {
       this.layout = layout;
     }
 
