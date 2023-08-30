@@ -140,7 +140,7 @@ public class WipeableString implements CharSequence {
   }
 
   /** A version of Integer.parse(String) that accepts CharSequence as parameter. */
-  @SuppressWarnings("squid:S3776")
+  @SuppressWarnings("java:S3776")
   public static int parseInt(CharSequence s, int radix) throws NumberFormatException {
     if (s == null) {
       throw new NumberFormatException("null");

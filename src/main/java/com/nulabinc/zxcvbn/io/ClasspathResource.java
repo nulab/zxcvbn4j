@@ -29,7 +29,7 @@ public final class ClasspathResource implements Resource {
    * available; Next, the ClassLoader that loaded the ResourceLoader class will be used as fallback.
    * Finally, if even the system ClassLoader could not access resource as stream, return null.
    */
-  @SuppressWarnings("squid:S1181")
+  @SuppressWarnings("java:S1181")
   private InputStream getResourceAsStreamWithFallback(String path) {
     // Try loading the resource from the same artifact as this class
     InputStream in = getClass().getResourceAsStream(path);
