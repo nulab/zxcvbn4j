@@ -1,5 +1,7 @@
 package com.nulabinc.zxcvbn;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
 
 public class EdgeCaseTest {
@@ -16,7 +18,7 @@ public class EdgeCaseTest {
     buf.append((char) 10);
     buf.append((char) 13);
     buf.append("0101");
-    new Zxcvbn().measure(buf.toString());
+    assertNotNull(new Zxcvbn().measure(buf.toString()));
   }
 
   @Test
@@ -24,17 +26,17 @@ public class EdgeCaseTest {
     StringBuilder buf = new StringBuilder("PW2001");
     buf.append((char) 13);
     buf.append("0101");
-    new Zxcvbn().measure(buf.toString());
+    assertNotNull(new Zxcvbn().measure(buf.toString()));
   }
 
   @Test
   public void testSpaceAfterDate() {
-    new Zxcvbn().measure("PW2009 ");
+    assertNotNull(new Zxcvbn().measure("PW2009 "));
   }
 
   /** Try to reproduce GitHub issue #34 */
   @Test
   public void testJustFourDigitNumber() {
-    new Zxcvbn().measure("8604 ");
+    assertNotNull(new Zxcvbn().measure("8604 "));
   }
 }

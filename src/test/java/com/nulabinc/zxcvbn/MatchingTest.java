@@ -308,7 +308,7 @@ public class MatchingTest {
     public void testSequenceMatching() throws Exception {
       Context context = StandardContext.build();
       String msg = String.format("doesn't match length-%s sequences", password.length());
-      assertEquals(msg, new SequenceMatcher(context).execute(password).size(), 0);
+      assertEquals(msg, 0, new SequenceMatcher(context).execute(password).size());
     }
 
     @Parameterized.Parameters(name = "{0}")
