@@ -10,30 +10,31 @@ import java.util.Set;
 
 public class L33tSubDict implements Iterable<Map<Character, Character>> {
 
-  private final List<Map<Character, Character>> subDicts;
+  private final List<Map<Character, Character>> l33tSubDictionaries;
 
   L33tSubDict(Map<Character, List<Character>> table) {
-    this.subDicts = buildSubDicts(table);
+    this.l33tSubDictionaries = buildSubDictionaries(table);
   }
 
-  private List<Map<Character, Character>> buildSubDicts(
+  private List<Map<Character, Character>> buildSubDictionaries(
       final Map<Character, List<Character>> table) {
     final Set<List<String>> initialSubs = new LinkedHashSet<>();
     initialSubs.add(new ArrayList<String>());
-    final Set<List<String>> subs = helper(table, table.keySet().iterator(), initialSubs);
+    final Set<List<String>> allCombinations =
+        generateCombinationsRecursively(table, table.keySet().iterator(), initialSubs);
 
-    List<Map<Character, Character>> subDicts = new ArrayList<>();
-    for (List<String> sub : subs) {
-      Map<Character, Character> subDict = new HashMap<>();
-      for (CharSequence ref : sub) {
-        subDict.put(ref.charAt(0), ref.charAt(1));
+    List<Map<Character, Character>> subDictionaries = new ArrayList<>();
+    for (List<String> combination : allCombinations) {
+      Map<Character, Character> subDictionary = new HashMap<>();
+      for (CharSequence pair : combination) {
+        subDictionary.put(pair.charAt(0), pair.charAt(1));
       }
-      subDicts.add(subDict);
+      subDictionaries.add(subDictionary);
     }
-    return subDicts;
+    return subDictionaries;
   }
 
-  private Set<List<String>> helper(
+  private Set<List<String>> generateCombinationsRecursively(
       final Map<Character, List<Character>> table,
       final Iterator<Character> keysIterator,
       final Set<List<String>> subs) {
@@ -65,11 +66,11 @@ public class L33tSubDict implements Iterable<Map<Character, Character>> {
       }
     }
 
-    return helper(table, keysIterator, nextSubs);
+    return generateCombinationsRecursively(table, keysIterator, nextSubs);
   }
 
   @Override
   public Iterator<Map<Character, Character>> iterator() {
-    return subDicts.iterator();
+    return l33tSubDictionaries.iterator();
   }
 }

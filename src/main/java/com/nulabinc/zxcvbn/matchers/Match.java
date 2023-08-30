@@ -35,8 +35,13 @@ public class Match {
   public final int month;
   public final int day;
 
+  @SuppressWarnings("java:S1104")
   public Double baseGuesses;
+
+  @SuppressWarnings("java:S1104")
   public Double guesses;
+
+  @SuppressWarnings("java:S1104")
   public Double guessesLog10;
 
   private Match(Builder builder) {

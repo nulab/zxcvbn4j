@@ -34,6 +34,7 @@ public class MatchFactory {
         .build();
   }
 
+  @SuppressWarnings("java:S107")
   public static Match createDictionaryL33tMatch(
       int i,
       int j,

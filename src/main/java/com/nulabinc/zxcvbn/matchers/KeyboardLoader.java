@@ -12,7 +12,7 @@ public abstract class KeyboardLoader {
 
   private final Resource resource;
 
-  public KeyboardLoader(final String name, final Resource resource) {
+  protected KeyboardLoader(final String name, final Resource resource) {
     this.name = name;
     this.resource = resource;
   }

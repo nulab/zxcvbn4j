@@ -73,6 +73,7 @@ public final class ClasspathResource implements Resource {
     return null;
   }
 
+  @SuppressWarnings("java:S1181")
   private InputStream getResourceAsStream(ClassLoader cl, String path) {
     try {
       if (cl != null) {

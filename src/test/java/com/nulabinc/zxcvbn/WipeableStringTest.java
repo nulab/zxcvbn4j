@@ -1,6 +1,7 @@
 package com.nulabinc.zxcvbn;
 
 import static junit.framework.TestCase.*;
+import static org.junit.Assert.assertNotEquals;
 
 import java.nio.CharBuffer;
 import org.junit.Test;
@@ -14,8 +15,8 @@ public class WipeableStringTest {
 
   @Test
   public void testEquals() {
-    assertTrue(new WipeableString("hello").equals("hello"));
-    assertFalse(new WipeableString("goodbye").equals("hello"));
+    assertEquals("hello", new WipeableString("hello").toString());
+    assertNotEquals("hello", new WipeableString("goodbye").toString());
   }
 
   @Test
