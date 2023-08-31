@@ -99,7 +99,7 @@ public class DateMatcher extends BaseMatcher {
   }
 
   @SuppressWarnings("java:S135")
-  private void findDatesWithoutSeparator(CharSequence password, List<Match> matches) {
+  private static void findDatesWithoutSeparator(CharSequence password, List<Match> matches) {
     // dates without separators are between length 4 '1191' and 8 '11111991'
     for (int startIndex = 0; startIndex <= password.length() - 4; startIndex++) {
       for (int endIndex = startIndex + 3; endIndex <= startIndex + 7; endIndex++) {
@@ -116,7 +116,7 @@ public class DateMatcher extends BaseMatcher {
     }
   }
 
-  private void extractDateCandidates(
+  private static void extractDateCandidates(
       List<Match> matches, int startIndex, int endIndex, WipeableString token) {
     List<Dmy> candidates = generateDateCandidates(token);
     if (candidates.isEmpty()) {
@@ -135,7 +135,7 @@ public class DateMatcher extends BaseMatcher {
             bestCandidate.day));
   }
 
-  private List<Dmy> generateDateCandidates(WipeableString token) {
+  private static List<Dmy> generateDateCandidates(WipeableString token) {
     List<Dmy> candidates = new ArrayList<>();
     for (int[] date : DATE_SPLITS[token.length()]) {
       int[] extractedInts = extractIntsFromToken(token, date);
@@ -147,7 +147,7 @@ public class DateMatcher extends BaseMatcher {
     return candidates;
   }
 
-  private int[] extractIntsFromToken(WipeableString token, int[] date) {
+  private static int[] extractIntsFromToken(WipeableString token, int[] date) {
     try {
       int[] ints = new int[3];
       ints[0] = WipeableString.parseInt(token.subSequence(0, date[0]));
@@ -159,7 +159,7 @@ public class DateMatcher extends BaseMatcher {
     }
   }
 
-  private Dmy selectBestDateCandidate(List<Dmy> candidates) {
+  private static Dmy selectBestDateCandidate(List<Dmy> candidates) {
     Dmy bestCandidate = candidates.get(0);
     int minDistance = metric(candidates.get(0));
     for (Dmy candidate : candidates.subList(1, candidates.size())) {
@@ -172,7 +172,7 @@ public class DateMatcher extends BaseMatcher {
     return bestCandidate;
   }
 
-  private void findDatesWithSeparator(CharSequence password, List<Match> matches) {
+  private static void findDatesWithSeparator(CharSequence password, List<Match> matches) {
     // dates with separators are between length 6 '1/1/91' and 10 '11/11/1991'
     for (int startIndex = 0; startIndex <= password.length() - 6; startIndex++) {
       for (int endIndex = startIndex + 5;
@@ -198,7 +198,7 @@ public class DateMatcher extends BaseMatcher {
     }
   }
 
-  private int[] extractIntsFromMatcher(java.util.regex.Matcher matcher) {
+  private static int[] extractIntsFromMatcher(java.util.regex.Matcher matcher) {
     try {
       int[] ints = new int[3];
       ints[0] = WipeableString.parseInt(matcher.group(1));
@@ -227,38 +227,57 @@ public class DateMatcher extends BaseMatcher {
     return this.sorted(targetMatches);
   }
 
-  private int metric(Dmy candidate) {
+  private static int metric(Dmy candidate) {
     return Math.abs(candidate.year - Scoring.REFERENCE_YEAR);
   }
 
-  private Dmy mapIntsToDmy(int[] ints) {
-    if (ints.length == 0 || ints[1] > 31 || ints[1] <= 0) {
+  private static Dmy mapIntsToDmy(int[] ints) {
+    if (ints.length == 0 || !isValidDay(ints[1])) {
       return null;
     }
 
     for (int i : ints) {
-      if ((99 < i && i < DATE_MIN_YEAR) || i > DATE_MAX_YEAR) {
+      if (isOutOfRange(i)) {
         return null;
       }
     }
 
     ThresholdCounts counts = calculateThresholdCounts(ints);
-    if (counts.over31 >= 2 || counts.over12 == 3 || counts.under1 >= 2) {
+    if (!isValidThresholdCounts(counts)) {
       return null;
     }
 
-    // first look for a four digit year: yyyy + daymonth or daymonth + yyyy
-    int[][] possibleYearSplits = {
-      {ints[2], ints[0], ints[1]}, // year last
-      {ints[0], ints[1], ints[2]} // year first
-    };
+    // Check for a four-digit year
+    Dmy dmyFromFourDigitYear = getDmyFromFourDigitYear(ints);
+    if (dmyFromFourDigitYear != null) {
+      return dmyFromFourDigitYear;
+    }
+
+    // Given no four-digit year, try to parse a day-month
+    return getDmyFromTwoDigitYear(ints);
+  }
+
+  private static boolean isValidDay(int day) {
+    return 1 <= day && day <= 31;
+  }
+
+  private static boolean isOutOfRange(int value) {
+    return (99 < value && value < DATE_MIN_YEAR) || value > DATE_MAX_YEAR;
+  }
+
+  private static boolean isValidThresholdCounts(ThresholdCounts counts) {
+    return !(counts.over31 >= 2 || counts.over12 == 3 || counts.under1 >= 2);
+  }
+
+  private static Dmy getDmyFromFourDigitYear(int[] ints) {
+    int[][] possibleYearSplits = getPossibleYearSplits(ints);
 
     for (int[] split : possibleYearSplits) {
-      int y = split[0];
-      if (isYearInRange(y)) {
+      int year = split[0];
+      if (isYearInRange(year)) {
         Dm dm = mapIntsToDm(new int[] {split[1], split[2]});
         if (dm != null) {
-          return new Dmy(dm.day, dm.month, y);
+          return new Dmy(dm.day, dm.month, year);
         } else {
           // for a candidate that includes a four-digit year,
           // when the remaining ints don't match to a day and month,
@@ -267,20 +286,33 @@ public class DateMatcher extends BaseMatcher {
         }
       }
     }
+    return null;
+  }
+
+  private static Dmy getDmyFromTwoDigitYear(int[] ints) {
+    int[][] possibleYearSplits = getPossibleYearSplits(ints);
 
     // given no four-digit year, two digit years are the most flexible int to match, so
     // try to parse a day-month out of ints[0..1] or ints[1..0]
     for (int[] split : possibleYearSplits) {
       Dm dm = mapIntsToDm(new int[] {split[1], split[2]});
       if (dm != null) {
-        int y = twoToFourDigitYear(split[0]);
-        return new Dmy(dm.day, dm.month, y);
+        int year = twoToFourDigitYear(split[0]);
+        return new Dmy(dm.day, dm.month, year);
       }
     }
     return null;
   }
 
-  private ThresholdCounts calculateThresholdCounts(int[] ints) {
+  private static int[][] getPossibleYearSplits(int[] ints) {
+    // first look for a four digit year: yyyy + daymonth or daymonth + yyyy
+    return new int[][] {
+      {ints[2], ints[0], ints[1]}, // year last
+      {ints[0], ints[1], ints[2]} // year first
+    };
+  }
+
+  private static ThresholdCounts calculateThresholdCounts(int[] ints) {
     int over12 = 0;
     int over31 = 0;
     int under1 = 0;
@@ -298,11 +330,11 @@ public class DateMatcher extends BaseMatcher {
     return new ThresholdCounts(over31, over12, under1);
   }
 
-  private boolean isYearInRange(int year) {
+  private static boolean isYearInRange(int year) {
     return DATE_MIN_YEAR <= year && year <= DATE_MAX_YEAR;
   }
 
-  private Dm mapIntsToDm(int[] ints) {
+  private static Dm mapIntsToDm(int[] ints) {
     int[] copy = Arrays.copyOf(ints, ints.length);
     reverse(copy);
     for (int[] ref : new int[][] {ints, copy}) {
@@ -315,7 +347,7 @@ public class DateMatcher extends BaseMatcher {
     return null;
   }
 
-  private void reverse(int[] array) {
+  private static void reverse(int[] array) {
     for (int i = 0; i < array.length / 2; i++) {
       int temp = array[i];
       array[i] = array[array.length - 1 - i];
@@ -323,7 +355,7 @@ public class DateMatcher extends BaseMatcher {
     }
   }
 
-  private int twoToFourDigitYear(int year) {
+  private static int twoToFourDigitYear(int year) {
     if (year > 99) {
       return year;
     } else if (year > 50) {
