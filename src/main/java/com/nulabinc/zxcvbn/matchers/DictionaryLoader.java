@@ -31,8 +31,15 @@ public class DictionaryLoader {
         words.add(line);
       }
     } catch (IOException e) {
-      throw new RuntimeException("Error while reading " + name);
+      throw new DictionaryLoadException("Error while reading " + name, e);
     }
     return new Dictionary(name, words);
+  }
+
+  static class DictionaryLoadException extends IOException {
+
+    DictionaryLoadException(String message, Throwable cause) {
+      super(message, cause);
+    }
   }
 }
