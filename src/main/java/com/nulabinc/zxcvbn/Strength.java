@@ -16,14 +16,56 @@ public class Strength {
   private List<Match> sequence;
   private long calcTime;
 
+  /**
+   * Default constructor.
+   *
+   * @deprecated This constructor is discouraged from use as it does not ensure all fields are
+   *     initialized properly. Instead, use the {@link #Strength(CharSequence, double, List, long)}
+   *     constructor to provide all necessary data.
+   */
+  @Deprecated
   public Strength() {
     this.sequence = new ArrayList<>();
+  }
+
+  /**
+   * Constructs a Strength object with the given parameters.
+   *
+   * @param password The password for which strength is calculated.
+   * @param guesses Estimated number of guesses needed to crack the password.
+   * @param sequence A list of matching patterns found in the password.
+   * @param calcTime Time taken to calculate the password's strength.
+   */
+  public Strength(CharSequence password, double guesses, List<Match> sequence, long calcTime) {
+    this.password = password;
+    this.guesses = guesses;
+    this.guessesLog10 = Scoring.log10(guesses);
+
+    if (sequence == null) {
+      sequence = new ArrayList<>();
+    }
+    this.sequence = sequence;
+
+    AttackTimes attackTimes = TimeEstimates.estimateAttackTimes(guesses);
+    this.crackTimeSeconds = attackTimes.getCrackTimeSeconds();
+    this.crackTimesDisplay = attackTimes.getCrackTimesDisplay();
+    this.score = attackTimes.getScore();
+    this.feedback = Feedback.getFeedback(attackTimes.getScore(), sequence);
+
+    this.calcTime = calcTime;
   }
 
   public CharSequence getPassword() {
     return password;
   }
 
+  /**
+   * Sets the password.
+   *
+   * @deprecated Use constructor for initialization. Modifying after instantiation is not
+   *     recommended.
+   */
+  @Deprecated
   public void setPassword(CharSequence password) {
     this.password = password;
   }
@@ -32,6 +74,13 @@ public class Strength {
     return guesses;
   }
 
+  /**
+   * Sets the estimated number of guesses.
+   *
+   * @deprecated Use constructor for initialization. Modifying after instantiation is not
+   *     recommended.
+   */
+  @Deprecated
   public void setGuesses(double guesses) {
     this.guesses = guesses;
   }
@@ -40,6 +89,13 @@ public class Strength {
     return guessesLog10;
   }
 
+  /**
+   * Sets the logarithm (base 10) of the estimated number of guesses.
+   *
+   * @deprecated Use constructor for initialization. Modifying after instantiation is not
+   *     recommended.
+   */
+  @Deprecated
   public void setGuessesLog10(double guessesLog10) {
     this.guessesLog10 = guessesLog10;
   }
@@ -48,6 +104,13 @@ public class Strength {
     return crackTimeSeconds;
   }
 
+  /**
+   * Sets the crack time in seconds.
+   *
+   * @deprecated Use constructor for initialization. Modifying after instantiation is not
+   *     recommended.
+   */
+  @Deprecated
   public void setCrackTimeSeconds(AttackTimes.CrackTimeSeconds crackTimeSeconds) {
     this.crackTimeSeconds = crackTimeSeconds;
   }
@@ -56,6 +119,13 @@ public class Strength {
     return crackTimesDisplay;
   }
 
+  /**
+   * Sets the display times for crack attempts.
+   *
+   * @deprecated Use constructor for initialization. Modifying after instantiation is not
+   *     recommended.
+   */
+  @Deprecated
   public void setCrackTimesDisplay(AttackTimes.CrackTimesDisplay crackTimesDisplay) {
     this.crackTimesDisplay = crackTimesDisplay;
   }
@@ -64,6 +134,13 @@ public class Strength {
     return score;
   }
 
+  /**
+   * Sets the score.
+   *
+   * @deprecated Use constructor for initialization. Modifying after instantiation is not
+   *     recommended.
+   */
+  @Deprecated
   public void setScore(int score) {
     this.score = score;
   }
@@ -72,6 +149,13 @@ public class Strength {
     return feedback;
   }
 
+  /**
+   * Sets the feedback.
+   *
+   * @deprecated Use constructor for initialization. Modifying after instantiation is not
+   *     recommended.
+   */
+  @Deprecated
   public void setFeedback(Feedback feedback) {
     this.feedback = feedback;
   }
@@ -80,7 +164,17 @@ public class Strength {
     return sequence;
   }
 
+  /**
+   * Sets the sequence of matches.
+   *
+   * @deprecated Use constructor for initialization. Modifying after instantiation is not
+   *     recommended.
+   */
+  @Deprecated
   public void setSequence(List<Match> sequence) {
+    if (sequence == null) {
+      sequence = new ArrayList<>();
+    }
     this.sequence = sequence;
   }
 
@@ -88,6 +182,13 @@ public class Strength {
     return calcTime;
   }
 
+  /**
+   * Sets the calculation time.
+   *
+   * @deprecated Use constructor for initialization. Modifying after instantiation is not
+   *     recommended.
+   */
+  @Deprecated
   public void setCalcTime(long calcTime) {
     this.calcTime = calcTime;
   }

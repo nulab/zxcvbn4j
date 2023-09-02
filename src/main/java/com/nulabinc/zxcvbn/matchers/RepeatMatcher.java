@@ -1,9 +1,9 @@
 package com.nulabinc.zxcvbn.matchers;
 
 import com.nulabinc.zxcvbn.Context;
+import com.nulabinc.zxcvbn.MatchSequence;
 import com.nulabinc.zxcvbn.Matching;
 import com.nulabinc.zxcvbn.Scoring;
-import com.nulabinc.zxcvbn.Strength;
 import com.nulabinc.zxcvbn.WipeableString;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,13 +91,17 @@ public class RepeatMatcher extends BaseMatcher {
 
   private Match createRepeatMatch(CharSequence baseToken, String matchResult, int start, int end) {
     List<Match> omnimatch = matching.omnimatch(baseToken);
-    Strength baseAnalysis = scoring.mostGuessableMatchSequence(baseToken, omnimatch);
-    List<Match> baseMatches = baseAnalysis.getSequence();
-    double baseGuesses = baseAnalysis.getGuesses();
+    MatchSequence baseAnalysis = scoring.calculateMostGuessableMatchSequence(baseToken, omnimatch);
     CharSequence wipeableBaseToken = new WipeableString(baseToken);
     int repeatCount = matchResult.length() / wipeableBaseToken.length();
     return MatchFactory.createRepeatMatch(
-        start, end, matchResult, wipeableBaseToken, baseGuesses, baseMatches, repeatCount);
+        start,
+        end,
+        matchResult,
+        wipeableBaseToken,
+        baseAnalysis.getGuesses(),
+        baseAnalysis.getSequence(),
+        repeatCount);
   }
 
   private static class ChosenMatch {

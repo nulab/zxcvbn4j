@@ -29,25 +29,63 @@ public class Scoring {
     this.context = context;
   }
 
+  /**
+   * Calculates the most guessable match sequence for a password.
+   *
+   * @deprecated Use {@link #calculateMostGuessableMatchSequence} instead for better clarity and
+   *     maintainability.
+   */
+  @Deprecated
   public Strength mostGuessableMatchSequence(CharSequence password, List<Match> matches) {
     return mostGuessableMatchSequence(password, matches, false);
   }
 
+  /**
+   * Calculates the most guessable match sequence for a password with an option to exclude additive.
+   *
+   * @deprecated Use {@link #calculateMostGuessableMatchSequence} instead for better clarity and
+   *     maintainability.
+   */
+  @Deprecated
   public Strength mostGuessableMatchSequence(
+      CharSequence password, List<Match> matches, boolean excludeAdditive) {
+    MatchSequence matchSequence =
+        calculateMostGuessableMatchSequence(password, matches, excludeAdditive);
+    return new Strength(password, matchSequence.getGuesses(), matchSequence.getSequence(), 0);
+  }
+
+  /**
+   * Calculates the most guessable match sequence for a password.
+   *
+   * @param password The password to evaluate.
+   * @param matches A list of matches detected in the password.
+   * @return A MatchSequence containing the most guessable sequence and associated guesses.
+   */
+  public MatchSequence calculateMostGuessableMatchSequence(
+      CharSequence password, List<Match> matches) {
+    return calculateMostGuessableMatchSequence(password, matches, false);
+  }
+
+  /**
+   * Calculates the most guessable match sequence for a password with an option to exclude additive.
+   *
+   * @param password The password to evaluate.
+   * @param matches A list of matches detected in the password.
+   * @param excludeAdditive If true, excludes additive computations from the guess estimation.
+   * @return A MatchSequence containing the most guessable sequence and associated guesses.
+   */
+  public MatchSequence calculateMostGuessableMatchSequence(
       CharSequence password, List<Match> matches, boolean excludeAdditive) {
     List<List<Match>> matchesByEndPosition = groupMatchesByEndPosition(password.length(), matches);
     Optimal optimal = computeOptimal(context, password, matchesByEndPosition, excludeAdditive);
     List<Match> optimalMatchSequence = unwindOptimal(password.length(), optimal);
-    double guesses =
-        password.length() == 0
-            ? 1
-            : optimal.getOverallMetric(password.length() - 1, optimalMatchSequence.size());
-    Strength strength = new Strength();
-    strength.setPassword(password);
-    strength.setGuesses(guesses);
-    strength.setGuessesLog10(log10(guesses));
-    strength.setSequence(optimalMatchSequence);
-    return strength;
+    double guesses = 0;
+    if (password.length() == 0) {
+      guesses = 1;
+    } else {
+      guesses = optimal.getOverallMetric(password.length() - 1, optimalMatchSequence.size());
+    }
+    return new MatchSequence(optimalMatchSequence, guesses);
   }
 
   private static List<List<Match>> groupMatchesByEndPosition(int length, List<Match> matches) {
