@@ -88,7 +88,7 @@ public class ScoringTest {
       Scoring scoring = new Scoring(context);
       double baseGuesses =
           scoring
-              .mostGuessableMatchSequence(
+              .calculateMostGuessableMatchSequence(
                   baseToken,
                   new Matching(context, Collections.<String>emptyList()).omnimatch(baseToken))
               .getGuesses();

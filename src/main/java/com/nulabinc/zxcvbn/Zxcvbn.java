@@ -41,21 +41,12 @@ public class Zxcvbn {
       lowerSanitizedInputs = Collections.emptyList();
     }
     long start = time();
-    Matching matching = createMatching(lowerSanitizedInputs);
+    Matching matching = new Matching(context, lowerSanitizedInputs);
     List<Match> matches = matching.omnimatch(password);
-    Scoring scoring = new Scoring(this.context);
-    Strength strength = scoring.mostGuessableMatchSequence(password, matches);
-    strength.setCalcTime(time() - start);
-    AttackTimes attackTimes = TimeEstimates.estimateAttackTimes(strength.getGuesses());
-    strength.setCrackTimeSeconds(attackTimes.getCrackTimeSeconds());
-    strength.setCrackTimesDisplay(attackTimes.getCrackTimesDisplay());
-    strength.setScore(attackTimes.getScore());
-    strength.setFeedback(Feedback.getFeedback(strength.getScore(), strength.getSequence()));
-    return strength;
-  }
-
-  protected Matching createMatching(List<String> lowerSanitizedInputs) {
-    return new Matching(this.context, lowerSanitizedInputs);
+    Scoring scoring = new Scoring(context);
+    MatchSequence matchSequence = scoring.calculateMostGuessableMatchSequence(password, matches);
+    long end = time() - start;
+    return new Strength(password, matchSequence.getGuesses(), matchSequence.getSequence(), end);
   }
 
   private long time() {
