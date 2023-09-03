@@ -1,7 +1,6 @@
 package com.nulabinc.zxcvbn.matchers;
 
 import com.nulabinc.zxcvbn.Context;
-import com.nulabinc.zxcvbn.Matcher;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

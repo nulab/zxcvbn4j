@@ -1,6 +1,5 @@
-package com.nulabinc.zxcvbn;
+package com.nulabinc.zxcvbn.matchers;
 
-import com.nulabinc.zxcvbn.matchers.Match;
 import java.util.List;
 
 /**
@@ -9,10 +8,14 @@ import java.util.List;
  * <p>Implementations of this interface provide specific matching strategies to detect various
  * patterns such as dictionary words, sequences, and spatial patterns.
  *
- * @deprecated This interface is deprecated. Use {@link com.nulabinc.zxcvbn.matchers.Matcher}
- *     instead.
+ * @see Match
  */
-@Deprecated
 public interface Matcher {
+  /**
+   * Analyzes the given password and returns a list of detected patterns as {@link Match} objects.
+   *
+   * @param password the password to analyze for patterns.
+   * @return a list of matches identifying patterns found within the password.
+   */
   List<Match> execute(CharSequence password);
 }
