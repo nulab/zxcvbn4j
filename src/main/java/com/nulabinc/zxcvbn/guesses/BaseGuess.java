@@ -1,7 +1,6 @@
 package com.nulabinc.zxcvbn.guesses;
 
 import com.nulabinc.zxcvbn.Context;
-import com.nulabinc.zxcvbn.Guess;
 
 public abstract class BaseGuess implements Guess {
 

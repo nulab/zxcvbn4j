@@ -1,4 +1,4 @@
-package com.nulabinc.zxcvbn;
+package com.nulabinc.zxcvbn.guesses;
 
 import com.nulabinc.zxcvbn.matchers.Match;
 import java.util.Calendar;
@@ -10,7 +10,6 @@ import java.util.Calendar;
  * <p>Implementations of this interface are expected to evaluate the strength or weakness of a
  * matched pattern within a password and return an estimated guess number.
  *
- * @deprecated This interface is deprecated. Use {@link com.nulabinc.zxcvbn.guesses.Guess} instead.
  * @see Match
  */
 public interface Guess {

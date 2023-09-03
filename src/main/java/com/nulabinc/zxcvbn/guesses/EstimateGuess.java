@@ -1,7 +1,6 @@
 package com.nulabinc.zxcvbn.guesses;
 
 import com.nulabinc.zxcvbn.Context;
-import com.nulabinc.zxcvbn.Guess;
 import com.nulabinc.zxcvbn.Pattern;
 import com.nulabinc.zxcvbn.Scoring;
 import com.nulabinc.zxcvbn.matchers.Match;
