@@ -17,6 +17,13 @@ public class AttackTimes {
     return crackTimeSeconds;
   }
 
+  /**
+   * Sets the crack time in seconds.
+   *
+   * @param crackTimeSeconds The crack time in seconds.
+   * @deprecated It is recommended to initialize using the constructor.
+   */
+  @Deprecated
   public void setCrackTimeSeconds(CrackTimeSeconds crackTimeSeconds) {
     this.crackTimeSeconds = crackTimeSeconds;
   }
@@ -25,6 +32,13 @@ public class AttackTimes {
     return crackTimesDisplay;
   }
 
+  /**
+   * Sets the display representation for the crack times.
+   *
+   * @param crackTimesDisplay The display values for crack times.
+   * @deprecated It is recommended to initialize using the constructor.
+   */
+  @Deprecated
   public void setCrackTimesDisplay(CrackTimesDisplay crackTimesDisplay) {
     this.crackTimesDisplay = crackTimesDisplay;
   }
@@ -33,6 +47,13 @@ public class AttackTimes {
     return score;
   }
 
+  /**
+   * Sets the score value.
+   *
+   * @param score The score value.
+   * @deprecated It is recommended to initialize using the constructor.
+   */
+  @Deprecated
   public void setScore(int score) {
     this.score = score;
   }
