@@ -79,6 +79,14 @@ public class AttackTimes {
       return onlineThrottling100perHour;
     }
 
+    /**
+     * Sets the time required to crack a password with online throttling at 100 attempts per hour.
+     *
+     * @param onlineThrottling100perHour Time in seconds for online throttling at 100 attempts per
+     *     hour.
+     * @deprecated This method is deprecated. It is recommended to initialize using the constructor.
+     */
+    @Deprecated
     public void setOnlineThrottling100perHour(double onlineThrottling100perHour) {
       this.onlineThrottling100perHour = onlineThrottling100perHour;
     }
@@ -87,6 +95,15 @@ public class AttackTimes {
       return onlineNoThrottling10perSecond;
     }
 
+    /**
+     * Sets the time required to crack a password with online attacks without throttling at 10
+     * attempts per second.
+     *
+     * @param onlineNoThrottling10perSecond Time in seconds for online attacks without throttling at
+     *     10 attempts per second.
+     * @deprecated This method is deprecated. It is recommended to initialize using the constructor.
+     */
+    @Deprecated
     public void setOnlineNoThrottling10perSecond(double onlineNoThrottling10perSecond) {
       this.onlineNoThrottling10perSecond = onlineNoThrottling10perSecond;
     }
@@ -95,6 +112,15 @@ public class AttackTimes {
       return offlineSlowHashing1e4perSecond;
     }
 
+    /**
+     * Sets the time required to crack a password with offline slow hashing at 1e4 attempts per
+     * second.
+     *
+     * @param offlineSlowHashing1e4perSecond Time in seconds for offline slow hashing at 1e4
+     *     attempts per second.
+     * @deprecated This method is deprecated. It is recommended to initialize using the constructor.
+     */
+    @Deprecated
     public void setOfflineSlowHashing1e4perSecond(double offlineSlowHashing1e4perSecond) {
       this.offlineSlowHashing1e4perSecond = offlineSlowHashing1e4perSecond;
     }
@@ -103,6 +129,15 @@ public class AttackTimes {
       return offlineFastHashing1e10PerSecond;
     }
 
+    /**
+     * Sets the time required to crack a password with offline fast hashing at 1e10 attempts per
+     * second.
+     *
+     * @param offlineFastHashing1e10PerSecond Time in seconds for offline fast hashing at 1e10
+     *     attempts per second.
+     * @deprecated This method is deprecated. It is recommended to initialize using the constructor.
+     */
+    @Deprecated
     public void setOfflineFastHashing1e10PerSecond(double offlineFastHashing1e10PerSecond) {
       this.offlineFastHashing1e10PerSecond = offlineFastHashing1e10PerSecond;
     }
@@ -129,6 +164,15 @@ public class AttackTimes {
       return onlineThrottling100perHour;
     }
 
+    /**
+     * Sets the display representation for the time required to crack a password with online
+     * throttling at 100 attempts per hour.
+     *
+     * @param onlineThrottling100perHour Display representation for online throttling at 100
+     *     attempts per hour.
+     * @deprecated This method is deprecated. It is recommended to initialize using the constructor.
+     */
+    @Deprecated
     public void setOnlineThrottling100perHour(String onlineThrottling100perHour) {
       this.onlineThrottling100perHour = onlineThrottling100perHour;
     }
@@ -137,6 +181,15 @@ public class AttackTimes {
       return onlineNoThrottling10perSecond;
     }
 
+    /**
+     * Sets the display representation for the time required to crack a password with online attacks
+     * without throttling at 10 attempts per second.
+     *
+     * @param onlineNoThrottling10perSecond Display representation for online attacks without
+     *     throttling at 10 attempts per second.
+     * @deprecated This method is deprecated. It is recommended to initialize using the constructor.
+     */
+    @Deprecated
     public void setOnlineNoThrottling10perSecond(String onlineNoThrottling10perSecond) {
       this.onlineNoThrottling10perSecond = onlineNoThrottling10perSecond;
     }
@@ -145,6 +198,15 @@ public class AttackTimes {
       return offlineSlowHashing1e4perSecond;
     }
 
+    /**
+     * Sets the display representation for the time required to crack a password with offline slow
+     * hashing at 1e4 attempts per second.
+     *
+     * @param offlineSlowHashing1e4perSecond Display representation for offline slow hashing at 1e4
+     *     attempts per second.
+     * @deprecated This method is deprecated. It is recommended to initialize using the constructor.
+     */
+    @Deprecated
     public void setOfflineSlowHashing1e4perSecond(String offlineSlowHashing1e4perSecond) {
       this.offlineSlowHashing1e4perSecond = offlineSlowHashing1e4perSecond;
     }
@@ -153,6 +215,15 @@ public class AttackTimes {
       return offlineFastHashing1e10PerSecond;
     }
 
+    /**
+     * Sets the display representation for the time required to crack a password with offline fast
+     * hashing at 1e10 attempts per second.
+     *
+     * @param offlineFastHashing1e10PerSecond Display representation for offline fast hashing at
+     *     1e10 attempts per second.
+     * @deprecated This method is deprecated. It is recommended to initialize using the constructor.
+     */
+    @Deprecated
     public void setOfflineFastHashing1e10PerSecond(String offlineFastHashing1e10PerSecond) {
       this.offlineFastHashing1e10PerSecond = offlineFastHashing1e10PerSecond;
     }
