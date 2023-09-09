@@ -12,7 +12,7 @@ public enum Pattern {
 
   private final String value;
 
-  private Pattern(final String value) {
+  Pattern(final String value) {
     this.value = value;
   }
 
