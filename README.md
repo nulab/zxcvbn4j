@@ -5,7 +5,7 @@ This is a Java version of [zxcvbn](https://github.com/dropbox/zxcvbn), a passwor
 
 **Related articles:**
 
-- [Five Algorithms to Measure Real Password Strength](https://nulab-inc.com/blog/nulab/password-strength/)
+- [Five Algorithms to Measure Real Password Strength](https://medium.com/nulab/five-algorithms-to-measure-real-password-strength-bd30126e82cc)
 
 ## Table of Contents
 
