@@ -64,6 +64,7 @@ This is a Java version of [zxcvbn](https://github.com/dropbox/zxcvbn), a passwor
 - Italian ([it](./src/main/resources/com/nulabinc/zxcvbn/messages_it.properties))
 - Spanish ([es](./src/main/resources/com/nulabinc/zxcvbn/messages_es.properties))
 - Portuguese ([pt](./src/main/resources/com/nulabinc/zxcvbn/messages_pt.properties))
+- Hebrew ([iw](./src/main/resources/com/nulabinc/zxcvbn/messages_iw.properties))
 
 ### JIS Keyboard Layout Support
 

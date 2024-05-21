@@ -25,3 +25,4 @@
 
 !gradle-wrapper.jar
 .gradle
+/local.properties
