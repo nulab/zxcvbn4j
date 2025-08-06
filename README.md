@@ -166,7 +166,7 @@ strength.crackTimeSeconds
 # same keys as result.crack_time_seconds,
 # with friendlier display string values:
 # "less than a second", "3 hours", "centuries", etc.
-strength.crackTimeDisplay
+strength.crackTimesDisplay
 
 # Integer from 0-4 (useful for implementing a strength bar)
 # 0 Weak        （guesses < 10^3 + 5）
