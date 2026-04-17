@@ -66,6 +66,7 @@ zxcvbn4j は、JavaScriptのパスワード強度ジェネレータである[zxc
 - Italian ([it](./src/main/resources/com/nulabinc/zxcvbn/messages_it.properties))
 - Spanish ([es](./src/main/resources/com/nulabinc/zxcvbn/messages_es.properties))
 - Portuguese ([pt](./src/main/resources/com/nulabinc/zxcvbn/messages_pt.properties))
+- Greek ([el](./src/main/resources/com/nulabinc/zxcvbn/messages_el.properties))
 
 ### JISキーボードに対応
 
